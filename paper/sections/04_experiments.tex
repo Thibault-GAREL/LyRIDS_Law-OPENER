@@ -3,25 +3,23 @@
 
 \subsection{Datasets}
 \label{sec:exp:datasets}
-% TODO[Thibault to provide]: legal NER datasets + language + source + format + entity types.
-% Build src/data/legal_datasets.py to convert each to the OWNER JSON format, then fill
-% the table below (one row per dataset: name, language, #test, entity types + share %).
-We evaluate on $N$ legal NER datasets spanning \textsc{languages} and \textsc{sub-domains} (e.g.\ case law, contracts, legislation). \autoref{tab:legal-datasets} summarises them and their entity-type inventories.
+We evaluate on three public legal NER datasets that, together, separate two kinds of distribution shift. \textbf{E-NER} \citep{au2022ener} -- annotated U.S.\ SEC/EDGAR filings -- is in \emph{English}, so it isolates a \emph{pure domain shift} from the general-domain data the embedder was trained on. \textbf{LeNER-Br} \citep{luzdearaujo2018lenerbr} (Brazilian court decisions, Portuguese) and \textbf{German-LER} \citep{leitner2020germanler} (German federal court decisions) add a \emph{cross-lingual} shift on top of the domain shift, stressing an English-centric embedder well outside its training distribution. \autoref{tab:legal-datasets} summarises them with the entity-type distribution of their test mentions; all three exhibit a strongly skewed, long-tailed inventory typical of legal text (one or two dominant types and several rare, schema-specific ones).
 
-\begin{table}[H]
+\begin{table*}[t]
 \centering
-\caption{Legal NER datasets (placeholder). ``Test'' is the number of test sentences (capped at 1000); each type is followed by its share (\%) of the test mentions.}
+\caption{Legal NER datasets used for the transfer study. ``Sent.'' / ``Ment.'' are the number of test sentences (with $\geq 1$ entity) and test mentions; each entity type is followed by its share (\%) of the test mentions. German-LER is shown with its 7-type \emph{coarse} schema here; its 19-type \emph{fine} schema is used as a specialised-schema stress test in \autoref{sec:exp:analysis}.}
 \label{tab:legal-datasets}
-\scriptsize
-\begin{tabular}{@{}llrl@{}}
+\footnotesize
+\begin{tabular}{@{}llrrp{0.52\linewidth}@{}}
 \toprule
-Dataset & Lang & Test & Entity types (share \%) \\
+Dataset & Lang & Sent. & Ment. & Entity types (share \% of test mentions) \\
 \midrule
-% <dataset> & <xx> & <n> & <type a, type b, ...> \\
-\multicolumn{4}{c}{\emph{TODO: fill once datasets are provided}} \\
+E-NER \citep{au2022ener} & en & 877 & 1{,}793 & Business 41.8, Misc 18.3, Legislation/Act 13.5, Location 11.3, Person 7.6, Government 7.1, Court 0.3 \\
+LeNER-Br \citep{luzdearaujo2018lenerbr} & pt & 636 & 1{,}536 & Organização 32.6, Legislação 24.6, Pessoa 15.2, Tempo 12.5, Jurisprudência 12.0, Local 3.1 \\
+German-LER \citep{leitner2020germanler} & de & 3{,}018 & 5{,}322 & Legal-norm 38.3, Case-law 23.4, Organization 15.0, Regulation 6.7, Person 6.1, Legal-literature 5.9, Location 4.7 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \subsection{Setup}
 \label{sec:exp:setup}
