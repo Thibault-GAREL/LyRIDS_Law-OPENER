@@ -1,0 +1,57 @@
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{Datasets}
+\label{sec:exp:datasets}
+% TODO[Thibault to provide]: legal NER datasets + language + source + format + entity types.
+% Build src/data/legal_datasets.py to convert each to the OWNER JSON format, then fill
+% the table below (one row per dataset: name, language, #test, entity types + share %).
+We evaluate on $N$ legal NER datasets spanning \textsc{languages} and \textsc{sub-domains} (e.g.\ case law, contracts, legislation). \autoref{tab:legal-datasets} summarises them and their entity-type inventories.
+
+\begin{table}[H]
+\centering
+\caption{Legal NER datasets (placeholder). ``Test'' is the number of test sentences (capped at 1000); each type is followed by its share (\%) of the test mentions.}
+\label{tab:legal-datasets}
+\scriptsize
+\begin{tabular}{@{}llrl@{}}
+\toprule
+Dataset & Lang & Test & Entity types (share \%) \\
+\midrule
+% <dataset> & <xx> & <n> & <type a, type b, ...> \\
+\multicolumn{4}{c}{\emph{TODO: fill once datasets are provided}} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Setup}
+\label{sec:exp:setup}
+Embedder, detector and heads are exactly those of the general-domain OPENER (\autoref{sec:method}); the entity embedder is loaded from the Hugging Face Hub and is \emph{not} retrained on legal data. Single fixed seed; each test split capped at $1000$ sentences. % TODO[venue]: multi-seed if space/time allow.
+Baselines: % TODO -- e.g. GLiNER-L standalone (zero-shot), a domain LM (Legal-BERT) closed-set, and OWNER transfer, for context.
+
+\subsection{Results}
+\label{sec:exp:results}
+% TODO[run after the general-domain multi-seed job frees the GPU]:
+% scripts/run_balanced_classifiers.py (OPENER-Sup gold), run_opener_e2e.py (Sup e2e),
+% run_opener_zs_e2e_fusion.py (OPENER-ZS), all with --embedder <HF repo>.
+\autoref{tab:legal-main} reports AMI (gold and end-to-end) per legal dataset for OPENER-Sup and OPENER-ZS, alongside latency and energy.
+
+\begin{table}[H]
+\centering
+\caption{Legal NER results (placeholder): AMI ($\times100$, $\uparrow$), gold and end-to-end.}
+\label{tab:legal-main}
+\footnotesize
+\begin{tabular}{@{}lcc@{}}
+\toprule
+System & AMI gold & AMI e2e \\
+\midrule
+GLiNER-L (zero-shot) & -- & -- \\
+\rowcolor{hlyellow} OPENER-ZS & -- & -- \\
+\rowcolor{hlred} OPENER-Sup & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Analysis}
+\label{sec:exp:analysis}
+% TODO: where transfer holds vs breaks on legal schemas (parties/courts vs fine-grained
+% statutory or contractual types), detection vs typing bottleneck, frugality (Wh, latency).

@@ -1,0 +1,54 @@
+# OPENER-Legal — configuration (workshop paper)
+# NB: les champs <TODO> attendent les détails de Thibault (datasets, lien HF).
+
+embedder:
+  # Repris depuis HuggingFace (modèle du papier principal, fine-tuné contrastif + hard-mining).
+  # 2 dépôts publiés (probablement le même embedder ; chacun sert son point de fonctionnement).
+  source: huggingface
+  hf_repo_sup: "Thibault-GAREL/opener-sup"   # https://huggingface.co/Thibault-GAREL/opener-sup
+  hf_repo_zs:  "Thibault-GAREL/opener-zs"    # https://huggingface.co/Thibault-GAREL/opener-zs
+  local_fallback: "../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big"
+  truncate_dim: 768
+  task_prefix: "classification: "
+  encoding_mode: span_in_context   # [ENT] ... [/ENT]
+
+detector:
+  checkpoint: "urchade/gliner_large-v2.1"   # GLiNER-L, frozen, zero-shot
+  threshold: 0.3
+
+typing:
+  supervised:                 # OPENER-Sup
+    classifier: linear_svc
+    class_weight: balanced
+    C: 1.0
+  zero_shot:                  # OPENER-ZS = transductif + fusion (choix acté)
+    proto_mode: ensemble
+    transductive: true
+    refine_iters: 3
+    detector_fusion: true
+    beta: 0.05
+
+eval:
+  max_eval: 1000
+  axes: [ami, latency_p50, energy]   # 3 axes comme le papier principal
+  seed: 42
+
+# Datasets légaux à évaluer.
+# Set PROPOSÉ par défaut (publics, BIO sur le HF Hub, chargés via src/data/legal_datasets.py).
+# À confirmer / compléter par Thibault (langue ciblée + venue, cf. CLAUDE.md).
+datasets:
+  - name: lener_br        # LeNER-Br, PROPOR 2018
+    lang: pt
+    source: hf_datasets
+    path_or_id: lener_br
+    loader_key: lener_br  # clé dans legal_datasets._LEGAL_SPECS
+  - name: german_ler      # German-LER (schéma fin, 19 types), LREC 2020
+    lang: de
+    source: hf_datasets
+    path_or_id: elenanereiss/german-ler
+    loader_key: german_ler
+  # - name: e_ner         # E-NER (anglais, SEC/contrats), NLLP@EMNLP 2022 — source HF à confirmer
+  #   lang: en
+  #   source: hf_datasets
+  #   path_or_id: <TODO>
+  #   loader_key: e_ner

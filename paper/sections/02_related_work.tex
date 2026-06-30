@@ -1,0 +1,18 @@
+\section{Related Work}
+\label{sec:related}
+
+\subsection{Open-world and zero-shot NER}
+Open-world NER recognises entity types not fixed at training time. GLiNER \cite{zaratiana2024gliner} scores spans against candidate type names with a bidirectional encoder; GNER \cite{ding2024gner} casts NER as generation; OWNER \cite{genest2025owner} trains a dedicated entity encoder and clusters mentions into dynamically named types. Zero-shot typing via type-name semantics has also been studied \cite{aly2021zeroshot}. OPENER differs by reusing a pretrained embedding rather than training an encoder; here we ask how that reuse transfers to the legal domain.
+
+\subsection{Entity representations and contrastive learning}
+OPENER builds on pretrained sentence embedders \cite{nussbaum2024nomic, reimers2019sbert} with Matryoshka truncation \cite{kusupati2022matryoshka}, sharpened by a triplet objective \cite{schroff2015facenet}; the typing heads use a balanced linear classifier \cite{fan2008liblinear} and AMI \cite{vinh2010ami} as the primary metric.
+
+\subsection{Legal NLP and legal NER}
+% TODO[fill with legal-NLP references once the venue/datasets are confirmed]:
+% legal NER datasets and systems (e.g. LeNER-Br, E-NER, LegalEval/SemEval Legal-NER,
+% MAPA, German-LER, CUAD), legal-domain LMs (Legal-BERT, ...), and prior open/zero-shot
+% legal NER. Cite the original dataset papers. Add entries to references.bib.
+Legal NER has its own datasets and domain-specific schemas; we evaluate transfer to them and position OPENER against domain baselines (\autoref{sec:experiments}).
+
+\subsection{Energy-aware evaluation}
+Reporting efficiency alongside accuracy is increasingly advocated \cite{schwartz2020greenai, strubell2019energy, henderson2020systematic}; we adopt the three-axis (quality/latency/energy) view of the general-domain system, measured with CodeCarbon \cite{lacoste2019codecarbon}.

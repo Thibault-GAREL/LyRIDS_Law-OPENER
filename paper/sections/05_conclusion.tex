@@ -1,0 +1,9 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+% TODO[finalise once results are in].
+We studied whether \textbf{OPENER}, a frugal open-world NER pipeline assembled from off-the-shelf pretrained parts and trained only on general-domain data, transfers to legal NER without any legal-domain retraining. Reusing its entity embedder unchanged, we evaluated a supervised linear probe (OPENER-Sup) and a label-free head (OPENER-ZS: prototypes, transductive refinement, detector fusion) on $N$ legal datasets along quality, latency and energy.
+% RESULTS placeholder: summarise transfer quality and frugality.
+Our findings indicate \textsc{[main takeaway]}; the residual gap on specialised legal schemas points to light domain adaptation (legal-domain contrastive fine-tuning of the same embedder) as the natural next step, while keeping the frugal, decoupled detect-then-type design intact.
+
+\paragraph{Limitations} A single random seed; capped test splits; the entity embedder is reused without legal-domain adaptation, and detection relies on a general-domain open-world detector whose recall on specialised legal spans may cap end-to-end quality. % expand with the actual observations.

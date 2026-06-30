@@ -1,0 +1,27 @@
+# Données (volumineuses)
+data/1-raw/*
+data/2-processed/*
+!data/**/.gitkeep
+# Outputs
+outputs/models/*
+outputs/results/*
+!outputs/**/.gitkeep
+# Python
+__pycache__/
+*.py[cod]
+.venv/ venv/ env/
+# HF cache
+.hf_cache/
+# LaTeX build artifacts
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/*.toc
+paper/*.synctex.gz
+paper/sections/*.aux
+# Scratch render PNGs (real figures live in assets/)
+paper/*.png
+paper/.tmp/
+*.zip
