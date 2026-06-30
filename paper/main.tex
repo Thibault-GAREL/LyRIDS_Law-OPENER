@@ -1,50 +1,47 @@
 % =====================================================================
 % OPENER-Legal: Frugal Open-World NER applied to the Legal Domain
-% Workshop paper - anonymous submission (double-blind).
-% NB: venue/template to confirm (defaulting to IEEEtran conference).
+% Target venue: NLLP @ EMNLP (ACL style). Double-blind submission.
+% Switch "review" -> "final" for camera-ready, "preprint" for a named arXiv version.
 % Compilation: pdflatex main && bibtex main && pdflatex main && pdflatex main
 % =====================================================================
-\documentclass[10pt,conference,onecolumn]{IEEEtran}
+\documentclass[11pt]{article}
 
-\usepackage{cite}
-\usepackage{amsmath,amssymb,amsfonts}
+\usepackage[review]{acl}
+
+% Standard ACL includes
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{inconsolata}
 \usepackage{graphicx}
 \graphicspath{{assets/}{../assets/}}
-\usepackage{textcomp}
-\usepackage{xcolor}
-\usepackage{colortbl}
-\definecolor{hlyellow}{rgb}{1,0.93,0.5}   % OPENER-ZS
-\definecolor{hlred}{HTML}{FECACA}         % OPENER-Sup
+
+% Project-specific packages used by the section files
+\usepackage{amsmath,amssymb,amsfonts}
 \usepackage{booktabs}
 \usepackage{array}
-\usepackage{placeins}
-\usepackage{float}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{url}
-\usepackage{hyperref}
-\hypersetup{colorlinks=true, linkcolor=black, citecolor=black, urlcolor=blue, pdfborder={0 0 0}}
+\usepackage{float}        % [H] float placement
+\usepackage{xcolor}
+\usepackage{colortbl}
+\definecolor{hlyellow}{rgb}{1,0.93,0.5}   % OPENER-ZS rows
+\definecolor{hlred}{HTML}{FECACA}         % OPENER-Sup rows
 
-\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
-
-\begin{document}
+% Zero-shot shorthand reused from the main paper
+\newcommand{\zstr}{\textsc{OPENER-ZS}}
 
 \title{OPENER-Legal: A Frugal Open-World NER Pipeline for the Legal Domain}
-% TODO[venue]: adapt title/format to the target workshop.
 
-\author{\IEEEauthorblockN{Anonymous Author(s)}
-\IEEEauthorblockA{\textit{Paper submitted for double-blind review} \\
-Workshop submission}}
+% Anonymous for double-blind review (the [review] option hides this anyway).
+\author{Anonymous ACL submission}
 
+\begin{document}
 \maketitle
 
 \begin{abstract}
 \input{sections/00_abstract}
 \end{abstract}
-
-\begin{IEEEkeywords}
-legal NLP, named entity recognition, open-world NER, zero-shot, contrastive embeddings, frugal AI
-\end{IEEEkeywords}
 
 \input{sections/01_introduction}
 \input{sections/02_related_work}
@@ -52,7 +49,7 @@ legal NLP, named entity recognition, open-world NER, zero-shot, contrastive embe
 \input{sections/04_experiments}
 \input{sections/05_conclusion}
 
-\bibliographystyle{IEEEtran}
+% NB: acl.sty already sets \bibliographystyle{acl_natbib} and \cite -> \citep.
 \bibliography{references}
 
 \end{document}
