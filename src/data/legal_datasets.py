@@ -30,28 +30,28 @@ from src.data.owner_datasets import _bio_to_spans, collect_label_set  # noqa: F4
 
 # Mapping dataset juridique -> spec de chargement.
 _LEGAL_SPECS: dict[str, dict] = {
-    # ----- LeNER-Br (portugais, PROPOR 2018) -----
+    # ----- LeNER-Br (portugais, PROPOR 2018) : tokens + ner_tags ClassLabel (6 types) -----
     'lener_br': {
-        'hf': 'lener_br',
+        'hf': 'peluz/lener_br',   # original namespacé de l'auteur (Luz de Araujo et al.)
         'token_col': 'tokens',
         'tag_col': 'ner_tags',
         'source': 'classlabel',
         'lang': 'pt',
     },
-    # ----- German-LER (allemand, LREC 2020) : schéma fin (19 types) -----
+    # ----- German-LER (allemand, LREC 2020) : schéma fin (19 types), tags string BIO -----
     'german_ler': {
         'hf': 'elenanereiss/german-ler',
         'token_col': 'tokens',
-        'tag_col': 'ner_tags',
-        'source': 'classlabel',
+        'tag_col': 'ner',          # colonne BIO fine (strings)
+        'source': 'string',
         'lang': 'de',
     },
-    # ----- German-LER : schéma grossier (7 types) -----
+    # ----- German-LER : schéma grossier (7 types), tags string BIO -----
     'german_ler_coarse': {
         'hf': 'elenanereiss/german-ler',
         'token_col': 'tokens',
-        'tag_col': 'ner_coarse_tags',
-        'source': 'classlabel',
+        'tag_col': 'coarse-ner',   # colonne BIO grossière (strings)
+        'source': 'string',
         'lang': 'de',
     },
     # ----- E-NER (anglais, NLLP@EMNLP 2022) : source à confirmer -----

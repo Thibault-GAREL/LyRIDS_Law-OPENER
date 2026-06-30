@@ -40,7 +40,7 @@ datasets:
   - name: lener_br        # LeNER-Br, PROPOR 2018
     lang: pt
     source: hf_datasets
-    path_or_id: lener_br
+    path_or_id: peluz/lener_br
     loader_key: lener_br  # clé dans legal_datasets._LEGAL_SPECS
   - name: german_ler      # German-LER (schéma fin, 19 types), LREC 2020
     lang: de
