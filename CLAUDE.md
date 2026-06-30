@@ -63,12 +63,20 @@ L'embedding des datasets légaux **nécessite le GPU** (6 Go). Tant que le **run
 ## 🗺️ Plan
 
 1. ✅ Lien HF reçu (`opener-sup`/`opener-zs`).
-2. ✅ `legal_datasets.py` écrit (LeNER-Br + German-LER, réutilise `_bio_to_spans`) + `configs/legal.yaml` rempli (set proposé).
-3. **[à confirmer]** Datasets + venue (cf. EN ATTENTE) ; déposer les PDF légaux.
-4. Adapter les scripts d'éval pour charger l'embedder **depuis HF** + le loader légal (`load_legal_dataset`).
-5. **[après multi-seed]** Lancer Sup + ZS-fusion sur les datasets légaux (gold + e2e), 3 axes.
-6. Remplir Related Work légale + Datasets/Results du paper + tables/figures (style du papier principal).
-7. Compiler, proofread, prêt workshop.
+2. ✅ `legal_datasets.py` écrit + **validé** (E-NER en / LeNER-Br pt / German-LER de) + `configs/legal.yaml`.
+3. ✅ Datasets (anglais+multilingue) + venue (NLLP) **actés**. PDF légaux déposés + triés (`paper_used/`, 5 réfs vérifiées).
+4. ✅ Template ACL + Related Work légale + Datasets section (vraies distributions).
+5. ✅ **Harness d'éval câblé** : 4 protocoles (`run_balanced_classifiers`/`run_opener_e2e`/`run_opener_zs`/`run_opener_zs_e2e_fusion`) avec `--legal` + embedder HF. Dico d'anchors EN (`configs/legal_anchors.yaml`). Driver `scripts/run_legal.sh`. **Validé CPU end-to-end** (Sup-gold sur E-NER).
+6. **[APRÈS multi-seed]** Lancer `bash scripts/run_legal.sh` (GPU libre) → résultats dans `outputs/results/legal/`.
+7. Remplir Results + Analysis + Abstract/Intro du paper avec les vrais chiffres (Sup gold/e2e, ZS gold/e2e-fusion ; AMI + latence + énergie). Ajouter les figures (style papier principal).
+8. Compiler, proofread, prêt workshop NLLP.
+
+### ▶️ Commande à lancer quand le GPU est libre
+```powershell
+& c:\0-Code_py_temp\pytorch_cuda_env\Scripts\Activate.ps1
+bash scripts/run_legal.sh   # embedder HF par défaut ; fallback local possible via $EMBEDDER
+```
+Le script écrit un log horodaté dans `outputs/logs/legal_run_*.log` (suivi : `Get-Content <log> -Wait -Tail 30`).
 
 ## 🔗 Lien avec le papier principal
 
