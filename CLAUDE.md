@@ -26,15 +26,23 @@ Même pipeline que le papier principal (**Detect → Embed → Type**, aucun enc
 | Variante ZS | **Transductif + fusion détecteur** (comme le papier principal) |
 | Source embedder | **HuggingFace** ✅ `Thibault-GAREL/opener-sup` + `opener-zs` (cf. `configs/legal.yaml`) |
 | Architecture / figure | **Identique** au papier principal (SVG/PDF copiés) |
-| Datasets (proposés) | **LeNER-Br** (pt) + **German-LER** (de) — multilingue, transfert cross-lingue. `src/data/legal_datasets.py` ✅ écrit |
+| Datasets (actés) | **E-NER** (en, ancre domaine) + **LeNER-Br** (pt) + **German-LER** (de) — anglais + multilingue. `src/data/legal_datasets.py` ✅ écrit + **validé** |
+| Venue | **NLLP @ EMNLP** (workshop ACL, ~8 p) → ⚠️ **template ACL** (pas IEEEtran) |
+
+### 📚 Datasets retenus (loader validé)
+
+| Clé | Dataset | Langue | Types | Transfert testé | Source |
+|---|---|---|---|---|---|
+| `e_ner` | E-NER (SEC/EDGAR), NLLP 2022 | en | 7 (BUSINESS, COURT, GOVERNMENT, LEGISLATION/ACT, LOCATION, PERSON, MISCELLANEOUS) | **domaine pur** (Nomic est EN) | GitHub `terenceau1/E-NER-Dataset` (CoNLL, split 80/20 seed 42) |
+| `lener_br` | LeNER-Br, PROPOR 2018 | pt | 6 (PESSOA, ORGANIZACAO, LOCAL, TEMPO, LEGISLACAO, JURISPRUDENCIA) | cross-lingue + domaine | HF `peluz/lener_br` |
+| `german_ler` / `_coarse` | German-LER, LREC 2020 | de | 18 / 7 | cross-lingue + domaine | HF `elenanereiss/german-ler` |
+
+**Story** : E-NER isole le transfert de **domaine** (anglais→anglais légal, là où OPENER devrait briller), LeNER-Br/German-LER ajoutent le stress **cross-lingue** (où le transfert se dégrade → motive l'adaptation légère). E-NER est **lui-même publié à NLLP** et motive notre thèse (« NER général se dégrade sur le légal »).
 
 ## ⏳ Détails EN ATTENTE (à confirmer par Thibault)
 
-1. **Confirmer/ajuster les datasets** : set proposé = **LeNER-Br** (pt, PROPOR 2018) + **German-LER** (de, LREC 2020), tous deux publics + BIO sur le HF Hub. ⚠️ **Conséquence majeure** : Nomic v1.5 est **anglo-centré** → c'est un transfert **cross-lingue + domaine** (plus dur, mais honnête et intéressant ; un échec partiel motive l'adaptation légère = la conclusion). Alternative anglais-pur : **E-NER** (SEC/contrats) — source HF propre à trouver. Choix = mono-anglais (isole le domaine) vs multilingue (story plus large).
-2. **Workshop / venue** visé (template + limite de pages : workshop = 4-8 p ; ex. NLLP@EMNLP, JURIX, ACL/NeurIPS workshop).
-3. **PDF des références légales** à déposer dans `paper/paper_used/` pour vérifier les venues (cf. feedback "pas de venue hallucinée") : Legal-BERT, LeNER-Br, German-LER, (E-NER), LexGLUE, LegalEval/SemEval-2023 Task 6.
-
-→ Ces infos branchent : la **config** (`configs/legal.yaml`, set proposé déjà rempli), la **Related Work légale** (refs + venues, en attente PDF), et les sections **Datasets/Results** du paper.
+1. **Template ACL** : basculer `paper/` de IEEEtran → **ACL** (`acl_natbib`/`emnlp` style). Chantier en cours.
+2. **PDF des références légales** à déposer dans `paper/paper_used/` pour vérifier les venues (cf. feedback "pas de venue hallucinée") : Legal-BERT, **E-NER** (NLLP 2022, p. 246-255 ✅ déjà vérifié via ACL Anthology), LeNER-Br (PROPOR 2018), German-LER (LREC 2020), LexGLUE, LegalEval/SemEval-2023 Task 6.
 
 ---
 

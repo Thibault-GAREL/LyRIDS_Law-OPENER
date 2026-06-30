@@ -23,9 +23,21 @@ Comme dans ``owner_datasets``, on force ``revision='refs/convert/parquet'`` pour
 contourner les *loading scripts* (supprimés dans ``datasets>=3``) et lire la
 version Parquet auto-convertie du Hub.
 """
+import random
+from pathlib import Path
 from typing import Optional
 
 from src.data.owner_datasets import _bio_to_spans, collect_label_set  # noqa: F401
+
+# E-NER (Au et al., NLLP 2022) : un seul CSV `token,TAG` sur GitHub, pas de split
+# officiel. On télécharge une fois (cache local) puis on découpe de façon
+# déterministe (seed) en train/test.
+_ENER_URL = "https://raw.githubusercontent.com/terenceau1/E-NER-Dataset/main/all.csv"
+_ENER_TEST_RATIO = 0.2
+_ENER_SPLIT_SEED = 42
+# Quelques tags bruts sont des typos d'annotation (5 tokens sur ~400k) : on les
+# recolle aux 7 types canoniques pour ne pas créer de fausses classes.
+_ENER_TAG_FIX = {'P': 'I-PERSON', 'LOC': 'I-LOCATION', 'I-LOC': 'I-LOCATION'}
 
 
 # Mapping dataset juridique -> spec de chargement.
@@ -54,15 +66,89 @@ _LEGAL_SPECS: dict[str, dict] = {
         'source': 'string',
         'lang': 'de',
     },
-    # ----- E-NER (anglais, NLLP@EMNLP 2022) : source à confirmer -----
-    # 'e_ner': {
-    #     'hf': '<TODO: dépôt HF exposant tokens + BIO>',
-    #     'token_col': 'tokens',
-    #     'tag_col': 'ner_tags',
-    #     'source': 'classlabel',
-    #     'lang': 'en',
-    # },
+    # ----- E-NER (anglais, SEC/EDGAR, NLLP 2022) : 7 types dont COURT/GOVERNMENT/
+    #       LEGISLATION (spécifique légal). Téléchargé depuis GitHub (CoNLL `token,TAG`). -----
+    'e_ner': {
+        'source': 'e_ner_github',
+        'lang': 'en',
+    },
 }
+
+
+def _ener_cache_path() -> Path:
+    """Chemin du cache local du CSV E-NER (data/1-raw/)."""
+    root = Path(__file__).resolve().parents[2]   # .../LyRIDS_Opener_Legal
+    return root / 'data' / '1-raw' / 'e_ner_all.csv'
+
+
+def _parse_ener_csv(path: Path) -> list[tuple[list[str], list[str]]]:
+    """Parse le CSV E-NER (`token,TAG` par ligne) en liste de (tokens, tags).
+
+    Une ligne au token vide (``,O``) marque une frontière de phrase ; le token
+    ``-DOCSTART-`` marque un début de document (frontière aussi). On utilise
+    ``rsplit(',', 1)`` pour gérer les tokens contenant eux-mêmes une virgule.
+    """
+    sentences: list[tuple[list[str], list[str]]] = []
+    cur_tokens: list[str] = []
+    cur_tags: list[str] = []
+
+    def _flush():
+        nonlocal cur_tokens, cur_tags
+        if cur_tokens:
+            sentences.append((cur_tokens, cur_tags))
+            cur_tokens, cur_tags = [], []
+
+    with open(path, encoding='utf-8') as f:
+        for line in f:
+            line = line.rstrip('\r\n')
+            if line == '':
+                continue
+            token, tag = line.rsplit(',', 1)
+            if token == '' or token == '-DOCSTART-':
+                _flush()
+                continue
+            # Détoure le quoting CSV (les tokens-virgule s'écrivent ",").
+            if len(token) >= 2 and token[0] == '"' and token[-1] == '"':
+                token = token[1:-1].replace('""', '"')
+            tag = _ENER_TAG_FIX.get(tag, tag)
+            cur_tokens.append(token)
+            cur_tags.append(tag)
+    _flush()
+    return sentences
+
+
+def _load_ener_github(
+    split: str,
+    max_sentences: Optional[int],
+) -> list[tuple[str, list[tuple[int, int, str]]]]:
+    """Charge E-NER avec un split train/test déterministe (téléchargement caché)."""
+    path = _ener_cache_path()
+    if not path.exists():
+        import urllib.request
+        path.parent.mkdir(parents=True, exist_ok=True)
+        urllib.request.urlretrieve(_ENER_URL, path)
+
+    sentences = _parse_ener_csv(path)
+    rng = random.Random(_ENER_SPLIT_SEED)
+    order = list(range(len(sentences)))
+    rng.shuffle(order)
+    n_test = int(len(order) * _ENER_TEST_RATIO)
+    test_idx = set(order[:n_test])
+
+    out: list[tuple[str, list[tuple[int, int, str]]]] = []
+    for i, (tokens, tags) in enumerate(sentences):
+        in_test = i in test_idx
+        if split == 'test' and not in_test:
+            continue
+        if split in ('train', 'validation') and in_test:
+            continue
+        spans = _bio_to_spans(tokens, tags)
+        if not spans:
+            continue
+        out.append((' '.join(tokens), spans))
+        if max_sentences is not None and len(out) >= max_sentences:
+            break
+    return out
 
 
 def list_supported_legal_datasets() -> list[str]:
@@ -96,6 +182,10 @@ def load_legal_dataset(
             f"Voir list_supported_legal_datasets()."
         )
     spec = _LEGAL_SPECS[name]
+
+    # E-NER : CSV GitHub, pas de Parquet HF.
+    if spec['source'] == 'e_ner_github':
+        return _load_ener_github(split, max_sentences)
 
     from datasets import load_dataset
 

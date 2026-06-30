@@ -37,6 +37,11 @@ eval:
 # Set PROPOSÉ par défaut (publics, BIO sur le HF Hub, chargés via src/data/legal_datasets.py).
 # À confirmer / compléter par Thibault (langue ciblée + venue, cf. CLAUDE.md).
 datasets:
+  - name: e_ner           # E-NER (SEC/EDGAR), NLLP 2022 — ANCRE anglaise (transfert de domaine pur)
+    lang: en
+    source: github_conll
+    path_or_id: terenceau1/E-NER-Dataset
+    loader_key: e_ner     # 7 types dont COURT/GOVERNMENT/LEGISLATION (spécifique légal)
   - name: lener_br        # LeNER-Br, PROPOR 2018
     lang: pt
     source: hf_datasets
