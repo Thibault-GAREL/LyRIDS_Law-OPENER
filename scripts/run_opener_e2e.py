@@ -210,6 +210,8 @@ _DEFAULT_DATASETS = [
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--datasets', nargs='+', default=None)
+    parser.add_argument('--legal', action='store_true',
+                        help='Charge les datasets juridiques (src/data/legal_datasets).')
     parser.add_argument('--embedder', default='outputs/models/embedder_contrastive',
                         help='Embedder (chemin local du modele contrastif, ou nom HF)')
     parser.add_argument('--md-checkpoint', default='urchade/gliner_large-v2.1',
@@ -228,6 +230,12 @@ def main():
                         help='Reprend depuis progress<tag>.json (skip les datasets déjà faits). '
                              'Indispensable pour les runs détachés longs.')
     args = parser.parse_args()
+
+    if args.legal:
+        from src.data.legal_datasets import (load_legal_dataset,
+                                             list_supported_legal_datasets)
+        globals()['load_owner_dataset'] = load_legal_dataset
+        globals()['list_supported_datasets'] = list_supported_legal_datasets
 
     thresholds = args.thresholds if args.thresholds else [args.threshold]
 

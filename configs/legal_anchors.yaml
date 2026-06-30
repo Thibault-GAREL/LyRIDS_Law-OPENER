@@ -1,0 +1,58 @@
+# Anchor words (EN) par label pour OPENER-ZS sur les datasets juridiques.
+# Clé = nom du dataset (loader_key) ; sous-clé = label ; valeur = anchors anglais.
+# Indispensable en cross-lingue : Nomic v1.5 est anglo-centré, donc on donne au
+# prototype zero-shot une description ANGLAISE du type (les codes pt/de bruts
+# comme ORGANIZACAO ou GS/RS ne portent pas de sémantique pour l'embedder).
+# Mode : --anchor-mode dict --anchor-dict configs/legal_anchors.yaml
+# (fallback automatique sur _split_anchor_words si un label manque ici).
+
+# ---------- E-NER (anglais, SEC/EDGAR) ----------
+e_ner:
+  BUSINESS: [business, company, corporation, firm]
+  COURT: [court, tribunal, judiciary]
+  GOVERNMENT: [government, agency, authority, ministry]
+  LEGISLATION/ACT: [legislation, act, law, statute]
+  LOCATION: [location, place, country, city]
+  PERSON: [person, individual, name]
+  MISCELLANEOUS: [miscellaneous, other, entity, thing]
+
+# ---------- LeNER-Br (portugais) -> anchors EN ----------
+lener_br:
+  PESSOA: [person, individual, name]
+  ORGANIZACAO: [organization, company, institution]
+  LOCAL: [location, place, city, country]
+  TEMPO: [time, date, period]
+  LEGISLACAO: [legislation, law, statute, act]
+  JURISPRUDENCIA: [case law, jurisprudence, court decision, precedent]
+
+# ---------- German-LER coarse (7 types) -> anchors EN ----------
+german_ler_coarse:
+  PER: [person, individual, name]
+  LOC: [location, place, city, country]
+  ORG: [organization, company, institution]
+  NRM: [legal norm, law, statute]
+  REG: [regulation, ordinance, directive]
+  RS: [case law, court decision, ruling]
+  LIT: [legal literature, commentary, reference]
+
+# ---------- German-LER fine (19 types) -> anchors EN ----------
+german_ler:
+  PER: [person, individual, name]
+  AN: [lawyer, attorney, counsel]
+  RR: [judge, justice]
+  LD: [country, state, federal state]
+  ST: [city, town]
+  STR: [street, road, address]
+  LDS: [region, landscape, area]
+  ORG: [organization, body, association]
+  UN: [company, business, enterprise]
+  INN: [institution, authority, agency]
+  GRT: [court, tribunal]
+  MRK: [brand, trademark]
+  GS: [law, statute, act]
+  VO: [ordinance, regulation, decree]
+  EUN: [european regulation, eu directive, european legal norm]
+  VS: [regulation, provision, rule]
+  VT: [contract, treaty, agreement]
+  RS: [case law, court decision, ruling]
+  LIT: [legal literature, commentary, reference]

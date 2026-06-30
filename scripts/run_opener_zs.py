@@ -51,11 +51,76 @@ from src.utils.config import load_config
 from src.utils.energy import measure_energy
 from src.utils.timing import LatencyMeter
 from scripts.run_balanced_classifiers import embed_corpus_with_timing
-from scripts.run_owner_benchmark import _split_anchor_words
 
 
 def log(msg):
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}", flush=True)
+
+
+def _split_anchor_words(label_name: str) -> list[str]:
+    """Génère des anchor words plausibles depuis un label name.
+
+    (Inliné depuis le projet principal — évite d'importer run_owner_benchmark,
+    qui tirerait le LabelClusterer/GMM V1 inutile ici.)
+
+    Ex: "creative-work" -> ["creative work", "creative", "work"]
+    Ex: "PER" -> ["per", "person", "individual", "human"]
+    """
+    import re
+    raw = label_name.strip()
+    parts = re.split(r'[-_\s/]+', raw)
+    expanded: list[str] = []
+    for p in parts:
+        if not p:
+            continue
+        # CamelCase split, SAUF si le token est tout en majuscules (sinon un
+        # label ALL-CAPS comme "BUSINESS" serait éclaté en lettres "B U S I...").
+        camel = p if p.isupper() else re.sub(r'(?<!^)(?=[A-Z])', ' ', p)
+        expanded.extend(camel.split())
+    expanded = [w.lower() for w in expanded if w]
+
+    base: list[str] = []
+    if expanded:
+        base.append(' '.join(expanded))
+    if len(expanded) > 1:
+        base.extend(expanded)
+
+    lower = raw.lower()
+    if lower not in base:
+        base.insert(0 if expanded == [lower] else len(base), lower)
+
+    expansions = {
+        'per': ['person', 'individual', 'name', 'human'],
+        'org': ['organization', 'company', 'institution', 'team'],
+        'loc': ['location', 'place', 'city', 'country'],
+        'misc': ['miscellaneous', 'other', 'event', 'work'],
+        'gpe': ['country', 'state', 'city', 'location'],
+        'dna': ['dna', 'gene', 'nucleic acid'],
+        'rna': ['rna', 'ribonucleic acid'],
+    }
+    for tok in expanded + [lower]:
+        if tok in expansions:
+            base.extend(expansions[tok])
+
+    if len(expanded) == 1 and len(expanded[0]) > 8:
+        word = expanded[0]
+        for kw in ['journal', 'compound', 'element', 'artist', 'genre',
+                   'instrument', 'object', 'party', 'lang', 'name', 'work',
+                   'group', 'genre', 'song', 'book']:
+            if word.endswith(kw) and word != kw:
+                prefix = word[:-len(kw)]
+                base.extend([f"{prefix} {kw}", kw, prefix])
+                break
+
+    seen = set()
+    out = []
+    for w in base:
+        if w and w not in seen:
+            seen.add(w)
+            out.append(w)
+        if len(out) >= 5:
+            break
+    return out
 
 
 def _anchor_key(dataset_name: str) -> str:
@@ -110,6 +175,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__,
                                       formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--datasets', nargs='+', default=None)
+    parser.add_argument('--legal', action='store_true',
+                        help='Charge les datasets juridiques (src/data/legal_datasets) '
+                             'au lieu du benchmark OWNER.')
     parser.add_argument('--max-eval', type=int, default=1000,
                         help='Phrases max par test split (comme les autres benchs)')
     parser.add_argument('--embedder', default='outputs/models/embedder_contrastive_hard_big',
@@ -122,6 +190,12 @@ def main():
     parser.add_argument('--anchor-dict', default='configs/anchor_dictionaries.yaml')
     parser.add_argument('--output-dir', default='outputs/results/opener_zs')
     args = parser.parse_args()
+
+    if args.legal:
+        from src.data.legal_datasets import (load_legal_dataset,
+                                             list_supported_legal_datasets)
+        globals()['load_owner_dataset'] = load_legal_dataset
+        globals()['list_supported_datasets'] = list_supported_legal_datasets
 
     log(f"=== Opener ZS (nearest label-name centroid, zero-shot typing) ===")
     log(f"Embedder    : {args.embedder}")

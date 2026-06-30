@@ -67,6 +67,8 @@ def fit_predict(name, X_tr, y_tr, X_te):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--datasets', nargs='+', default=None)
+    parser.add_argument('--legal', action='store_true',
+                        help='Charge les datasets juridiques (src/data/legal_datasets).')
     parser.add_argument('--max-train', type=int, default=2000)
     parser.add_argument('--max-eval', type=int, default=1000)
     parser.add_argument('--embedder', default='nomic-ai/nomic-embed-text-v1.5',
@@ -75,6 +77,12 @@ def main():
     parser.add_argument('--task-prefix', default='classification: ')
     parser.add_argument('--output-dir', default='outputs/results/balanced_classifiers')
     args = parser.parse_args()
+
+    if args.legal:
+        from src.data.legal_datasets import (load_legal_dataset,
+                                             list_supported_legal_datasets)
+        globals()['load_owner_dataset'] = load_legal_dataset
+        globals()['list_supported_datasets'] = list_supported_legal_datasets
 
     print(f"Embedder : {args.embedder}")
     emb = Embedder(model_name=args.embedder, truncate_dim=None,

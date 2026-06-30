@@ -120,6 +120,8 @@ def run_dataset(name, md_model, embedder, anchor_dicts, args):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--datasets', nargs='+', default=None)
+    parser.add_argument('--legal', action='store_true',
+                        help='Charge les datasets juridiques (src/data/legal_datasets).')
     parser.add_argument('--embedder', default='outputs/models/embedder_contrastive_hard_big')
     parser.add_argument('--md-checkpoint', default='urchade/gliner_large-v2.1')
     parser.add_argument('--task-prefix', default='classification: ')
@@ -132,6 +134,12 @@ def main():
     parser.add_argument('--output-dir', default='outputs/results/opener_zs_e2e_fusion')
     parser.add_argument('--resume', action='store_true')
     args = parser.parse_args()
+
+    if args.legal:
+        from src.data.legal_datasets import (load_legal_dataset,
+                                             list_supported_legal_datasets)
+        globals()['load_owner_dataset'] = load_legal_dataset
+        globals()['list_supported_datasets'] = list_supported_legal_datasets
 
     log("=== Opener ZS e2e + FUSION GLiNER<->centroide ===")
     log(f"Embedder {args.embedder} | MD {args.md_checkpoint} thr={args.threshold} | "
