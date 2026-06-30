@@ -13,6 +13,7 @@ __pycache__/
 # HF cache
 .hf_cache/
 # LaTeX build artifacts
+paper/main.pdf
 paper/*.aux
 paper/*.log
 paper/*.out
