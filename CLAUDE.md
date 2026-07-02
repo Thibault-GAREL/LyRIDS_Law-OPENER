@@ -67,9 +67,15 @@ L'embedding des datasets légaux **nécessite le GPU** (6 Go). Tant que le **run
 3. ✅ Datasets (anglais+multilingue) + venue (NLLP) **actés**. PDF légaux déposés + triés (`paper_used/`, 5 réfs vérifiées).
 4. ✅ Template ACL + Related Work légale + Datasets section (vraies distributions).
 5. ✅ **Harness d'éval câblé** : 4 protocoles (`run_balanced_classifiers`/`run_opener_e2e`/`run_opener_zs`/`run_opener_zs_e2e_fusion`) avec `--legal` + embedder HF. Dico d'anchors EN (`configs/legal_anchors.yaml`). Driver `scripts/run_legal.sh`. **Validé CPU end-to-end** (Sup-gold sur E-NER).
-6. **[APRÈS multi-seed]** Lancer `bash scripts/run_legal.sh` (GPU libre) → résultats dans `outputs/results/legal/`.
-7. Remplir Results + Analysis + Abstract/Intro du paper avec les vrais chiffres (Sup gold/e2e, ZS gold/e2e-fusion ; AMI + latence + énergie). Ajouter les figures (style papier principal).
-8. Compiler, proofread, prêt workshop NLLP.
+6. ✅ **Évals lancées** (`run_legal.sh`, embedder local = poids HF) → résultats dans `outputs/results/legal/` (4 protocoles, 0 erreur).
+7. ✅ **Paper rempli** avec les vrais chiffres : Abstract, Intro, Results (Table 2 transfert AMI + Table 3 frugalité + Fig 2 bar chart), Analysis, Conclusion/Limitations. **Compile propre : 7 p, 0 undef, 0 overfull.**
+8. **Reste** : proofread final ; éventuellement valider le chargement HF réel de l'embedder (sans GPU) ; générer le zip Overleaf ; puis prêt workshop NLLP.
+
+### 📊 Résultats clés (AMI ×100, gold)
+- **OPENER-Sup** : 70.0 (en) / 53.3 (pt) / 59.1 (de) → **60.8 moy**, robuste cross-lingue.
+- **OPENER-ZS** : 44.0 (en) / 31.6 (pt) / 22.6 (de) → 32.7 moy, se dégrade cross-lingue.
+- **e2e** plafonné ~34-35 par le **recall du détecteur anglais** (57%→19% en→de) = goulot.
+- Frugalité : ZS 0.55 Wh/31ms, Sup 1.73 Wh/22ms.
 
 ### ▶️ Commande à lancer quand le GPU est libre
 ```powershell
