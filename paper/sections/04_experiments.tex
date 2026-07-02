@@ -24,11 +24,11 @@ German-LER \citep{leitner2020germanler} & de & 3{,}018 & 5{,}322 & Legal-norm 38
 \subsection{Setup}
 \label{sec:exp:setup}
 Embedder, detector and heads are exactly those of the general-domain OPENER (\autoref{sec:method}); the entity embedder is loaded from the Hugging Face Hub and is \emph{not} retrained on legal data. Single fixed seed; each test split capped at $1000$ sentences. % TODO[venue]: multi-seed if space/time allow.
-For end-to-end runs the detector is GLiNER-L at threshold $0.3$, fed the target type names. As a reference point we also report \textbf{GLiNER-L standalone}: the same detector keeping its \emph{own} zero-shot type predictions (no OPENER typing head), which is the natural open-world baseline on the detected spans. All quality figures are AMI ($\times 100$); the German coarse schema ($7$ types) is used in \autoref{tab:legal-main}, and the $19$-type fine schema is discussed as a stress test below.
+For end-to-end runs the detector is GLiNER-L at threshold $0.3$, fed the target type names. As \textbf{baselines} we evaluate the same open-world systems as the general-domain benchmark, applied to legal text: GLiNER-S/M/L \cite{zaratiana2024gliner}, the generative GNER-T5-base \cite{ding2024gner}, and a 4-bit Qwen2.5-1.5B-Instruct \cite{qwen2025} prompted for entities -- all zero-shot on the target type names. These are \emph{end-to-end} systems (they detect and type jointly), so they are compared only under the end-to-end protocol, never against typing-on-gold numbers. All quality figures are AMI ($\times 100$); German-LER uses its $7$-type coarse schema in the tables, and its $19$-type fine schema as a stress test below.
 
 \subsection{Results}
 \label{sec:exp:results}
-\autoref{tab:legal-main} reports AMI for OPENER-Sup and OPENER-ZS in both protocols, and \autoref{tab:legal-frugal} the accompanying frugality. Three findings stand out.
+Keeping the two protocols apart, \autoref{tab:legal-gold} reports typing-on-gold AMI (OPENER heads, perfect detection) and \autoref{tab:legal-main} the end-to-end comparison against the baselines; \autoref{tab:legal-frugal} gives the accompanying frugality. Three findings stand out.
 
 \textbf{Supervised typing transfers well, including across languages.} Fitting a balanced linear probe on the frozen, general-domain embedder reaches $60.8$ mean typing-on-gold AMI -- $70.0$ on the English E-NER (a pure domain shift), and still $53.3$ / $59.1$ on Portuguese LeNER-Br and German German-LER despite the English-centric embedder (\autoref{fig:legal-gold}). The probe adapts to whatever the embedder encodes, so target-label supervision largely absorbs the cross-lingual gap at typing time.
 
@@ -60,21 +60,41 @@ For end-to-end runs the detector is GLiNER-L at threshold $0.3$, fed the target 
 \label{fig:legal-gold}
 \end{figure}
 
+\begin{table}[t]
+\centering
+\caption{\textbf{Typing-on-gold} AMI ($\times100$, $\uparrow$): entity typing on gold mentions (perfect detection), which isolates the typing head. German-LER uses its $7$-type coarse schema (the $19$-type fine schema is discussed in \autoref{sec:exp:analysis}). Bold marks the best per column.}
+\label{tab:legal-gold}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+System & E-NER & LeNER-Br & German & Mean \\
+       & (en)  & (pt)     & (de)   &      \\
+\midrule
+\rowcolor{hlyellow} OPENER-ZS & $44.0$ & $31.6$ & $22.6$ & $32.7$ \\
+\rowcolor{hlred} OPENER-Sup   & $\mathbf{70.0}$ & $\mathbf{53.3}$ & $\mathbf{59.1}$ & $\mathbf{60.8}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \begin{table*}[t]
 \centering
-\caption{Legal NER transfer, AMI ($\times100$, $\uparrow$). Typing-on-gold isolates the typing head; end-to-end uses GLiNER-L detection ($\tau{=}0.3$) with offset/sentinel alignment. German-LER uses its $7$-type coarse schema. OPENER-Sup${=}$balanced linear probe on target labels; OPENER-ZS${=}$label-name prototypes ${+}$ transductive refinement ${+}$ detector fusion ($\beta{=}0.05$); GLiNER-L${=}$detector keeping its own zero-shot labels.}
+\caption{Open-world legal NER, \textbf{end-to-end} AMI ($\times100$, $\uparrow$): mentions produced by the detector, with offset/sentinel alignment (the protocol comparable across all systems). Systems grouped by supervision; GLiNER/GNER/Qwen use the target type names zero-shot, OPENER-Sup fits a balanced probe on the target labels. Bold marks the best per column. $^\ddagger$Qwen2.5-1.5B on a $200$-sentence subsample (indicative). German-LER: $7$-type coarse schema. Typing-on-gold is reported separately in \autoref{tab:legal-gold}.}
 \label{tab:legal-main}
 \small
-\begin{tabular}{@{}l cccc c cccc@{}}
+\begin{tabular}{@{}lcccc@{}}
 \toprule
-& \multicolumn{4}{c}{Typing-on-gold AMI} & & \multicolumn{4}{c}{End-to-end AMI} \\
-\cmidrule(lr){2-5}\cmidrule(lr){7-10}
-System & E-NER & LeNER-Br & German & Mean & & E-NER & LeNER-Br & German & Mean \\
-& (en) & (pt) & (de) & & & (en) & (pt) & (de) & \\
+Model & E-NER (en) & LeNER-Br (pt) & German (de) & Avg \\
 \midrule
-GLiNER-L (zero-shot)          & --   & --   & --   & --   & & $34.7$ & $\mathbf{36.3}$ & $34.0$ & $\mathbf{35.0}$ \\
-\rowcolor{hlyellow} OPENER-ZS & $44.0$ & $31.6$ & $22.6$ & $32.7$ & & $33.2$ & $34.6$ & $33.2$ & $33.7$ \\
-\rowcolor{hlred} OPENER-Sup   & $\mathbf{70.0}$ & $\mathbf{53.3}$ & $\mathbf{59.1}$ & $\mathbf{60.8}$ & & $\mathbf{35.8}$ & $32.4$ & $\mathbf{34.2}$ & $34.1$ \\
+\multicolumn{5}{l}{\emph{Zero-shot (no target labels)}} \\
+GLiNER-S & $33.4$ & $33.7$ & $31.1$ & $32.7$ \\
+GLiNER-M & $33.9$ & $34.8$ & $\mathbf{36.1}$ & $34.9$ \\
+GLiNER-L & $34.7$ & $\mathbf{36.3}$ & $34.0$ & $\mathbf{35.0}$ \\
+GNER-T5  & $\ldots$ & $\ldots$ & $\ldots$ & $\ldots$ \\
+Qwen2.5-1.5B$^\ddagger$ & $\ldots$ & $\ldots$ & $\ldots$ & $\ldots$ \\
+\rowcolor{hlyellow} OPENER-ZS & $33.2$ & $34.6$ & $33.2$ & $33.7$ \\
+\midrule
+\multicolumn{5}{l}{\emph{Supervised (target labels)}} \\
+\rowcolor{hlred} OPENER-Sup & $\mathbf{35.8}$ & $32.4$ & $34.2$ & $34.1$ \\
 \bottomrule
 \end{tabular}
 \end{table*}
