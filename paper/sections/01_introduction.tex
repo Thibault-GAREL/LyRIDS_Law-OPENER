@@ -3,12 +3,11 @@
 
 Legal text is a demanding setting for named entity recognition (NER). Entity inventories are open and shifting (new statutes, case citations, parties, courts, contractual instruments, jurisdictions), documents are long and formulaic, and annotation requires expert effort, so re-annotating and retraining a closed-set tagger for every new type or sub-domain is rarely practical. This is precisely the regime that \emph{open-world} NER targets: recognising and typing entities whose categories were not fixed at training time.
 
-% TODO[refine with the chosen datasets/venue]
 A natural question for practitioners with modest compute is whether an open-world NER system trained on \emph{general-domain} data can simply be \emph{reused} on legal text, without any legal-domain retraining. We study this with \textbf{OPENER}, a frugal open-world pipeline assembled from off-the-shelf pretrained components (a frozen detector and a contrastively fine-tuned Matryoshka embedder), which on a general-domain benchmark is competitive in accuracy while staying one to two orders of magnitude cheaper in latency and energy than trained-encoder and generative baselines.
 
 We take OPENER exactly as released and apply it to legal NER, reusing its entity embedder from the Hugging Face Hub unchanged. We evaluate two operating points: \textbf{OPENER-Sup}, a balanced linear probe fit on the legal target labels, and \textbf{OPENER-ZS}, a label-free head (label-name prototypes, transductive refinement, detector fusion). Our contributions are:
 \begin{itemize}
 \item A \textbf{transfer study} of a frugal, general-domain open-world NER pipeline to the legal domain, with \emph{no} legal-domain retraining of any component.
-\item An evaluation on \textbf{$N$ legal NER datasets} (\textsc{languages}) along three axes at once -- quality (AMI), latency and energy -- for both a supervised and a zero-shot typing head. % TODO[datasets]
-\item An analysis of \textbf{where the transfer holds and where it breaks} on specialised legal schemas, indicating when light domain adaptation would pay off.
+\item An evaluation on \textbf{three legal NER datasets} in \textbf{English, Portuguese and German} along three axes at once -- quality (AMI), latency and energy -- for both a supervised and a zero-shot typing head.
+\item An analysis of \textbf{where the transfer holds and where it breaks}: strongly under a pure (English) domain shift, less so under an added cross-lingual shift, where in-language \emph{detection} -- not typing -- becomes the bottleneck and indicates where light domain adaptation would pay off first.
 \end{itemize}

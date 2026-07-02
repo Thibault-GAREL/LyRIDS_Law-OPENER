@@ -24,32 +24,59 @@ German-LER \citep{leitner2020germanler} & de & 3{,}018 & 5{,}322 & Legal-norm 38
 \subsection{Setup}
 \label{sec:exp:setup}
 Embedder, detector and heads are exactly those of the general-domain OPENER (\autoref{sec:method}); the entity embedder is loaded from the Hugging Face Hub and is \emph{not} retrained on legal data. Single fixed seed; each test split capped at $1000$ sentences. % TODO[venue]: multi-seed if space/time allow.
-Baselines: % TODO -- e.g. GLiNER-L standalone (zero-shot), a domain LM (Legal-BERT) closed-set, and OWNER transfer, for context.
+For end-to-end runs the detector is GLiNER-L at threshold $0.3$, fed the target type names. As a reference point we also report \textbf{GLiNER-L standalone}: the same detector keeping its \emph{own} zero-shot type predictions (no OPENER typing head), which is the natural open-world baseline on the detected spans. All quality figures are AMI ($\times 100$); the German coarse schema ($7$ types) is used in \autoref{tab:legal-main}, and the $19$-type fine schema is discussed as a stress test below.
 
 \subsection{Results}
 \label{sec:exp:results}
-% TODO[run after the general-domain multi-seed job frees the GPU]:
-% scripts/run_balanced_classifiers.py (OPENER-Sup gold), run_opener_e2e.py (Sup e2e),
-% run_opener_zs_e2e_fusion.py (OPENER-ZS), all with --embedder <HF repo>.
-\autoref{tab:legal-main} reports AMI (gold and end-to-end) per legal dataset for OPENER-Sup and OPENER-ZS, alongside latency and energy.
+\autoref{tab:legal-main} reports AMI for OPENER-Sup and OPENER-ZS in both protocols, and \autoref{tab:legal-frugal} the accompanying frugality. Three findings stand out.
 
-\begin{table}[H]
+\textbf{Supervised typing transfers well, including across languages.} Fitting a balanced linear probe on the frozen, general-domain embedder reaches $60.8$ mean typing-on-gold AMI -- $70.0$ on the English E-NER (a pure domain shift), and still $53.3$ / $59.1$ on Portuguese LeNER-Br and German German-LER despite the English-centric embedder. The probe adapts to whatever the embedder encodes, so target-label supervision largely absorbs the cross-lingual gap at typing time.
+
+\textbf{Label-free typing holds under domain shift but degrades cross-lingually.} OPENER-ZS reaches $44.0$ gold AMI on English E-NER, but only $31.6$ (pt) and $22.6$ (de): its English label-name prototypes align well with English legal mentions, far less with Portuguese/German ones. The zero-shot head is where the cross-lingual distribution shift bites hardest.
+
+\textbf{End-to-end quality is capped by the detector.} All three systems collapse to $\approx 34$--$35$ end-to-end, because the English GLiNER-L recovers only $57.4\%$ of gold mentions on E-NER, $44.0\%$ on LeNER-Br and $18.7\%$ on German-LER (offset recall). With so few mentions detected in the non-English sets, the typing head has little left to differentiate, and OPENER-ZS's detector fusion essentially reverts to the GLiNER-L labels ($35.0$).
+
+\begin{table*}[t]
 \centering
-\caption{Legal NER results (placeholder): AMI ($\times100$, $\uparrow$), gold and end-to-end.}
+\caption{Legal NER transfer, AMI ($\times100$, $\uparrow$). Typing-on-gold isolates the typing head; end-to-end uses GLiNER-L detection ($\tau{=}0.3$) with offset/sentinel alignment. German-LER uses its $7$-type coarse schema. OPENER-Sup${=}$balanced linear probe on target labels; OPENER-ZS${=}$label-name prototypes ${+}$ transductive refinement ${+}$ detector fusion ($\beta{=}0.05$); GLiNER-L${=}$detector keeping its own zero-shot labels.}
 \label{tab:legal-main}
-\footnotesize
+\small
+\begin{tabular}{@{}l cccc c cccc@{}}
+\toprule
+& \multicolumn{4}{c}{Typing-on-gold AMI} & & \multicolumn{4}{c}{End-to-end AMI} \\
+\cmidrule(lr){2-5}\cmidrule(lr){7-10}
+System & E-NER & LeNER-Br & German & Mean & & E-NER & LeNER-Br & German & Mean \\
+& (en) & (pt) & (de) & & & (en) & (pt) & (de) & \\
+\midrule
+GLiNER-L (zero-shot)          & --   & --   & --   & --   & & $34.7$ & $\mathbf{36.3}$ & $34.0$ & $\mathbf{35.0}$ \\
+\rowcolor{hlyellow} OPENER-ZS & $44.0$ & $31.6$ & $22.6$ & $32.7$ & & $33.2$ & $34.6$ & $33.2$ & $33.7$ \\
+\rowcolor{hlred} OPENER-Sup   & $\mathbf{70.0}$ & $\mathbf{53.3}$ & $\mathbf{59.1}$ & $\mathbf{60.8}$ & & $\mathbf{35.8}$ & $32.4$ & $\mathbf{34.2}$ & $34.1$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table}[t]
+\centering
+\caption{Frugality of each operating point (mean over the three datasets): energy per run and median per-sentence latency. Zero-shot typing is the cheapest (no train-set embedding); the detector dominates the end-to-end cost.}
+\label{tab:legal-frugal}
+\small
 \begin{tabular}{@{}lcc@{}}
 \toprule
-System & AMI gold & AMI e2e \\
+Operating point & Energy (Wh) & Latency p50 (ms) \\
 \midrule
-GLiNER-L (zero-shot) & -- & -- \\
-\rowcolor{hlyellow} OPENER-ZS & -- & -- \\
-\rowcolor{hlred} OPENER-Sup & -- & -- \\
+\rowcolor{hlyellow} OPENER-ZS (gold)  & $0.55$ & $31$ \\
+\rowcolor{hlred} OPENER-Sup (gold)    & $1.73$ & $22$ \\
+End-to-end (${+}$ GLiNER-L)           & ${\approx}\,2.0$ & ${\approx}\,130$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
+Frugality carries over unchanged (\autoref{tab:legal-frugal}): a full typing pass costs $0.55$--$1.73$\,Wh at $22$--$31$\,ms per sentence, the detector adding the bulk of the end-to-end cost -- the same one-to-two-orders-of-magnitude margin over trained-encoder and generative systems reported in the general-domain study.
+
 \subsection{Analysis}
 \label{sec:exp:analysis}
-% TODO: where transfer holds vs breaks on legal schemas (parties/courts vs fine-grained
-% statutory or contractual types), detection vs typing bottleneck, frugality (Wh, latency).
+Two distribution shifts act together here, and the results separate them cleanly. On \textbf{English} legal text (E-NER), where only the \emph{domain} shifts, transfer is strong: OPENER-Sup reaches $70.0$ gold AMI and OPENER-ZS a usable $44.0$ with no target labels at all, confirming that the general-domain contrastive embedder already places legal entity types (business, court, government body, legislation) in largely separable regions. Adding a \textbf{cross-lingual} shift (Portuguese, German) widens the gap between the two heads: the supervised probe stays high ($53.3$/$59.1$) because it re-fits on target labels, whereas the label-free head drops to $22$--$32$ because its English prototypes and the English embedder no longer match the target-language mentions.
+
+The \textbf{specialised-schema} stress test points the same way. On German-LER's fine $19$-type schema, OPENER-Sup still reaches $62.0$ gold AMI -- the embedder separates even fine legal distinctions once a probe names them -- but OPENER-ZS falls to $22.1$, as many fine German type codes have no faithful English label-name prototype.
+
+The binding constraint end-to-end is \textbf{detection}, not typing: GLiNER-L's offset recall falls from $57.4\%$ (en) to $18.7\%$ (de), so all end-to-end scores compress to ${\approx}34$--$35$ regardless of the typing head. This localises where domain adaptation would pay off first: a light, in-language adaptation of the \emph{detector} (or a multilingual one) would lift the ceiling far more than a better typing head. Within our frugal, retraining-free budget, OPENER-Sup is the safe operating point across languages, while OPENER-ZS is attractive only when the target language is close to the embedder's (English) training distribution.
