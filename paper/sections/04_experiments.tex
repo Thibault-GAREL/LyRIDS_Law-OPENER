@@ -46,9 +46,9 @@ For end-to-end runs the detector is GLiNER-L at threshold $0.3$, fed the target 
 \label{sec:exp:results}
 Keeping the two protocols apart, \autoref{tab:legal-gold} reports typing-on-gold AMI (OPENER heads, perfect detection) and \autoref{tab:legal-main} the end-to-end comparison against the baselines; \autoref{tab:legal-frugal} gives the accompanying frugality. Three findings stand out.
 
-\textbf{Supervised typing transfers well, including across languages.} Fitting a balanced linear probe on the frozen, general-domain embedder reaches $60.8$ mean typing-on-gold AMI -- $70.0$ on the English E-NER (a pure domain shift), and still $53.3$ / $59.1$ on Portuguese LeNER-Br and German German-LER despite the English-centric embedder (\autoref{fig:legal-gold}). The probe adapts to whatever the embedder encodes, so target-label supervision largely absorbs the cross-lingual gap at typing time.
+\textbf{Supervised typing transfers well, including across languages.} Fitting a balanced linear probe on the frozen, general-domain embedder reaches $61.1$ mean typing-on-gold AMI over the four sets -- $70.0$ on E-NER and $61.9$ on the English Indian court corpus, and still $53.3$ / $59.1$ on Portuguese LeNER-Br and German German-LER despite the English-centric embedder (\autoref{fig:legal-gold}). The probe adapts to whatever the embedder encodes, so target-label supervision largely absorbs the cross-lingual gap at typing time.
 
-\textbf{Label-free typing holds under domain shift but degrades cross-lingually.} OPENER-ZS reaches $44.0$ gold AMI on English E-NER, but only $31.6$ (pt) and $22.6$ (de): its English label-name prototypes align well with English legal mentions, far less with Portuguese/German ones. The zero-shot head is where the cross-lingual distribution shift bites hardest.
+\textbf{Label-free typing is strong in English but degrades cross-lingually.} OPENER-ZS is best on the two English sets -- $44.0$ on E-NER and its overall best $46.3$ on the Indian court corpus, whose type names (\emph{court}, \emph{judge}, \emph{statute}, \dots) are highly nameable -- but drops to $31.6$ (pt) and $22.6$ (de): its English label-name prototypes align well with English legal mentions, far less with Portuguese/German ones. The zero-shot head is where the cross-lingual distribution shift bites hardest.
 
 \textbf{End-to-end, detection is the bottleneck, not typing.} Most systems compress into a narrow $\approx 33$--$35$ AMI band (\autoref{tab:legal-main}) -- GLiNER-S/M/L, OPENER-ZS and OPENER-Sup alike -- because the English detectors recover only a fraction of gold mentions (GLiNER-L: $57.4\%$ on E-NER, $44.0\%$ on LeNER-Br, $18.7\%$ on German-LER, offset recall); with so few mentions detected, no typing head can pull far ahead, and OPENER-ZS's detector fusion essentially reverts to the GLiNER-L labels. Two systems break out of the band on one language: GNER-T5 on German ($39.2$, its generative pretraining detects better there), and OWNER \cite{genest2025owner} -- the closest prior work -- on English ($38.4$, the best E-NER cell). OWNER, however, degrades most under the cross-lingual shift ($28.4$ on German) and pays an order-of-magnitude higher inference cost, re-encoding and clustering every mention at test time (as established in the general-domain study), whereas OPENER keeps a frugal, fixed-cost typing head. The 4-bit Qwen2.5-1.5B trails every dedicated system ($21.4$ mean) while being the slowest. Overall no system dominates end-to-end: detection, not typing, is the ceiling, and OPENER-Sup/ZS sit in the leading band at a fraction of the per-sentence cost.
 
@@ -60,19 +60,19 @@ Keeping the two protocols apart, \autoref{tab:legal-gold} reports typing-on-gold
   width=\linewidth, height=5cm,
   ymin=0, ymax=82,
   ylabel={Typing-on-gold AMI},
-  symbolic x coords={E-NER (en), LeNER-Br (pt), German (de)},
-  xtick=data, x tick label style={font=\small},
+  symbolic x coords={E-NER (en), Indian (en), LeNER-Br (pt), German (de)},
+  xtick=data, x tick label style={font=\footnotesize, rotate=18, anchor=east},
   legend style={at={(0.5,1.03)}, anchor=south, legend columns=2, font=\small, draw=none},
   ymajorgrids, grid style={gray!20},
   nodes near coords, nodes near coords style={font=\tiny},
-  enlarge x limits=0.28,
+  enlarge x limits=0.20,
 ]
-\addplot[fill=yellow!75!orange, draw=black!40] coordinates {(E-NER (en),44.0) (LeNER-Br (pt),31.6) (German (de),22.6)};
-\addplot[fill=red!55, draw=black!40] coordinates {(E-NER (en),70.0) (LeNER-Br (pt),53.3) (German (de),59.1)};
+\addplot[fill=yellow!75!orange, draw=black!40] coordinates {(E-NER (en),44.0) (Indian (en),46.3) (LeNER-Br (pt),31.6) (German (de),22.6)};
+\addplot[fill=red!55, draw=black!40] coordinates {(E-NER (en),70.0) (Indian (en),61.9) (LeNER-Br (pt),53.3) (German (de),59.1)};
 \legend{OPENER-ZS, OPENER-Sup}
 \end{axis}
 \end{tikzpicture}
-\caption{Typing-on-gold AMI by language. The supervised probe (OPENER-Sup) stays high across all three languages, whereas the label-free head (OPENER-ZS) degrades sharply under the cross-lingual shift (English $\to$ Portuguese/German).}
+\caption{Typing-on-gold AMI by dataset (two English, then Portuguese and German). The supervised probe (OPENER-Sup) stays high everywhere, whereas the label-free head (OPENER-ZS) is strong on the two English sets but degrades sharply under the cross-lingual shift.}
 \label{fig:legal-gold}
 \end{figure}
 
@@ -81,13 +81,13 @@ Keeping the two protocols apart, \autoref{tab:legal-gold} reports typing-on-gold
 \caption{\textbf{Typing-on-gold} AMI ($\times100$, $\uparrow$): entity typing on gold mentions (perfect detection), which isolates the typing head. German-LER uses its $7$-type coarse schema (the $19$-type fine schema is discussed in \autoref{sec:exp:analysis}). Bold marks the best per column.}
 \label{tab:legal-gold}
 \small
-\begin{tabular}{@{}lcccc@{}}
+\begin{tabular}{@{}lccccc@{}}
 \toprule
-System & E-NER & LeNER-Br & German & Mean \\
-       & (en)  & (pt)     & (de)   &      \\
+System & E-NER & Indian & LeNER-Br & German & Mean \\
+       & (en)  & (en)   & (pt)     & (de)   &      \\
 \midrule
-\rowcolor{hlyellow} OPENER-ZS & $44.0$ & $31.6$ & $22.6$ & $32.7$ \\
-\rowcolor{hlred} OPENER-Sup   & $\mathbf{70.0}$ & $\mathbf{53.3}$ & $\mathbf{59.1}$ & $\mathbf{60.8}$ \\
+\rowcolor{hlyellow} OPENER-ZS & $44.0$ & $46.3$ & $31.6$ & $22.6$ & $36.1$ \\
+\rowcolor{hlred} OPENER-Sup   & $\mathbf{70.0}$ & $\mathbf{61.9}$ & $\mathbf{53.3}$ & $\mathbf{59.1}$ & $\mathbf{61.1}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
