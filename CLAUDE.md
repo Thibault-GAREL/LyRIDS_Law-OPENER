@@ -71,6 +71,11 @@ L'embedding des datasets légaux **nécessite le GPU** (6 Go). Tant que le **run
 7. ✅ **Paper rempli** avec les vrais chiffres : Abstract, Intro, Results (Table 2 transfert AMI + Table 3 frugalité + Fig 2 bar chart), Analysis, Conclusion/Limitations. **Compile propre : 7 p, 0 undef, 0 overfull.**
 8. **Reste** : proofread final ; éventuellement valider le chargement HF réel de l'embedder (sans GPU) ; générer le zip Overleaf ; puis prêt workshop NLLP.
 
+### 🧩 Baselines (façon journal) sur le légal
+- **Scripts** (dans `scripts/baselines/`) : `run_gliner`, `run_gner`, `run_llm_int4` (+ `owner_export`, `owner_collect`), tous avec `--legal`. Drivers : `scripts/run_legal_baselines.sh` (GLiNER S/M/L + GNER + Qwen-int4) et `scripts/run_legal_owner.sh` (OWNER).
+- ⚠️ **OWNER** : sa codebase + son checkpoint sont un **sous-module git du repo principal** (`../LyRIDS_Opener/external/OWNER`, plusieurs Go partagés avec le papier journal). On ne le duplique **pas** : `run_legal_owner.sh` le **référence** (env conda `D:\conda_envs\owner`) et écrit les logs/résultats ici. Protocole transfert (checkpoint conll2003 chargé, zéro-shot), **aucun réentraînement**.
+- Résultats : `outputs/results/baselines/{gliner_*,gner,qwen1_5b,owner}/` ; logs `outputs/logs/legal_*.log`.
+
 ### 📊 Résultats clés (AMI ×100, gold)
 - **OPENER-Sup** : 70.0 (en) / 53.3 (pt) / 59.1 (de) → **60.8 moy**, robuste cross-lingue.
 - **OPENER-ZS** : 44.0 (en) / 31.6 (pt) / 22.6 (de) → 32.7 moy, se dégrade cross-lingue.
