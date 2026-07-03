@@ -3,7 +3,7 @@
 
 \subsection{Datasets}
 \label{sec:exp:datasets}
-We evaluate on three public legal NER datasets that, together, separate two kinds of distribution shift. \textbf{E-NER} \citep{au2022ener} -- annotated U.S.\ SEC/EDGAR filings -- is in \emph{English}, so it isolates a \emph{pure domain shift} from the general-domain data the embedder was trained on. \textbf{LeNER-Br} \citep{luzdearaujo2018lenerbr} (Brazilian court decisions, Portuguese) and \textbf{German-LER} \citep{leitner2020germanler} (German federal court decisions) add a \emph{cross-lingual} shift on top of the domain shift, stressing an English-centric embedder well outside its training distribution. \autoref{tab:legal-datasets} summarises them with the entity-type distribution of their test mentions; all three exhibit a strongly skewed, long-tailed inventory typical of legal text (one or two dominant types and several rare, schema-specific ones).
+We evaluate on four public legal NER datasets that, together, separate two kinds of distribution shift. \emph{Two are in English}, isolating a \emph{pure domain shift} from the general-domain data the embedder was trained on: \textbf{E-NER} \citep{au2022ener} (annotated U.S.\ SEC/EDGAR filings, $7$ types) and \textbf{Indian-Legal} \citep{kalamkar2022indianlegal} (Indian court judgments, $14$ fine-grained legal types). \textbf{LeNER-Br} \citep{luzdearaujo2018lenerbr} (Brazilian court decisions, Portuguese) and \textbf{German-LER} \citep{leitner2020germanler} (German federal court decisions) add a \emph{cross-lingual} shift on top of the domain shift, stressing an English-centric embedder well outside its training distribution. \autoref{tab:legal-datasets} summarises them with the entity-type distribution of their test mentions.
 
 \begin{table*}[t]
 \centering
@@ -15,6 +15,7 @@ We evaluate on three public legal NER datasets that, together, separate two kind
 Dataset & Lang & Sent. & Ment. & Entity types (share \% of test mentions) \\
 \midrule
 E-NER \citep{au2022ener} & en & 877 & 1{,}793 & Business 41.8, Misc 18.3, Legislation/Act 13.5, Location 11.3, Person 7.6, Government 7.1, Court 0.3 \\
+Indian-Legal \citep{kalamkar2022indianlegal} & en & 866 & 3{,}028 & Lawyer 16.7, Court 9.3, Respondent 8.8, Other-person 8.7, Provision 8.5, Statute 7.3, Date 7.1, Petitioner 6.0, GPE 5.9, Precedent 5.7, Org 5.1, Judge 5.1, Case-number 3.9, Witness 1.9 \\
 LeNER-Br \citep{luzdearaujo2018lenerbr} & pt & 636 & 1{,}536 & Organização 32.6, Legislação 24.6, Pessoa 15.2, Tempo 12.5, Jurisprudência 12.0, Local 3.1 \\
 German-LER \citep{leitner2020germanler} & de & 3{,}018 & 5{,}322 & Legal-norm 38.3, Case-law 23.4, Organization 15.0, Regulation 6.7, Person 6.1, Legal-literature 5.9, Location 4.7 \\
 \bottomrule
@@ -50,7 +51,7 @@ Keeping the two protocols apart, \autoref{tab:legal-gold} reports typing-on-gold
 
 \textbf{Label-free typing is strong in English but degrades cross-lingually.} OPENER-ZS is best on the two English sets -- $44.0$ on E-NER and its overall best $46.3$ on the Indian court corpus, whose type names (\emph{court}, \emph{judge}, \emph{statute}, \dots) are highly nameable -- but drops to $31.6$ (pt) and $22.6$ (de): its English label-name prototypes align well with English legal mentions, far less with Portuguese/German ones. The zero-shot head is where the cross-lingual distribution shift bites hardest.
 
-\textbf{End-to-end, detection is the bottleneck, not typing.} Most systems compress into a narrow $\approx 33$--$35$ AMI band (\autoref{tab:legal-main}) -- GLiNER-S/M/L, OPENER-ZS and OPENER-Sup alike -- because the English detectors recover only a fraction of gold mentions (GLiNER-L: $57.4\%$ on E-NER, $44.0\%$ on LeNER-Br, $18.7\%$ on German-LER, offset recall); with so few mentions detected, no typing head can pull far ahead, and OPENER-ZS's detector fusion essentially reverts to the GLiNER-L labels. Two systems break out of the band on one language: GNER-T5 on German ($39.2$, its generative pretraining detects better there), and OWNER \cite{genest2025owner} -- the closest prior work -- on English ($38.4$, the best E-NER cell). OWNER, however, degrades most under the cross-lingual shift ($28.4$ on German) and pays an order-of-magnitude higher inference cost, re-encoding and clustering every mention at test time (as established in the general-domain study), whereas OPENER keeps a frugal, fixed-cost typing head. The 4-bit Qwen2.5-1.5B trails every dedicated system ($21.4$ mean) while being the slowest. Overall no system dominates end-to-end: detection, not typing, is the ceiling, and OPENER-Sup/ZS sit in the leading band at a fraction of the per-sentence cost.
+\textbf{End-to-end, detection is the bottleneck, not typing.} Most systems compress into a narrow $\approx 33$--$35$ AMI band (\autoref{tab:legal-main}) -- GLiNER-S/M/L, OWNER, OPENER-ZS and OPENER-Sup all average $33.7$--$35.0$ -- because the English detectors recover only a fraction of gold mentions (GLiNER-L offset recall: $57.4\%$ on E-NER, $44.5\%$ on Indian-Legal, $44.0\%$ on LeNER-Br, $18.7\%$ on German-LER); with so few mentions detected, no typing head can pull far ahead, and OPENER-ZS's detector fusion essentially reverts to the GLiNER-L labels. Two systems break out on a single dataset: GNER-T5 on German ($39.2$, its generative pretraining detects better there) and OWNER \cite{genest2025owner} -- the closest prior work -- on E-NER ($38.4$). OWNER, however, degrades most under the cross-lingual shift ($28.4$ on German) and pays an order-of-magnitude higher inference cost, re-encoding and clustering every mention at test time, whereas OPENER keeps a frugal, fixed-cost typing head. The 4-bit Qwen2.5-1.5B trails every dedicated system ($23.1$ mean) while being the slowest. No system dominates end-to-end -- detection, not typing, is the ceiling -- and OPENER-Sup/ZS sit in the leading band (both $33.7$--$33.8$ average) at a fraction of the per-sentence cost.
 
 \begin{figure}[t]
 \centering
@@ -97,42 +98,42 @@ System & E-NER & Indian & LeNER-Br & German & Mean \\
 \caption{Open-world legal NER, \textbf{end-to-end} AMI ($\times100$, $\uparrow$): mentions produced by the detector, with offset/sentinel alignment (the protocol comparable across all systems). Systems grouped by supervision; GLiNER/GNER/Qwen are fed the target type names zero-shot, OWNER \cite{genest2025owner} is transferred from a CoNLL-2003-trained model (no target labels), OPENER-Sup fits a balanced probe on the target labels. Bold marks the best per column. $^\ddagger$Qwen2.5-1.5B on a $200$-sentence subsample (indicative). German-LER: $7$-type coarse schema. Typing-on-gold is reported separately in \autoref{tab:legal-gold}.}
 \label{tab:legal-main}
 \small
-\begin{tabular}{@{}lcccc@{}}
+\begin{tabular}{@{}lccccc@{}}
 \toprule
-Model & E-NER (en) & LeNER-Br (pt) & German (de) & Avg \\
+Model & E-NER (en) & Indian (en) & LeNER-Br (pt) & German (de) & Avg \\
 \midrule
-\multicolumn{5}{l}{\emph{Zero-shot (no target labels)}} \\
-GLiNER-S & $33.4$ & $33.7$ & $31.1$ & $32.7$ \\
-GLiNER-M & $33.9$ & $34.8$ & $36.1$ & $34.9$ \\
-GLiNER-L & $34.7$ & $\mathbf{36.3}$ & $34.0$ & $\mathbf{35.0}$ \\
-GNER-T5  & $28.7$ & $33.2$ & $\mathbf{39.2}$ & $33.7$ \\
-Qwen2.5-1.5B$^\ddagger$ & $24.9$ & $24.9$ & $14.5$ & $21.4$ \\
-OWNER    & $\mathbf{38.4}$ & $34.8$ & $28.4$ & $33.9$ \\
-\rowcolor{hlyellow} OPENER-ZS & $33.2$ & $34.6$ & $33.2$ & $33.7$ \\
+\multicolumn{6}{l}{\emph{Zero-shot (no target labels)}} \\
+GLiNER-S & $33.4$ & $33.9$ & $33.7$ & $31.1$ & $33.0$ \\
+GLiNER-M & $33.9$ & $34.8$ & $34.8$ & $36.1$ & $34.9$ \\
+GLiNER-L & $34.7$ & $\mathbf{35.2}$ & $\mathbf{36.3}$ & $34.0$ & $\mathbf{35.0}$ \\
+GNER-T5  & $28.7$ & $28.6$ & $33.2$ & $\mathbf{39.2}$ & $32.4$ \\
+Qwen2.5-1.5B$^\ddagger$ & $24.9$ & $28.1$ & $24.9$ & $14.5$ & $23.1$ \\
+OWNER    & $\mathbf{38.4}$ & $33.3$ & $34.8$ & $28.4$ & $33.7$ \\
+\rowcolor{hlyellow} OPENER-ZS & $33.2$ & $34.0$ & $34.6$ & $33.2$ & $33.7$ \\
 \midrule
-\multicolumn{5}{l}{\emph{Supervised (target labels)}} \\
-\rowcolor{hlred} OPENER-Sup & $35.8$ & $32.4$ & $34.2$ & $34.1$ \\
+\multicolumn{6}{l}{\emph{Supervised (target labels)}} \\
+\rowcolor{hlred} OPENER-Sup & $35.8$ & $32.8$ & $32.4$ & $34.2$ & $33.8$ \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
 \begin{table}[t]
 \centering
-\caption{Efficiency of the end-to-end systems (mean over the three datasets): median per-sentence latency and energy per run, alongside end-to-end AMI. OPENER stays in the leading accuracy band while remaining one to two orders of magnitude cheaper than the generative systems. $^\ddagger$Qwen on the $200$-sentence subsample. $^\S$OWNER: wall-clock (includes per-dataset model load and mention clustering), TDP estimate.}
+\caption{Efficiency of the end-to-end systems (median over the four datasets): median per-sentence latency and energy per run, alongside end-to-end AMI. OPENER stays in the leading accuracy band while remaining one to two orders of magnitude cheaper than the generative systems. $^\ddagger$Qwen on the $200$-sentence subsample. $^\S$OWNER: wall-clock (includes per-dataset model load and mention clustering), TDP estimate.}
 \label{tab:legal-frugal}
 \small
 \begin{tabular}{@{}lccc@{}}
 \toprule
 System & AMI & Latency p50 (ms) & Energy (Wh) \\
 \midrule
-GLiNER-S & $32.7$ & $\mathbf{22}$ & $\mathbf{0.4}$ \\
-GLiNER-M & $34.9$ & $37$ & $0.6$ \\
-GLiNER-L & $35.0$ & $78$ & $1.2$ \\
-GNER-T5  & $33.7$ & $5705$ & $67$ \\
-Qwen2.5-1.5B$^\ddagger$ & $21.4$ & $4852$ & $16$ \\
-OWNER$^\S$ & $33.9$ & $390$ & $10$ \\
-\rowcolor{hlyellow} OPENER-ZS & $33.7$ & $115$ & $2.1$ \\
-\rowcolor{hlred} OPENER-Sup & $34.1$ & $123$ & $2.1$ \\
+GLiNER-S & $33.0$ & $\mathbf{22}$ & $\mathbf{0.4}$ \\
+GLiNER-M & $34.9$ & $36$ & $0.6$ \\
+GLiNER-L & $35.0$ & $83$ & $1.3$ \\
+GNER-T5  & $32.4$ & $7237$ & $68$ \\
+Qwen2.5-1.5B$^\ddagger$ & $23.1$ & $5391$ & $24$ \\
+OWNER$^\S$ & $33.7$ & $420$ & $11$ \\
+\rowcolor{hlyellow} OPENER-ZS & $33.7$ & $128$ & $2.1$ \\
+\rowcolor{hlred} OPENER-Sup & $33.8$ & $131$ & $2.1$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -149,12 +150,12 @@ OWNER$^\S$ & $33.9$ & $390$ & $10$ \\
   xtick=data, x tick label style={rotate=35, anchor=east, font=\footnotesize},
   ymajorgrids, grid style={gray!20}, enlarge x limits=0.09,
 ]
-\addplot[fill=blue!30, draw=black!40] coordinates {(GLiNER-S,22)(GLiNER-M,37)(GLiNER-L,78)(OWNER,390)(Qwen,4852)(GNER,5705)};
-\addplot[fill=red!55, draw=black!40] coordinates {(OP-ZS,115)(OP-Sup,123)};
+\addplot[fill=blue!30, draw=black!40] coordinates {(GLiNER-S,22)(GLiNER-M,36)(GLiNER-L,83)(OWNER,420)(Qwen,5391)(GNER,7237)};
+\addplot[fill=red!55, draw=black!40] coordinates {(OP-ZS,128)(OP-Sup,131)};
 \legend{baselines, OPENER}
 \end{axis}
 \end{tikzpicture}
-\caption{End-to-end per-sentence latency (log scale). OPENER (red) and the GLiNER family run in $22$--$123$\,ms, whereas the generative GNER-T5 and Qwen are $40$--$50\times$ slower ($\approx 5$\,s per sentence).}
+\caption{End-to-end per-sentence latency (log scale, median over the four datasets). OPENER (red) and the GLiNER family run in $22$--$131$\,ms, whereas the generative GNER-T5 and Qwen are $40$--$60\times$ slower ($\approx 5$--$7$\,s per sentence).}
 \label{fig:legal-efficiency}
 \end{figure}
 
