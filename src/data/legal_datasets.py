@@ -72,6 +72,15 @@ _LEGAL_SPECS: dict[str, dict] = {
         'source': 'e_ner_github',
         'lang': 'en',
     },
+    # ----- CUAD (anglais, contrats, Atticus) : extraction de CLAUSES (40 catégories) -----
+    #       ⚠️ PAS du NER classique : "entités" = clauses longues (~31 mots), contextes =
+    #       contrats entiers. Adapté en typing-on-gold (classer une clause parmi 40 types).
+    #       L'e2e n'a pas de sens (un détecteur d'entités ne trouve pas des clauses).
+    'cuad': {
+        'hf': 'theatticusproject/cuad-qa',
+        'source': 'cuad_qa',
+        'lang': 'en',
+    },
     # ----- Indian Legal NER (anglais, jugements de cours indiennes, LegalEval) -----
     #       Format spaCy : `text` + `entities`=[{start,end,label}] (spans caractères
     #       DIRECTEMENT exploitables, pas de BIO). 13+ types légaux nommables
@@ -198,6 +207,29 @@ def load_legal_dataset(
     # E-NER : CSV GitHub, pas de Parquet HF.
     if spec['source'] == 'e_ner_github':
         return _load_ener_github(split, max_sentences)
+
+    # CUAD : QA/SQuAD de contrats. Chaque clause gold devient un item
+    # (clause tronquée à 400 char = "entité", label = catégorie de clause).
+    # Orienté typing-on-gold (l'e2e n'a pas de sens ici).
+    if spec['source'] == 'cuad_qa':
+        import re
+        from datasets import load_dataset
+        ds = load_dataset(spec['hf'], revision='refs/convert/parquet', split=split)
+        out: list[tuple[str, list[tuple[int, int, str]]]] = []
+        for e in ds:
+            ans = e['answers']
+            if not ans['text']:
+                continue
+            m = re.search(r'related to \"(.*?)\"', e['question']) or re.search(r'\"(.*?)\"', e['question'])
+            cat = (m.group(1) if m else 'other').strip().upper().replace(' ', '_').replace('-', '_')
+            for txt in ans['text']:
+                clause = txt.strip()[:400]
+                if len(clause) < 3:
+                    continue
+                out.append((clause, [(0, len(clause), cat)]))
+                if max_sentences is not None and len(out) >= max_sentences:
+                    return out
+        return out
 
     # Indian Legal NER : format spaCy (text + entities=[{start,end,label}]),
     # spans CARACTERES directement exploitables (pas de BIO).
