@@ -9,7 +9,7 @@
 # =====================================================================
 set -u
 PY="${PY:-/c/0-Code_py_temp/pytorch_cuda_env/Scripts/python.exe}"
-DS="e_ner lener_br german_ler_coarse"
+DS="${DS:-e_ner lener_br german_ler_coarse}"
 LOG="outputs/logs/legal_baselines_$(date +%Y%m%d_%H%M%S).log"
 mkdir -p outputs/logs outputs/results/baselines
 ts(){ date +'%H:%M:%S'; }
