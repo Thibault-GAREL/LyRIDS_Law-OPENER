@@ -34,7 +34,7 @@ Keeping the two protocols apart, \autoref{tab:legal-gold} reports typing-on-gold
 
 \textbf{Label-free typing holds under domain shift but degrades cross-lingually.} OPENER-ZS reaches $44.0$ gold AMI on English E-NER, but only $31.6$ (pt) and $22.6$ (de): its English label-name prototypes align well with English legal mentions, far less with Portuguese/German ones. The zero-shot head is where the cross-lingual distribution shift bites hardest.
 
-\textbf{End-to-end quality is capped by the detector.} All three systems collapse to $\approx 34$--$35$ end-to-end, because the English GLiNER-L recovers only $57.4\%$ of gold mentions on E-NER, $44.0\%$ on LeNER-Br and $18.7\%$ on German-LER (offset recall). With so few mentions detected in the non-English sets, the typing head has little left to differentiate, and OPENER-ZS's detector fusion essentially reverts to the GLiNER-L labels ($35.0$).
+\textbf{End-to-end, detection is the bottleneck, not typing.} All dedicated open-world systems compress into a narrow $\approx 33$--$35$ AMI band (\autoref{tab:legal-main}) -- GLiNER-S/M/L, GNER-T5, OPENER-ZS and OPENER-Sup alike -- because the English GLiNER-L recovers only $57.4\%$ of gold mentions on E-NER, $44.0\%$ on LeNER-Br and $18.7\%$ on German-LER (offset recall); with so few mentions detected, no typing head can pull far ahead, and OPENER-ZS's detector fusion essentially reverts to the GLiNER-L labels. The generative GNER-T5 is the exception on German ($39.2$, best in that column), where its pretraining detects better; the 4-bit Qwen2.5-1.5B trails every dedicated system ($21.4$ mean) while being the slowest, echoing the general-domain benchmark. OPENER-Sup and OPENER-ZS sit squarely in the leading band, at a fraction of the per-sentence cost.
 
 \begin{figure}[t]
 \centering
@@ -90,7 +90,7 @@ GLiNER-S & $33.4$ & $33.7$ & $31.1$ & $32.7$ \\
 GLiNER-M & $33.9$ & $34.8$ & $36.1$ & $34.9$ \\
 GLiNER-L & $34.7$ & $\mathbf{36.3}$ & $34.0$ & $\mathbf{35.0}$ \\
 GNER-T5  & $28.7$ & $33.2$ & $\mathbf{39.2}$ & $33.7$ \\
-Qwen2.5-1.5B$^\ddagger$ & $\ldots$ & $\ldots$ & $\ldots$ & $\ldots$ \\
+Qwen2.5-1.5B$^\ddagger$ & $24.9$ & $24.9$ & $14.5$ & $21.4$ \\
 \rowcolor{hlyellow} OPENER-ZS & $33.2$ & $34.6$ & $33.2$ & $33.7$ \\
 \midrule
 \multicolumn{5}{l}{\emph{Supervised (target labels)}} \\
