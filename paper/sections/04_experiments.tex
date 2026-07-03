@@ -23,7 +23,23 @@ German-LER \citep{leitner2020germanler} & de & 3{,}018 & 5{,}322 & Legal-norm 38
 
 \subsection{Setup}
 \label{sec:exp:setup}
-Embedder, detector and heads are exactly those of the general-domain OPENER (\autoref{sec:method}); the entity embedder is loaded from the Hugging Face Hub and is \emph{not} retrained on legal data. Single fixed seed; each test split capped at $1000$ sentences. % TODO[venue]: multi-seed if space/time allow.
+Embedder, detector and heads are exactly those of the general-domain OPENER (\autoref{sec:method}); the entity embedder is loaded from the Hugging Face Hub and is \emph{not} retrained on legal data. Single fixed seed; each test split capped at $1000$ sentences. Since the reused embedder is frozen and no stage of the pipeline is stochastic at inference, the quality scores are deterministic (identical across re-runs and across seeds); following the general-domain protocol, we therefore quantify their sampling uncertainty with a test-set bootstrap ($K{=}1000$ resamples of the gold mentions) rather than a multi-seed \emph{retraining} study, reporting $95\%$ confidence intervals in \autoref{tab:legal-bootstrap}.
+
+\begin{table}[t]
+\centering
+\caption{Test-set bootstrap of typing-on-gold AMI ($K{=}1000$ resamples of the gold mentions) for the released, frozen embedder: bootstrap mean $\pm$ std with the $95\%$ percentile CI. The point estimates match \autoref{tab:legal-gold}; the narrow $\pm 1.3$--$1.7$ AMI intervals show the reported scores are stable rather than seed-specific.}
+\label{tab:legal-bootstrap}
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Dataset & OPENER-Sup AMI & OPENER-ZS AMI \\
+\midrule
+E-NER (en)      & $70.4 \pm 1.5$~[$67.5$, $73.4$] & $44.4 \pm 1.3$~[$41.7$, $47.0$] \\
+LeNER-Br (pt)   & $53.8 \pm 1.7$~[$50.6$, $57.0$] & $32.0 \pm 1.3$~[$29.5$, $34.3$] \\
+German-LER (de) & $59.7 \pm 1.5$~[$56.9$, $62.7$] & $23.1 \pm 1.3$~[$20.6$, $25.5$] \\
+\bottomrule
+\end{tabular}
+\end{table}
 For end-to-end runs the detector is GLiNER-L at threshold $0.3$, fed the target type names. As \textbf{baselines} we evaluate the same open-world systems as the general-domain benchmark, applied to legal text: GLiNER-S/M/L \cite{zaratiana2024gliner}, the generative GNER-T5-base \cite{ding2024gner}, and a 4-bit Qwen2.5-1.5B-Instruct \cite{qwen2025} prompted for entities -- all zero-shot on the target type names. These are \emph{end-to-end} systems (they detect and type jointly), so they are compared only under the end-to-end protocol, never against typing-on-gold numbers. All quality figures are AMI ($\times 100$); German-LER uses its $7$-type coarse schema in the tables, and its $19$-type fine schema as a stress test below.
 
 \subsection{Results}
