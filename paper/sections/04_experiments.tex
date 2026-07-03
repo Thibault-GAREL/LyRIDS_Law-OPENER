@@ -34,7 +34,7 @@ Keeping the two protocols apart, \autoref{tab:legal-gold} reports typing-on-gold
 
 \textbf{Label-free typing holds under domain shift but degrades cross-lingually.} OPENER-ZS reaches $44.0$ gold AMI on English E-NER, but only $31.6$ (pt) and $22.6$ (de): its English label-name prototypes align well with English legal mentions, far less with Portuguese/German ones. The zero-shot head is where the cross-lingual distribution shift bites hardest.
 
-\textbf{End-to-end, detection is the bottleneck, not typing.} All dedicated open-world systems compress into a narrow $\approx 33$--$35$ AMI band (\autoref{tab:legal-main}) -- GLiNER-S/M/L, GNER-T5, OPENER-ZS and OPENER-Sup alike -- because the English GLiNER-L recovers only $57.4\%$ of gold mentions on E-NER, $44.0\%$ on LeNER-Br and $18.7\%$ on German-LER (offset recall); with so few mentions detected, no typing head can pull far ahead, and OPENER-ZS's detector fusion essentially reverts to the GLiNER-L labels. The generative GNER-T5 is the exception on German ($39.2$, best in that column), where its pretraining detects better; the 4-bit Qwen2.5-1.5B trails every dedicated system ($21.4$ mean) while being the slowest, echoing the general-domain benchmark. OPENER-Sup and OPENER-ZS sit squarely in the leading band, at a fraction of the per-sentence cost.
+\textbf{End-to-end, detection is the bottleneck, not typing.} Most systems compress into a narrow $\approx 33$--$35$ AMI band (\autoref{tab:legal-main}) -- GLiNER-S/M/L, OPENER-ZS and OPENER-Sup alike -- because the English detectors recover only a fraction of gold mentions (GLiNER-L: $57.4\%$ on E-NER, $44.0\%$ on LeNER-Br, $18.7\%$ on German-LER, offset recall); with so few mentions detected, no typing head can pull far ahead, and OPENER-ZS's detector fusion essentially reverts to the GLiNER-L labels. Two systems break out of the band on one language: GNER-T5 on German ($39.2$, its generative pretraining detects better there), and OWNER \cite{genest2025owner} -- the closest prior work -- on English ($38.4$, the best E-NER cell). OWNER, however, degrades most under the cross-lingual shift ($28.4$ on German) and pays an order-of-magnitude higher inference cost, re-encoding and clustering every mention at test time (as established in the general-domain study), whereas OPENER keeps a frugal, fixed-cost typing head. The 4-bit Qwen2.5-1.5B trails every dedicated system ($21.4$ mean) while being the slowest. Overall no system dominates end-to-end: detection, not typing, is the ceiling, and OPENER-Sup/ZS sit in the leading band at a fraction of the per-sentence cost.
 
 \begin{figure}[t]
 \centering
@@ -78,7 +78,7 @@ System & E-NER & LeNER-Br & German & Mean \\
 
 \begin{table*}[t]
 \centering
-\caption{Open-world legal NER, \textbf{end-to-end} AMI ($\times100$, $\uparrow$): mentions produced by the detector, with offset/sentinel alignment (the protocol comparable across all systems). Systems grouped by supervision; GLiNER/GNER/Qwen use the target type names zero-shot, OPENER-Sup fits a balanced probe on the target labels. Bold marks the best per column. $^\ddagger$Qwen2.5-1.5B on a $200$-sentence subsample (indicative). German-LER: $7$-type coarse schema. Typing-on-gold is reported separately in \autoref{tab:legal-gold}.}
+\caption{Open-world legal NER, \textbf{end-to-end} AMI ($\times100$, $\uparrow$): mentions produced by the detector, with offset/sentinel alignment (the protocol comparable across all systems). Systems grouped by supervision; GLiNER/GNER/Qwen are fed the target type names zero-shot, OWNER \cite{genest2025owner} is transferred from a CoNLL-2003-trained model (no target labels), OPENER-Sup fits a balanced probe on the target labels. Bold marks the best per column. $^\ddagger$Qwen2.5-1.5B on a $200$-sentence subsample (indicative). German-LER: $7$-type coarse schema. Typing-on-gold is reported separately in \autoref{tab:legal-gold}.}
 \label{tab:legal-main}
 \small
 \begin{tabular}{@{}lcccc@{}}
@@ -91,10 +91,11 @@ GLiNER-M & $33.9$ & $34.8$ & $36.1$ & $34.9$ \\
 GLiNER-L & $34.7$ & $\mathbf{36.3}$ & $34.0$ & $\mathbf{35.0}$ \\
 GNER-T5  & $28.7$ & $33.2$ & $\mathbf{39.2}$ & $33.7$ \\
 Qwen2.5-1.5B$^\ddagger$ & $24.9$ & $24.9$ & $14.5$ & $21.4$ \\
+OWNER    & $\mathbf{38.4}$ & $34.8$ & $28.4$ & $33.9$ \\
 \rowcolor{hlyellow} OPENER-ZS & $33.2$ & $34.6$ & $33.2$ & $33.7$ \\
 \midrule
 \multicolumn{5}{l}{\emph{Supervised (target labels)}} \\
-\rowcolor{hlred} OPENER-Sup & $\mathbf{35.8}$ & $32.4$ & $34.2$ & $34.1$ \\
+\rowcolor{hlred} OPENER-Sup & $35.8$ & $32.4$ & $34.2$ & $34.1$ \\
 \bottomrule
 \end{tabular}
 \end{table*}
