@@ -16,6 +16,23 @@ e_ner:
   PERSON: [person, individual, name]
   MISCELLANEOUS: [miscellaneous, other, entity, thing]
 
+# ---------- Indian Legal NER (anglais, jugements de cours indiennes) ----------
+indian_legal:
+  CASE_NUMBER: [case number, docket number, case no]
+  COURT: [court, tribunal]
+  DATE: [date, day, time]
+  GPE: [location, place, state, city, country]
+  JUDGE: [judge, justice]
+  LAWYER: [lawyer, attorney, counsel, advocate]
+  ORG: [organization, company, institution]
+  OTHER_PERSON: [person, individual, name]
+  PETITIONER: [petitioner, plaintiff, appellant]
+  PRECEDENT: [precedent, case law, prior case, judgment]
+  PROVISION: [provision, section, clause, article]
+  RESPONDENT: [respondent, defendant, appellee]
+  STATUTE: [statute, act, law]
+  WITNESS: [witness]
+
 # ---------- LeNER-Br (portugais) -> anchors EN ----------
 lener_br:
   PESSOA: [person, individual, name]

@@ -72,6 +72,18 @@ _LEGAL_SPECS: dict[str, dict] = {
         'source': 'e_ner_github',
         'lang': 'en',
     },
+    # ----- Indian Legal NER (anglais, jugements de cours indiennes, LegalEval) -----
+    #       Format spaCy : `text` + `entities`=[{start,end,label}] (spans caractères
+    #       DIRECTEMENT exploitables, pas de BIO). 13+ types légaux nommables
+    #       (COURT, JUDGE, PETITIONER, RESPONDENT, STATUTE, PROVISION, PRECEDENT...).
+    'indian_legal': {
+        'hf': 'AjayMukundS/Indian_Legal_NER_Dataset',
+        'text_col': 'text',
+        'ent_col': 'entities',
+        'source': 'charspan',
+        'lang': 'en',
+        'test_split': 'validation',   # pas de split 'test' ; on évalue sur 'validation'
+    },
 }
 
 
@@ -186,6 +198,28 @@ def load_legal_dataset(
     # E-NER : CSV GitHub, pas de Parquet HF.
     if spec['source'] == 'e_ner_github':
         return _load_ener_github(split, max_sentences)
+
+    # Indian Legal NER : format spaCy (text + entities=[{start,end,label}]),
+    # spans CARACTERES directement exploitables (pas de BIO).
+    if spec['source'] == 'charspan':
+        from datasets import load_dataset
+        real_split = spec.get('test_split', split) if split == 'test' else split
+        ds = load_dataset(spec['hf'], split=real_split)
+        out: list[tuple[str, list[tuple[int, int, str]]]] = []
+        for ex in ds:
+            text = ex[spec['text_col']]
+            spans = []
+            for e in (ex[spec['ent_col']] or []):
+                s, t, lbl = e.get('start'), e.get('end'), e.get('label')
+                if s is None or t is None or lbl is None or s >= t or t > len(text):
+                    continue
+                spans.append((int(s), int(t), str(lbl)))
+            if not spans:
+                continue
+            out.append((text, spans))
+            if max_sentences is not None and len(out) >= max_sentences:
+                break
+        return out
 
     from datasets import load_dataset
 
