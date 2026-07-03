@@ -1,0 +1,123 @@
+=== OPENER-Legal eval | embedder=../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big | Thu Jul  2 14:36:59     2026 ===
+>>> [1/4] OPENER-Sup gold
+<All keys matched successfully>
+Embedder : ../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big
+Datasets : ['e_ner', 'lener_br', 'german_ler_coarse', 'german_ler']
+
+=== e_ner ===
+  embeddings : train (4109, 768), test (1793, 768)
+    logreg                   AMI=0.6121  acc=0.8310  macro_f1=0.7113
+    logreg_balanced          AMI=0.5990  acc=0.8120  macro_f1=0.8288
+    linear_svm               AMI=0.7058  acc=0.8890  macro_f1=0.7597
+    linear_svm_balanced      AMI=0.7001  acc=0.8851  macro_f1=0.8918
+  energy  : {'kwh': 0.001438, 'gco2eq': 0.0806, 'seconds': 79.8, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=19.2ms  p95=52.6ms  throughput=38.1 batch/s
+
+=== lener_br ===
+  embeddings : train (5156, 768), test (1536, 768)
+    logreg                   AMI=0.5261  acc=0.7930  macro_f1=0.7593
+    logreg_balanced          AMI=0.4952  acc=0.7422  macro_f1=0.6967
+    linear_svm               AMI=0.5497  acc=0.8060  macro_f1=0.7694
+    linear_svm_balanced      AMI=0.5330  acc=0.7858  macro_f1=0.7357
+  energy  : {'kwh': 0.001971, 'gco2eq': 0.1104, 'seconds': 111.53, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=23.2ms  p95=106.7ms  throughput=25.1 batch/s
+
+=== german_ler_coarse ===
+  embeddings : train (3617, 768), test (1740, 768)
+    logreg                   AMI=0.4723  acc=0.7374  macro_f1=0.5334
+    logreg_balanced          AMI=0.5061  acc=0.7460  macro_f1=0.6681
+    linear_svm               AMI=0.5876  acc=0.8109  macro_f1=0.7082
+    linear_svm_balanced      AMI=0.5908  acc=0.8155  macro_f1=0.7484
+  energy  : {'kwh': 0.001788, 'gco2eq': 0.1002, 'seconds': 101.53, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=24.0ms  p95=68.8ms  throughput=30.9 batch/s
+
+=== german_ler ===
+  embeddings : train (3617, 768), test (1740, 768)
+    logreg                   AMI=0.3994  acc=0.6270  macro_f1=0.2121
+    logreg_balanced          AMI=0.4609  acc=0.6121  macro_f1=0.4579
+    linear_svm               AMI=0.5886  acc=0.7655  macro_f1=0.4425
+    linear_svm_balanced      AMI=0.6197  acc=0.7868  macro_f1=0.6114
+  energy  : {'kwh': 0.001841, 'gco2eq': 0.1032, 'seconds': 108.94, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=23.8ms  p95=70.8ms  throughput=30.4 batch/s
+
+Rapport : outputs\results\legal\sup_gold\SUMMARY_balanced_classifiers_2026-07-02_144411.md
+Moyennes AMI : [('logreg', 0.5025), ('logreg_balanced', 0.5153), ('linear_svm', 0.6079), ('linear_svm_balanced', 0.6109)]
+>>> [2/4] OPENER-Sup e2e
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\huggingface_hub\utils\_validators.py:189: UserWarning: The `resume_download` argument is deprecated and ignored in `snapshot_download`. Downloads always resume whenever possible.
+  warnings.warn(
+Embedder       : ../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big
+MD (GLiNER)    : urchade/gliner_large-v2.1  thresholds=[0.3]
+Loading GLiNER urchade/gliner_large-v2.1 on cuda...
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<00:00, 20.59it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<00:00, 13.99it/s]
+<All keys matched successfully>
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 498 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 511 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 756 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+Datasets : ['e_ner', 'lener_br', 'german_ler_coarse']
+
+=== e_ner ===
+  2000 train / 877 test sentences, 7 labels
+  fit : 4109 train spans, 7 classes
+  [t=0.3] recall=0.574  linear_svm_balanced: AMI=0.3583  F1=0.3359
+
+=== lener_br ===
+  2000 train / 636 test sentences, 6 labels
+  fit : 5156 train spans, 6 classes
+  [t=0.3] recall=0.440  linear_svm_balanced: AMI=0.3239  F1=0.2171
+
+=== german_ler_coarse ===
+  2000 train / 1000 test sentences, 7 labels
+  fit : 3617 train spans, 7 classes
+  [t=0.3] recall=0.187  linear_svm_balanced: AMI=0.3422  F1=0.1159
+
+Rapport : outputs\results\legal\sup_e2e\SUMMARY_opener_e2e_2026-07-02_145512.md
+  t=0.3   AMI moyen (linear_svm_balanced) = 0.3415
+>>> [3/4] OPENER-ZS gold
+[14:55:15] === Opener ZS (nearest label-name centroid, zero-shot typing) ===
+[14:55:15] Embedder    : ../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big
+[14:55:15] Anchor mode : dict
+[14:55:20] Dictionnaire anchors : configs/legal_anchors.yaml (4 blocs)
+[14:55:20] Datasets : ['e_ner', 'lener_br', 'german_ler_coarse', 'german_ler']
+[14:55:20] --- e_ner ---
+<All keys matched successfully>
+[14:56:06]   labels=7  spans=1793  AMI=0.4396  acc=0.5036  macroF1=0.5250  fit=187ms
+[14:56:06]   energy={'kwh': 0.000513, 'gco2eq': 0.0287, 'seconds': 30.88, 'country': 'FRA', 'method': 'codecarbon'}  p50=27.4ms
+[14:56:06] --- lener_br ---
+[14:56:38]   labels=6  spans=1536  AMI=0.3160  acc=0.4688  macroF1=0.5164  fit=168ms
+[14:56:38]   energy={'kwh': 0.000513, 'gco2eq': 0.0288, 'seconds': 30.08, 'country': 'FRA', 'method': 'codecarbon'}  p50=33.9ms
+[14:56:38] --- german_ler_coarse ---
+[14:57:18]   labels=7  spans=1740  AMI=0.2256  acc=0.1891  macroF1=0.2460  fit=161ms
+[14:57:18]   energy={'kwh': 0.000627, 'gco2eq': 0.0351, 'seconds': 37.72, 'country': 'FRA', 'method': 'codecarbon'}  p50=32.2ms
+[14:57:18] --- german_ler ---
+[14:57:58]   labels=19  spans=1740  AMI=0.2212  acc=0.0937  macroF1=0.1716  fit=514ms
+[14:57:58]   energy={'kwh': 0.000634, 'gco2eq': 0.0355, 'seconds': 38.27, 'country': 'FRA', 'method': 'codecarbon'}  p50=33.1ms
+[14:57:58] Rapport : outputs\results\legal\zs_gold\SUMMARY_opener_zs_dict_2026-07-02_145758.md
+[14:57:58] MOYENNES  AMI=0.3006  acc=0.3138  macroF1=0.3647  (sur 4 datasets)
+>>> [4/4] OPENER-ZS e2e + fusion
+[14:58:01] === Opener ZS e2e + FUSION GLiNER<->centroide ===
+[14:58:01] Embedder ../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big | MD urchade/gliner_large-v2.1 thr=0.3 | proto=ensemble refine=3 | betas=[0.0, 0.05, 0.1, 0.2, 0.3, 0.5, 1.0, 2.0]
+[14:58:14] Chargement GLiNER urchade/gliner_large-v2.1 sur cuda...
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\huggingface_hub\utils\_validators.py:189: UserWarning: The `resume_download` argument is deprecated and ignored in `snapshot_download`. Downloads always resume whenever possible.
+  warnings.warn(
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<?, ?it/s]
+[14:58:37] --- e_ner ---
+[codecarbon INFO @ 14:58:46] offline tracker init
+[codecarbon WARNING @ 14:58:46] Multiple instances of codecarbon are allowed to run at the same time.
+<All keys matched successfully>
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 498 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 511 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+[15:00:43]   gliner_pure=0.3467 | best transd β=0.5 AMI=0.3467 | centroid(β0)=0.3265
+[15:00:43] --- lener_br ---
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 756 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+[15:02:51]   gliner_pure=0.3631 | best transd β=0.3 AMI=0.3631 | centroid(β0)=0.3126
+[15:02:51] --- german_ler_coarse ---
+[15:04:59]   gliner_pure=0.3397 | best transd β=0.2 AMI=0.3397 | centroid(β0)=0.3234
+[15:04:59] Rapport : outputs\results\legal\zs_e2e_fusion\SUMMARY_zs_fusion_2026-07-02_150459.md
+[15:04:59] MEILLEUR : inductive β=0.1 AMI=0.3502 | gliner_pure=0.3498
+=== DONE Thu Jul  2 15:05:02     2026. Résultats : outputs/results/legal/ ===

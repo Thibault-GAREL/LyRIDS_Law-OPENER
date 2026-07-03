@@ -1,0 +1,55 @@
+=== OPENER-Legal eval | embedder=../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big | Thu Jul  2 14:35:59     2026 ===
+>>> [1/4] OPENER-Sup gold
+Traceback (most recent call last):
+  File "C:\Users\garel\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Users\garel\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "D:\Loisir\Code_python\LyRIDS_Opener_Legal\scripts\run_balanced_classifiers.py", line 217, in <module>
+    main()
+  File "D:\Loisir\Code_python\LyRIDS_Opener_Legal\scripts\run_balanced_classifiers.py", line 88, in main
+    emb = Embedder(model_name=args.embedder, truncate_dim=None,
+  File "<string>", line 10, in __init__
+  File "D:\Loisir\Code_python\LyRIDS_Opener_Legal\src\models\embedder.py", line 36, in __post_init__
+    import torch
+ModuleNotFoundError: No module named 'torch'
+Embedder : ../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big
+>>> [2/4] OPENER-Sup e2e
+Traceback (most recent call last):
+  File "C:\Users\garel\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Users\garel\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "D:\Loisir\Code_python\LyRIDS_Opener_Legal\scripts\run_opener_e2e.py", line 354, in <module>
+    main()
+  File "D:\Loisir\Code_python\LyRIDS_Opener_Legal\scripts\run_opener_e2e.py", line 244, in main
+    embedder = Embedder(
+  File "<string>", line 10, in __init__
+  File "D:\Loisir\Code_python\LyRIDS_Opener_Legal\src\models\embedder.py", line 36, in __post_init__
+    import torch
+ModuleNotFoundError: No module named 'torch'
+Embedder       : ../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big
+MD (GLiNER)    : urchade/gliner_large-v2.1  thresholds=[0.3]
+>>> [3/4] OPENER-ZS gold
+Traceback (most recent call last):
+  File "C:\Users\garel\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Users\garel\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "D:\Loisir\Code_python\LyRIDS_Opener_Legal\scripts\run_opener_zs.py", line 50, in <module>
+    from src.utils.config import load_config
+  File "D:\Loisir\Code_python\LyRIDS_Opener_Legal\src\utils\config.py", line 9, in <module>
+    import yaml
+ModuleNotFoundError: No module named 'yaml'
+>>> [4/4] OPENER-ZS e2e + fusion
+Traceback (most recent call last):
+  File "C:\Users\garel\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Users\garel\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "D:\Loisir\Code_python\LyRIDS_Opener_Legal\scripts\run_opener_zs_e2e_fusion.py", line 26, in <module>
+    from src.utils.config import load_config
+  File "D:\Loisir\Code_python\LyRIDS_Opener_Legal\src\utils\config.py", line 9, in <module>
+    import yaml
+ModuleNotFoundError: No module named 'yaml'
+=== DONE Thu Jul  2 14:36:14     2026. Résultats : outputs/results/legal/ ===
