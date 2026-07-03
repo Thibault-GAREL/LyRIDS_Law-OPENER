@@ -102,21 +102,47 @@ OWNER    & $\mathbf{38.4}$ & $34.8$ & $28.4$ & $33.9$ \\
 
 \begin{table}[t]
 \centering
-\caption{Frugality of each operating point (mean over the three datasets): energy per run and median per-sentence latency. Zero-shot typing is the cheapest (no train-set embedding); the detector dominates the end-to-end cost.}
+\caption{Efficiency of the end-to-end systems (mean over the three datasets): median per-sentence latency and energy per run, alongside end-to-end AMI. OPENER stays in the leading accuracy band while remaining one to two orders of magnitude cheaper than the generative systems. $^\ddagger$Qwen on the $200$-sentence subsample. $^\S$OWNER: wall-clock (includes per-dataset model load and mention clustering), TDP estimate.}
 \label{tab:legal-frugal}
 \small
-\begin{tabular}{@{}lcc@{}}
+\begin{tabular}{@{}lccc@{}}
 \toprule
-Operating point & Energy (Wh) & Latency p50 (ms) \\
+System & AMI & Latency p50 (ms) & Energy (Wh) \\
 \midrule
-\rowcolor{hlyellow} OPENER-ZS (gold)  & $0.55$ & $31$ \\
-\rowcolor{hlred} OPENER-Sup (gold)    & $1.73$ & $22$ \\
-End-to-end (${+}$ GLiNER-L)           & ${\approx}\,2.0$ & ${\approx}\,130$ \\
+GLiNER-S & $32.7$ & $\mathbf{22}$ & $\mathbf{0.4}$ \\
+GLiNER-M & $34.9$ & $37$ & $0.6$ \\
+GLiNER-L & $35.0$ & $78$ & $1.2$ \\
+GNER-T5  & $33.7$ & $5705$ & $67$ \\
+Qwen2.5-1.5B$^\ddagger$ & $21.4$ & $4852$ & $16$ \\
+OWNER$^\S$ & $33.9$ & $390$ & $10$ \\
+\rowcolor{hlyellow} OPENER-ZS & $33.7$ & $115$ & $2.1$ \\
+\rowcolor{hlred} OPENER-Sup & $34.1$ & $123$ & $2.1$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Frugality carries over unchanged (\autoref{tab:legal-frugal}): a full typing pass costs $0.55$--$1.73$\,Wh at $22$--$31$\,ms per sentence, the detector adding the bulk of the end-to-end cost -- the same one-to-two-orders-of-magnitude margin over trained-encoder and generative systems reported in the general-domain study.
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  ybar, bar width=10pt,
+  width=\linewidth, height=5cm,
+  ymode=log, ymin=10, ymax=20000, log origin=infty,
+  ylabel={Latency p50 (ms/sent, log)},
+  symbolic x coords={GLiNER-S,GLiNER-M,GLiNER-L,OWNER,OP-ZS,OP-Sup,Qwen,GNER},
+  xtick=data, x tick label style={rotate=35, anchor=east, font=\footnotesize},
+  ymajorgrids, grid style={gray!20}, enlarge x limits=0.09,
+]
+\addplot[fill=blue!30, draw=black!40] coordinates {(GLiNER-S,22)(GLiNER-M,37)(GLiNER-L,78)(OWNER,390)(Qwen,4852)(GNER,5705)};
+\addplot[fill=red!55, draw=black!40] coordinates {(OP-ZS,115)(OP-Sup,123)};
+\legend{baselines, OPENER}
+\end{axis}
+\end{tikzpicture}
+\caption{End-to-end per-sentence latency (log scale). OPENER (red) and the GLiNER family run in $22$--$123$\,ms, whereas the generative GNER-T5 and Qwen are $40$--$50\times$ slower ($\approx 5$\,s per sentence).}
+\label{fig:legal-efficiency}
+\end{figure}
+
+The three-axis picture (\autoref{tab:legal-frugal}, \autoref{fig:legal-efficiency}) mirrors the general-domain study: OPENER types a sentence end-to-end in ${\approx}120$\,ms for ${\approx}2.1$\,Wh -- on par with the GLiNER family and OWNER, and \emph{one to two orders of magnitude} below the generative GNER-T5 ($5.7$\,s, $67$\,Wh) and Qwen ($4.9$\,s, $16$\,Wh). Zero-shot typing on gold is cheaper still ($0.5$\,Wh, $32$\,ms), as it embeds no training split. OPENER thus keeps the leading accuracy band at a small, fixed inference cost, which is the operating point that makes it deployable on modest hardware.
 
 \subsection{Analysis}
 \label{sec:exp:analysis}
