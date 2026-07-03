@@ -16,6 +16,13 @@ e_ner:
   PERSON: [person, individual, name]
   MISCELLANEOUS: [miscellaneous, other, entity, thing]
 
+# ---------- MAPA (anglais, EUR-LEX, anonymisation) ----------
+mapa_en:
+  DATE: [date, day, time, year]
+  ORGANISATION: [organization, organisation, company, institution]
+  PERSON: [person, individual, name]
+  ADDRESS: [address, location, place, street]
+
 # ---------- Indian Legal NER (anglais, jugements de cours indiennes) ----------
 indian_legal:
   CASE_NUMBER: [case number, docket number, case no]

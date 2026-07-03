@@ -72,6 +72,16 @@ _LEGAL_SPECS: dict[str, dict] = {
         'source': 'e_ner_github',
         'lang': 'en',
     },
+    # ----- MAPA (anglais, EUR-LEX / législation UE, anonymisation) -----
+    #       Multilingue -> on FILTRE sur language=='en'. Tags coarse BIO (DATE,
+    #       ORGANISATION, PERSON, ADDRESS) : concrets, vrai token-NER.
+    'mapa_en': {
+        'hf': 'joelniklaus/mapa',
+        'token_col': 'tokens',
+        'tag_col': 'coarse_grained',
+        'source': 'mapa_en',
+        'lang': 'en',
+    },
     # ----- CUAD (anglais, contrats, Atticus) : extraction de CLAUSES (40 catégories) -----
     #       ⚠️ PAS du NER classique : "entités" = clauses longues (~31 mots), contextes =
     #       contrats entiers. Adapté en typing-on-gold (classer une clause parmi 40 types).
@@ -207,6 +217,24 @@ def load_legal_dataset(
     # E-NER : CSV GitHub, pas de Parquet HF.
     if spec['source'] == 'e_ner_github':
         return _load_ener_github(split, max_sentences)
+
+    # MAPA : multilingue -> filtrer language=='en', tags coarse BIO (strings).
+    if spec['source'] == 'mapa_en':
+        from datasets import load_dataset
+        ds = load_dataset(spec['hf'], split=split)
+        out: list[tuple[str, list[tuple[int, int, str]]]] = []
+        for ex in ds:
+            if ex.get('language') != 'en':
+                continue
+            tokens = ex[spec['token_col']]
+            tags = [str(t) for t in ex[spec['tag_col']]]
+            spans = _bio_to_spans(tokens, tags)
+            if not spans:
+                continue
+            out.append((' '.join(tokens), spans))
+            if max_sentences is not None and len(out) >= max_sentences:
+                break
+        return out
 
     # CUAD : QA/SQuAD de contrats. Chaque clause gold devient un item
     # (clause tronquée à 400 char = "entité", label = catégorie de clause).
