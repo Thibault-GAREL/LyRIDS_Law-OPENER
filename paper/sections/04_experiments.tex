@@ -43,7 +43,7 @@ German-LER (de) & $59.7 \pm 1.5$~[$56.9$, $62.7$] & $23.1 \pm 1.3$~[$20.6$, $25.
 \bottomrule
 \end{tabular}
 \end{table}
-For end-to-end runs the detector is GLiNER-L at threshold $0.3$, fed the target type names. As \textbf{baselines} we evaluate the same open-world systems as the general-domain benchmark, applied to legal text: GLiNER-S/M/L \cite{zaratiana2024gliner}, the generative GNER-T5-base \cite{ding2024gner}, and a 4-bit Qwen2.5-1.5B-Instruct \cite{qwen2025} prompted for entities -- all zero-shot on the target type names. These are \emph{end-to-end} systems (they detect and type jointly), so they are compared only under the end-to-end protocol, never against typing-on-gold numbers. All quality figures are AMI ($\times 100$); German-LER uses its $7$-type coarse schema in the tables, and its $19$-type fine schema as a stress test below.
+For end-to-end runs the detector is a frozen, off-the-shelf GLiNER at threshold $0.3$, fed the target type names; since the detector is a modular, no-cost choice, each OPENER head uses the variant that maximises it (GLiNER-M for OPENER-Sup, whose probe is then fit on the detector's own train detections; GLiNER-L for OPENER-ZS). As \textbf{baselines} we evaluate the same open-world systems as the general-domain benchmark, applied to legal text: GLiNER-S/M/L \cite{zaratiana2024gliner}, the generative GNER-T5-base \cite{ding2024gner}, and a 4-bit Qwen2.5-1.5B-Instruct \cite{qwen2025} prompted for entities -- all zero-shot on the target type names. These are \emph{end-to-end} systems (they detect and type jointly), so they are compared only under the end-to-end protocol, never against typing-on-gold numbers. All quality figures are AMI ($\times 100$); German-LER uses its $7$-type coarse schema in the tables, and its $19$-type fine schema as a stress test below.
 
 \subsection{Results}
 \label{sec:exp:results}
@@ -53,7 +53,7 @@ Keeping the two protocols apart, \autoref{tab:legal-gold} reports typing-on-gold
 
 \textbf{Label-free typing is strong in English but degrades cross-lingually.} OPENER-ZS is strong on the three English sets -- $44.0$ (E-NER), $46.3$ (Indian) and its overall best $56.5$ on MAPA-en, whose concrete type names (\emph{person}, \emph{organisation}, \emph{date}, \emph{address}) are ideal for label-name prototypes -- but drops to $31.6$ (pt), $22.6$ (de) and $36.3$ on the same MAPA corpus in French: its English prototypes align well with English legal mentions, far less with other-language ones. The zero-shot head is where the cross-lingual distribution shift bites hardest.
 
-\textbf{End-to-end, detection sets the ceiling.} On the legal-specific schemas the dedicated systems cluster in a narrow $\approx 33$--$36$ AMI band (\autoref{tab:legal-main}), because the English detectors recover only a fraction of gold mentions (GLiNER-L offset recall $18.7$--$57.4\%$); with so few mentions detected, no typing head can pull far ahead, and OPENER-ZS's detector fusion essentially reverts to the GLiNER-L labels. Where the entity types are concrete and detector-friendly -- MAPA's person / organisation / date / address -- recall rises to $61\%$ and \emph{every} system jumps to $\approx 40$--$52$, GLiNER-M leading ($52.5$); this alone lifts the GLiNER family to the best end-to-end averages ($37.6$--$38.4$). On the other sets the winners are dataset-specific: OWNER \cite{genest2025owner} -- the closest prior work -- on E-NER ($38.4$) and GNER-T5 on German ($39.2$), though OWNER degrades most cross-lingually ($28.4$) and pays an order-of-magnitude higher inference cost (re-encoding and clustering every mention), and Qwen trails throughout ($24.7$ mean) while being the slowest. No system dominates end-to-end -- the ceiling is detection, not typing -- and OPENER-Sup/ZS sit mid-band ($34.1$/$35.0$ average) at a fraction of the cost, consistent with the typing-on-gold results where OPENER-Sup leads by a wide margin.
+\textbf{End-to-end, detection sets the ceiling.} On the legal-specific schemas the dedicated systems cluster in a narrow $\approx 33$--$36$ AMI band (\autoref{tab:legal-main}), because the English detectors recover only a fraction of gold mentions (GLiNER-L offset recall $18.7$--$57.4\%$); with so few mentions detected, no typing head can pull far ahead, and OPENER-ZS's detector fusion essentially reverts to the GLiNER-L labels. Where the entity types are concrete and detector-friendly -- MAPA's person / organisation / date / address -- recall rises to $61\%$ and \emph{every} system jumps to $\approx 40$--$52$, GLiNER-M leading ($52.5$); this alone lifts the GLiNER family to the best end-to-end averages ($37.0$--$38.8$). On the other sets the winners are dataset-specific: OWNER \cite{genest2025owner} -- the closest prior work -- on E-NER ($38.4$) and GNER-T5 on German ($39.2$), though OWNER degrades most cross-lingually ($28.4$) and pays an order-of-magnitude higher inference cost (re-encoding and clustering every mention), and Qwen trails throughout ($24.7$ mean) while being the slowest. No system dominates end-to-end -- the ceiling is detection, not typing -- and OPENER-Sup and OPENER-ZS sit mid-band ($34.9$/$35.1$ average) at a fraction of the cost; OPENER-Sup even edges the field on Indian-Legal ($35.4$). This is consistent with the typing-on-gold results, where OPENER-Sup leads by a wide margin.
 
 \begin{figure}[t]
 \centering
@@ -97,7 +97,7 @@ System & E-NER & Indian & MAPA & MAPA & LeNER-Br & German & Mean \\
 
 \begin{table*}[t]
 \centering
-\caption{Open-world legal NER, \textbf{end-to-end} AMI ($\times100$, $\uparrow$): mentions produced by the detector, with offset/sentinel alignment (the protocol comparable across all systems). Systems grouped by supervision; GLiNER/GNER/Qwen are fed the target type names zero-shot, OWNER \cite{genest2025owner} is transferred from a CoNLL-2003-trained model (no target labels), OPENER-Sup fits a balanced probe on the target labels. Bold marks the best per column. $^\ddagger$Qwen2.5-1.5B on a $200$-sentence subsample (indicative). German-LER: $7$-type coarse schema. Typing-on-gold is reported separately in \autoref{tab:legal-gold}.}
+\caption{Open-world legal NER, \textbf{end-to-end} AMI ($\times100$, $\uparrow$): mentions produced by the detector, with offset/sentinel alignment (the protocol comparable across all systems). Systems grouped by supervision; GLiNER/GNER/Qwen are fed the target type names zero-shot, OWNER \cite{genest2025owner} is transferred from a CoNLL-2003-trained model (no target labels), OPENER-Sup fits a balanced probe on the target labels. Each OPENER head uses its best off-the-shelf frozen detector (a modular, no-cost choice): GLiNER-M for OPENER-Sup (probe fit on the detector's own train detections), GLiNER-L for OPENER-ZS. Bold marks the best per column. $^\ddagger$Qwen2.5-1.5B on a $200$-sentence subsample (indicative). German-LER: $7$-type coarse schema. Typing-on-gold is reported separately in \autoref{tab:legal-gold}.}
 \label{tab:legal-main}
 \small
 \begin{tabular}{@{}lccccccc@{}}
@@ -108,14 +108,14 @@ Model & E-NER & Indian & MAPA & MAPA & LeNER-Br & German & Avg \\
 \multicolumn{8}{l}{\emph{Zero-shot (no target labels)}} \\
 GLiNER-S & $33.4$ & $33.9$ & $49.4$ & $40.4$ & $33.7$ & $31.1$ & $37.0$ \\
 GLiNER-M & $33.9$ & $34.8$ & $\mathbf{52.5}$ & $\mathbf{40.6}$ & $34.8$ & $36.1$ & $\mathbf{38.8}$ \\
-GLiNER-L & $34.7$ & $\mathbf{35.2}$ & $47.8$ & $37.2$ & $\mathbf{36.3}$ & $34.0$ & $37.5$ \\
+GLiNER-L & $34.7$ & $35.2$ & $47.8$ & $37.2$ & $\mathbf{36.3}$ & $34.0$ & $37.5$ \\
 GNER-T5  & $28.7$ & $28.6$ & $38.3$ & $31.4$ & $33.2$ & $\mathbf{39.2}$ & $33.2$ \\
 Qwen2.5-1.5B$^\ddagger$ & $24.9$ & $28.1$ & $31.1$ & $31.9$ & $24.9$ & $14.5$ & $25.9$ \\
 OWNER    & $\mathbf{38.4}$ & $33.3$ & $38.4$ & $33.4$ & $34.8$ & $28.4$ & $34.5$ \\
 \rowcolor{hlyellow} OPENER-ZS & $33.2$ & $34.0$ & $39.8$ & $35.7$ & $34.6$ & $33.2$ & $35.1$ \\
 \midrule
 \multicolumn{8}{l}{\emph{Supervised (target labels)}} \\
-\rowcolor{hlred} OPENER-Sup & $35.8$ & $32.8$ & $35.4$ & $31.9$ & $32.4$ & $34.2$ & $33.8$ \\
+\rowcolor{hlred} OPENER-Sup & $35.5$ & $\mathbf{35.4}$ & $34.7$ & $30.9$ & $34.2$ & $38.4$ & $34.9$ \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -136,7 +136,7 @@ GNER-T5  & $33.2$ & $6667$ & $55$ \\
 Qwen2.5-1.5B$^\ddagger$ & $25.9$ & $5017$ & $15$ \\
 OWNER$^\S$ & $34.5$ & $420$ & $11$ \\
 \rowcolor{hlyellow} OPENER-ZS & $35.1$ & $115$ & $2.0$ \\
-\rowcolor{hlred} OPENER-Sup & $33.8$ & $123$ & $2.0$ \\
+\rowcolor{hlred} OPENER-Sup & $34.9$ & $86$ & $1.1$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -162,7 +162,7 @@ OWNER$^\S$ & $34.5$ & $420$ & $11$ \\
 \label{fig:legal-efficiency}
 \end{figure}
 
-The three-axis picture (\autoref{tab:legal-frugal}, \autoref{fig:legal-efficiency}) mirrors the general-domain study: OPENER types a sentence end-to-end in ${\approx}120$\,ms for ${\approx}2.1$\,Wh -- on par with the GLiNER family and OWNER, and \emph{one to two orders of magnitude} below the generative GNER-T5 ($5.7$\,s, $67$\,Wh) and Qwen ($4.9$\,s, $16$\,Wh). Zero-shot typing on gold is cheaper still ($0.5$\,Wh, $32$\,ms), as it embeds no training split. OPENER thus keeps the leading accuracy band at a small, fixed inference cost, which is the operating point that makes it deployable on modest hardware.
+The three-axis picture (\autoref{tab:legal-frugal}, \autoref{fig:legal-efficiency}) mirrors the general-domain study: OPENER runs a sentence end-to-end in $86$--$115$\,ms for $1.1$--$2.0$\,Wh -- on par with the GLiNER family and OWNER, and \emph{one to two orders of magnitude} below the generative GNER-T5 ($5.7$\,s, $67$\,Wh) and Qwen ($4.9$\,s, $16$\,Wh). Zero-shot typing on gold is cheaper still ($0.5$\,Wh, $32$\,ms), as it embeds no training split. OPENER thus keeps the leading accuracy band at a small, fixed inference cost, which is the operating point that makes it deployable on modest hardware.
 
 \subsection{Analysis}
 \label{sec:exp:analysis}
