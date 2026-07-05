@@ -81,6 +81,50 @@ def fit_classifiers(embedder, train):
     return fitted, int(X_tr.shape[0]), len(set(y_tr))
 
 
+def _overlap_label(det_s, det_e, gold_spans):
+    """Label du span gold qui recouvre le plus (det_s, det_e) ; None si aucun."""
+    best_lbl, best_ov = None, 0
+    for gs, ge, glbl in gold_spans:
+        ov = min(det_e, ge) - max(det_s, gs)
+        if ov > best_ov:
+            best_ov, best_lbl = ov, glbl
+    return best_lbl
+
+
+def fit_classifiers_on_detected(md_model, embedder, train, labels, threshold):
+    """Fitte les classifieurs sur les spans DETECTES du train (pas les gold).
+
+    Corrige le decalage train/test : la tete de typing apprend a typer la
+    distribution (bornes bruitees, spans partiels) qu'elle verra reellement a
+    l'inference e2e, au lieu des spans gold propres. On aligne chaque detection
+    a la mention gold qu'elle recouvre le plus (label = gold) ; les detections
+    sans recouvrement gold (faux positifs) sont ignorees a l'entrainement.
+    Aucune modification du detecteur ni de l'embedder.
+    """
+    X_parts, y_tr = [], []
+    for text, gold_spans in train:
+        ents = md_model.predict_entities(text, labels, threshold=threshold)
+        sp, lbls = [], []
+        for e in ents:
+            lbl = _overlap_label(e['start'], e['end'], gold_spans)
+            if lbl is None:
+                continue
+            sp.append((e['start'], e['end'])); lbls.append(lbl)
+        if sp:
+            emb = embedder.embed_entities([text[s:en] for (s, en) in sp],
+                                          full_text=text, spans=sp)
+            X_parts.append(emb); y_tr.extend(lbls)
+    if not X_parts or len(set(y_tr)) < 2:
+        # pas assez de detections/classes -> repli sur le fit gold (robustesse)
+        return fit_classifiers(embedder, train)
+    X_tr = np.vstack(X_parts); y_tr = np.array(y_tr)
+    fitted = {}
+    for cname, clf in build_classifiers().items():
+        clf.fit(X_tr, y_tr)
+        fitted[cname] = clf
+    return fitted, int(X_tr.shape[0]), len(set(y_tr))
+
+
 def detect_embed_predict_once(md_model, embedder, fitted, test, labels, min_threshold, project_tag):
     """Detecte 1x au seuil MIN (garde les scores), embedde 1x, predit 1x par classifieur.
 
@@ -169,8 +213,13 @@ def run_dataset(name, md_model, embedder, args, thresholds):
     print(f"  {len(train)} train / {len(test)} test sentences, {len(labels)} labels")
 
     # FIT une seule fois (reutilise pour tous les thresholds)
-    fitted, n_train_spans, n_classes = fit_classifiers(embedder, train)
-    print(f"  fit : {n_train_spans} train spans, {n_classes} classes")
+    if getattr(args, 'fit_on_detected', False):
+        fitted, n_train_spans, n_classes = fit_classifiers_on_detected(
+            md_model, embedder, train, labels, min(thresholds))
+        print(f"  fit (on DETECTED train spans) : {n_train_spans} spans, {n_classes} classes")
+    else:
+        fitted, n_train_spans, n_classes = fit_classifiers(embedder, train)
+        print(f"  fit : {n_train_spans} train spans, {n_classes} classes")
 
     # DETECTION + EMBED + PREDICT une seule fois au seuil MIN ; seuils sup. = filtrage
     min_thr = min(thresholds)
@@ -212,6 +261,10 @@ def main():
     parser.add_argument('--datasets', nargs='+', default=None)
     parser.add_argument('--legal', action='store_true',
                         help='Charge les datasets juridiques (src/data/legal_datasets).')
+    parser.add_argument('--fit-on-detected', action='store_true',
+                        help="Fitte la tete de typing sur les spans DETECTES du train "
+                             "(aligne au gold) au lieu des spans gold : corrige le "
+                             "decalage train/test e2e, sans toucher au detecteur.")
     parser.add_argument('--embedder', default='outputs/models/embedder_contrastive',
                         help='Embedder (chemin local du modele contrastif, ou nom HF)')
     parser.add_argument('--md-checkpoint', default='urchade/gliner_large-v2.1',
