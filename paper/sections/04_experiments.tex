@@ -168,4 +168,25 @@ Two distribution shifts act together here, and the results separate them cleanly
 
 The \textbf{specialised-schema} stress test points the same way. On German-LER's fine $19$-type schema, OPENER-Sup still reaches $62.0$ gold AMI -- the embedder separates even fine legal distinctions once a probe names them -- but OPENER-ZS falls to $22.1$, as many fine German type codes have no faithful English label-name prototype.
 
-The binding constraint end-to-end is \textbf{detection}, not typing: GLiNER-L's offset recall falls from $57.4\%$ (en) to $18.7\%$ (de), so all end-to-end scores compress to ${\approx}34$--$35$ regardless of the typing head. This localises where domain adaptation would pay off first: a light, in-language adaptation of the \emph{detector} (or a multilingual one) would lift the ceiling far more than a better typing head. Within our frugal, retraining-free budget, OPENER-Sup is the safe operating point across languages, while OPENER-ZS is attractive only when the target language is close to the embedder's (English) training distribution.
+The binding constraint end-to-end is \textbf{detection}, not typing: GLiNER-L's offset recall falls from $57.4\%$ (en) to $18.7\%$ (de), so on the legal-specific schemas the end-to-end scores compress to ${\approx}34$--$35$ regardless of the typing head. This localises where domain adaptation would pay off first: a light, in-language adaptation of the \emph{detector} (or a multilingual one) would lift the ceiling far more than a better typing head. Within our frugal, retraining-free budget, OPENER-Sup is the safe operating point across languages, while OPENER-ZS is attractive only when the target language is close to the embedder's (English) training distribution.
+
+\textbf{A controlled language ablation} attributes the cross-lingual cost to the pipeline, not to OPENER. The MAPA corpus (identical annotation scheme, concrete types) exists in both English and French, so we re-run every system on its French subset ($156$ test sentences). Switching English$\to$French is costly for OPENER's typing -- $60.1\!\to\!44.2$ gold AMI for OPENER-Sup ($-15.9$) and $56.5\!\to\!36.3$ for OPENER-ZS -- but this is \emph{not} specific to OPENER: end-to-end the English GLiNER-M loses $11.9$ AMI ($52.5\!\to\!40.6$) and OWNER $5.0$, whereas the multilingual Qwen2.5-1.5B is essentially unaffected ($+0.8$, \autoref{tab:legal-mapafr}). The whole English-centric stack -- embedder \emph{and} detector -- degrades together on a new language, so a multilingual backbone or a light in-language adaptation, rather than a better typing head, is what would recover the gap.
+
+\begin{table}[t]
+\centering
+\caption{Controlled language ablation on the MAPA corpus (same annotation scheme, English vs French subset). End-to-end AMI ($\times100$, $\uparrow$): the cross-lingual shift degrades the whole English-centric pipeline; only the multilingual Qwen is unaffected.}
+\label{tab:legal-mapafr}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+System (end-to-end) & MAPA-en & MAPA-fr & $\Delta$ \\
+\midrule
+GLiNER-M & $52.5$ & $40.6$ & $-11.9$ \\
+GNER-T5  & $38.3$ & $31.4$ & $-6.9$ \\
+OWNER    & $38.4$ & $33.4$ & $-5.0$ \\
+Qwen2.5-1.5B & $31.1$ & $31.9$ & $\mathbf{+0.8}$ \\
+\rowcolor{hlyellow} OPENER-ZS & $39.8$ & $35.7$ & $-4.1$ \\
+\rowcolor{hlred} OPENER-Sup & $35.4$ & $31.9$ & $-3.5$ \\
+\bottomrule
+\end{tabular}
+\end{table}
