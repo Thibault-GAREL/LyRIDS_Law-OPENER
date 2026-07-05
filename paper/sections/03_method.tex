@@ -3,16 +3,16 @@
 
 We apply \textbf{OPENER} \emph{as is} to the legal domain: the pipeline, the detector and the entity embedder are reused unchanged from the general-domain system, and only the lightweight typing head is fit (or run zero-shot) on the legal targets. No component is retrained on legal data, which lets us measure how well a frugal, general-purpose open-world pipeline \emph{transfers} to legal NER.
 
-\begin{figure}[H]
+\begin{figure*}[t]
 \centering
 \IfFileExists{assets/opener-architecture-v2.pdf}{%
-  \includegraphics[width=0.82\linewidth]{assets/opener-architecture-v2.pdf}%
+  \includegraphics[width=0.7\linewidth]{assets/opener-architecture-v2.pdf}%
 }{\IfFileExists{../assets/opener-architecture-v2.pdf}{%
-  \includegraphics[width=0.82\linewidth]{../assets/opener-architecture-v2.pdf}%
+  \includegraphics[width=0.92\linewidth]{../assets/opener-architecture-v2.pdf}%
 }{\fbox{\parbox{0.9\linewidth}{\centering architecture figure (opener-architecture-v2.pdf)}}}}
 \caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type), reused unchanged for legal NER: a frozen GLiNER detector proposes spans, a contrastively fine-tuned Matryoshka embedder maps each span in context to a vector, and a typing head assigns a type. Two operating points: \textbf{OPENER-Sup} (supervised linear probe) and \textbf{OPENER-ZS} (zero-shot: label-name prototypes, transductive refinement, detector fusion). The embedder is reused from the general-domain model; nothing is retrained on legal data.}
 \label{fig:pipeline}
-\end{figure}
+\end{figure*}
 
 \subsection{Mention detection and embedding}
 Spans are proposed by a frozen \textbf{GLiNER-L} detector \cite{zaratiana2024gliner} and embedded \emph{in context} by \textbf{Nomic v1.5} \cite{nussbaum2024nomic}, a Matryoshka-truncatable sentence embedder \cite{kusupati2022matryoshka} that we reuse from the general-domain OPENER, where it was sharpened by a triplet contrastive step and an error-driven hard-negative mining pass. The embedder is released on the Hugging Face Hub and loaded as-is; no legal-domain fine-tuning is performed.
