@@ -105,13 +105,30 @@ class Embedder:
             emb = emb / np.clip(norms, 1e-12, None)
         return emb
 
-    def embed_anchor_words(self, anchor_words: list[str]) -> np.ndarray:
-        """Embedde une liste de mots-ancres (utilisé pour init des GMMs).
+    def embed_anchor_words(self, anchor_words: list[str],
+                           wrap_markers: bool = False,
+                           context_template: str | None = None) -> np.ndarray:
+        """Embedde une liste de mots-ancres (prototypes ZS).
 
-        Pas de contexte ici — l'anchor word est encodé seul.
+        Args:
+            wrap_markers     : si True, encode l'ancre dans les MEMES marqueurs
+                               span-in-context que les mentions
+                               (``classification: [ENT] court [/ENT]``) au lieu du
+                               mot nu (``classification: court``). Corrige le
+                               decalage de format prototype/mention.
+            context_template : template avec ``{}`` pour donner un contexte neutre
+                               a l'ancre (ex. ``"a legal document mentioning {} ."``).
+                               Implique wrap_markers.
         """
         self._ensure_loaded()
-        inputs = [self.task_prefix + w for w in anchor_words]
+        if context_template is not None:
+            marked = [f"{self.context_prefix} {w} {self.context_suffix}" for w in anchor_words]
+            inputs = [self.task_prefix + context_template.format(m) for m in marked]
+        elif wrap_markers:
+            inputs = [f"{self.task_prefix}{self.context_prefix} {w} {self.context_suffix}"
+                      for w in anchor_words]
+        else:
+            inputs = [self.task_prefix + w for w in anchor_words]
         emb = self._model.encode(
             inputs,
             convert_to_numpy=True,

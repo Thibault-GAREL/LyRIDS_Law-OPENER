@@ -143,8 +143,12 @@ def resolve_anchors(dataset_name: str, label: str, anchor_dicts: dict,
 
 
 def build_label_prototypes(embedder: Embedder, dataset_name: str, labels: list[str],
-                           anchor_dicts: dict, anchor_mode: str):
+                           anchor_dicts: dict, anchor_mode: str,
+                           wrap_markers: bool = False, context_template: str | None = None):
     """Construit un prototype (centroid L2-normalise) par label depuis ses anchors.
+
+    wrap_markers / context_template : alignent le FORMAT des anchors sur celui des
+    mentions (marqueurs [ENT]...[/ENT]) pour corriger le decalage prototype/mention.
 
     Returns:
         (labels_order, P) ou P est (L, D) normalise ligne par ligne, et
@@ -156,7 +160,8 @@ def build_label_prototypes(embedder: Embedder, dataset_name: str, labels: list[s
     for lbl in labels_order:
         anchors = resolve_anchors(dataset_name, lbl, anchor_dicts, anchor_mode)
         anchors_used[lbl] = anchors
-        emb = embedder.embed_anchor_words(anchors)          # (n_anchors, D), L2-norm
+        emb = embedder.embed_anchor_words(anchors, wrap_markers=wrap_markers,
+                                          context_template=context_template)
         centroid = emb.mean(axis=0)
         centroid = centroid / max(float(np.linalg.norm(centroid)), 1e-12)
         protos.append(centroid)
@@ -188,6 +193,13 @@ def main():
                         help="dict = anchors curés (configs/anchor_dictionaries.yaml) "
                              "avec fallback auto ; auto = derives du nom du label seul")
     parser.add_argument('--anchor-dict', default='configs/anchor_dictionaries.yaml')
+    parser.add_argument('--proto-markers', action='store_true',
+                        help="Encode les anchors avec les marqueurs [ENT]...[/ENT] "
+                             "(meme format que les mentions) au lieu du mot nu -- "
+                             "corrige le decalage prototype/mention.")
+    parser.add_argument('--proto-context', default=None,
+                        help="Template de contexte pour les anchors (ex: 'a legal "
+                             "document mentioning {} .'). Implique --proto-markers.")
     parser.add_argument('--output-dir', default='outputs/results/opener_zs')
     args = parser.parse_args()
 
@@ -238,7 +250,8 @@ def main():
             # "Fit" zero-shot = construire les prototypes depuis les noms de labels.
             t_fit0 = perf_counter()
             labels_order, P, anchors_used = build_label_prototypes(
-                emb, name, labels, anchor_dicts, args.anchor_mode)
+                emb, name, labels, anchor_dicts, args.anchor_mode,
+                wrap_markers=args.proto_markers, context_template=args.proto_context)
             fit_ms = (perf_counter() - t_fit0) * 1000.0
 
             # Embedding des mentions gold du test + typing par nearest centroid.
