@@ -7,7 +7,7 @@ We evaluate on four legal-specific NER sets across three languages that, togethe
 
 \begin{table*}[t]
 \centering
-\caption{Legal NER datasets used for the transfer study. ``Sent.'' / ``Ment.'' are the number of test sentences (with $\geq 1$ entity) and test mentions; each entity type is followed by its share (\%) of the test mentions. German-LER is shown with its 7-type \emph{coarse} schema here; its 19-type \emph{fine} schema is used as a specialised-schema stress test in \autoref{sec:exp:analysis}.}
+\caption{Legal NER datasets. ``Sent.''/``Ment.'': test sentences (with $\geq 1$ entity) and mentions; each type is followed by its share (\%) of test mentions. German-LER is shown with its 7-type \emph{coarse} schema (19-type \emph{fine} schema in \autoref{sec:exp:analysis}).}
 \label{tab:legal-datasets}
 \footnotesize
 \begin{tabular}{@{}llrrp{0.52\linewidth}@{}}
@@ -27,6 +27,7 @@ German-LER \citep{leitner2020germanler} & de & 3{,}018 & 5{,}322 & Legal-norm 38
 Embedder, detector and heads are exactly those of the general-domain OPENER (\autoref{sec:method}); the entity embedder is loaded from the Hugging Face Hub and is \emph{not} retrained on legal data. Single fixed seed; each test split capped at $1000$ sentences. Since the reused embedder is frozen and no stage of the pipeline is stochastic at inference, the quality scores are deterministic (identical across re-runs and across seeds); following the general-domain protocol, we therefore quantify their sampling uncertainty with a non-parametric \textbf{bootstrap} ($K{=}1000$) rather than a multi-seed \emph{retraining} study. For typing-on-gold we resample the gold mentions (std reported inline in \autoref{tab:legal-gold}); for the end-to-end scores we resample the \emph{test sentences} and recompute the offset-aligned AMI \emph{paired} across systems, giving the significance test in \autoref{sec:exp:results}. All bootstraps are invariant across the resampling seeds $42$, $7$ and $123$ (CIs agree to ${\pm}0.1$ AMI).
 
 For end-to-end runs the detector is a frozen, off-the-shelf GLiNER at threshold $0.3$, fed the target type names; since the detector is a modular, no-cost choice, each OPENER head uses the variant that maximises it (GLiNER-M for OPENER-Sup, whose probe is then fit on the detector's own train detections; GLiNER-L for OPENER-ZS). As \textbf{baselines} we evaluate the same open-world systems as the general-domain benchmark, applied to legal text: GLiNER-S/M/L \cite{zaratiana2024gliner}, the generative GNER-T5-base \cite{ding2024gner}, and a 4-bit Qwen2.5-1.5B-Instruct \cite{qwen2025} prompted for entities -- all zero-shot on the target type names. These are \emph{end-to-end} systems (they detect and type jointly), so they are compared only under the end-to-end protocol, never against typing-on-gold numbers. All quality figures are AMI ($\times 100$); German-LER uses its $7$-type coarse schema in the tables, and its $19$-type fine schema as a stress test below.
+We also report per-sentence latency (p50) and energy (CodeCarbon) on the same $6$\,GB GPU, which thermally throttles under sustained load; per-dataset efficiency cells therefore carry ${\approx}{\pm}15\%$ variance and are read as indicative. OWNER \cite{genest2025owner} runs in batch and exposes no per-sentence call, so its per-dataset latency/energy cannot be measured the same way; we report only an amortised wall-clock (TDP) estimate for it.
 
 \subsection{Results}
 \label{sec:exp:results}
@@ -40,7 +41,7 @@ Keeping the two protocols apart, \autoref{tab:legal-gold} reports typing-on-gold
 
 \begin{table*}[t]
 \centering
-\caption{\textbf{Typing-on-gold} AMI ($\times100$, $\uparrow$): entity typing on gold mentions (perfect detection), which isolates the typing head. Cells are the point estimate $\pm$ test-set bootstrap std ($K{=}1000$ resamples of the gold mentions; the $95\%$ CI is ${\pm}1.96\,$std, and the seed $42/7/123$ runs agree to ${\pm}0.1$), showing the scores are stable rather than seed-specific. German-LER uses its $7$-type coarse schema (the $19$-type fine schema is discussed in \autoref{sec:exp:analysis}). Bold marks the best per column.}
+\caption{\textbf{Typing-on-gold} AMI ($\times100$, $\uparrow$): typing on gold mentions, isolating the typing head. Cells are the point estimate $\pm$ test-set bootstrap std (\autoref{sec:exp:setup}). Bold marks the best per column.}
 \label{tab:legal-gold}
 \small
 \begin{tabular}{@{}lccccc@{}}
@@ -55,7 +56,7 @@ System & E-NER (en) & Indian (en) & LeNER-Br (pt) & German (de) & Mean \\
 
 \begin{table}[htbp]
 \centering
-\caption{Open-world legal NER, \textbf{end-to-end} AMI ($\times100$, $\uparrow$): mentions produced by the detector, with offset/sentinel alignment (the protocol comparable across all systems). Systems grouped by supervision; GLiNER/GNER/Qwen are fed the target type names zero-shot, OWNER \cite{genest2025owner} is transferred from a CoNLL-2003-trained model (no target labels), OPENER-Sup fits a balanced probe on the target labels. Each OPENER head uses its best off-the-shelf frozen detector (a modular, no-cost choice): GLiNER-M for OPENER-Sup (probe fit on the detector's own train detections), GLiNER-L for OPENER-ZS. Bold marks the best per column. $^\ddagger$Qwen2.5-1.5B on a $200$-sentence subsample (indicative). German-LER: $7$-type coarse schema. Typing-on-gold is reported separately in \autoref{tab:legal-gold}.}
+\caption{Open-world legal NER, \textbf{end-to-end} AMI ($\times100$, $\uparrow$): detector mentions with offset/sentinel alignment (setup and per-head detectors in \autoref{sec:exp:setup}). Systems grouped by supervision; bold marks the best per column. $^\ddagger$Qwen on a $200$-sentence subsample. German-LER: $7$-type coarse schema.}
 \label{tab:legal-main}
 \small
 \setlength{\tabcolsep}{4pt}
@@ -81,7 +82,7 @@ OWNER    & $\mathbf{38.4}$ & $33.3$ & $34.8$ & $28.4$ & $33.7$ \\
 
 \begin{table}[htbp]
 \centering
-\caption{Median per-sentence \textbf{latency} (ms, $\downarrow$), end-to-end, per dataset; best per column in bold. The consumer $6$\,GB GPU throttles under sustained load, so per-dataset cells carry ${\approx}\pm15\%$ variance and are read as indicative. $^\ddagger$Qwen on a $200$-sentence subsample. $^\S$OWNER exposes no per-sentence call: its figure is an amortised wall-clock mean (per-dataset model load $+$ mention clustering), TDP estimate.}
+\caption{Median per-sentence \textbf{latency} (ms, $\downarrow$), end-to-end; best per column in bold. Measurement caveats (throttling, OWNER) in \autoref{sec:exp:setup}. $^\ddagger$Qwen subsample. $^\S$OWNER: amortised wall-clock (TDP) estimate, no per-sentence value.}
 \label{tab:legal-latency}
 \small
 \setlength{\tabcolsep}{4pt}
@@ -104,7 +105,7 @@ OWNER$^\S$ & --- & --- & --- & --- & $420$ \\
 
 \begin{table}[htbp]
 \centering
-\caption{\textbf{Energy} per run (Wh, $\downarrow$), end-to-end, per dataset; best per column in bold. Measured with CodeCarbon; per-dataset cells carry ${\approx}\pm15\%$ variance under GPU throttling. $^\ddagger$Qwen on a $200$-sentence subsample. $^\P$An isolated CodeCarbon over-count on Qwen/LeNER-Br ($577$\,Wh); the Avg for that row uses the other three sets. $^\S$OWNER: amortised wall-clock, TDP estimate (see \autoref{tab:legal-latency}).}
+\caption{\textbf{Energy} per run (Wh, $\downarrow$), end-to-end; best per column in bold. $^\ddagger$Qwen subsample. $^\P$Isolated CodeCarbon over-count (Qwen/LeNER-Br, $577$\,Wh); its Avg uses the other three sets. $^\S$OWNER: amortised estimate (see \autoref{tab:legal-latency}).}
 \label{tab:legal-energy}
 \small
 \setlength{\tabcolsep}{4pt}
