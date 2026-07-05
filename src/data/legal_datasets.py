@@ -79,8 +79,18 @@ _LEGAL_SPECS: dict[str, dict] = {
         'hf': 'joelniklaus/mapa',
         'token_col': 'tokens',
         'tag_col': 'coarse_grained',
-        'source': 'mapa_en',
+        'source': 'mapa_lang',
+        'filter_lang': 'en',
         'lang': 'en',
+    },
+    # ----- MAPA sous-ensemble FRANCAIS (mêmes types concrets, langue fr) -----
+    'mapa_fr': {
+        'hf': 'joelniklaus/mapa',
+        'token_col': 'tokens',
+        'tag_col': 'coarse_grained',
+        'source': 'mapa_lang',
+        'filter_lang': 'fr',
+        'lang': 'fr',
     },
     # ----- CUAD (anglais, contrats, Atticus) : extraction de CLAUSES (40 catégories) -----
     #       ⚠️ PAS du NER classique : "entités" = clauses longues (~31 mots), contextes =
@@ -218,13 +228,13 @@ def load_legal_dataset(
     if spec['source'] == 'e_ner_github':
         return _load_ener_github(split, max_sentences)
 
-    # MAPA : multilingue -> filtrer language=='en', tags coarse BIO (strings).
-    if spec['source'] == 'mapa_en':
+    # MAPA : multilingue -> filtrer sur la langue voulue, tags coarse BIO (strings).
+    if spec['source'] == 'mapa_lang':
         from datasets import load_dataset
         ds = load_dataset(spec['hf'], split=split)
         out: list[tuple[str, list[tuple[int, int, str]]]] = []
         for ex in ds:
-            if ex.get('language') != 'en':
+            if ex.get('language') != spec['filter_lang']:
                 continue
             tokens = ex[spec['token_col']]
             tags = [str(t) for t in ex[spec['tag_col']]]
