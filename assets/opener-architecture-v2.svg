@@ -114,7 +114,7 @@
       <text x="596" y="612" font-size="10" font-weight="400" fill="#B91C1C" text-anchor="middle">fit on each target's</text>
       <text x="596" y="628" font-size="10" font-weight="400" fill="#B91C1C" text-anchor="middle">training labels</text>
       <line x1="528" y1="644" x2="664" y2="644" stroke="#FECACA" stroke-width="1"/>
-      <text x="596" y="664" font-size="11" font-weight="700" fill="#991B1B" text-anchor="middle">62.5 gold · 40.2 e2e</text>
+      <text x="596" y="664" font-size="11" font-weight="700" fill="#991B1B" text-anchor="middle">61.1 gold · 35.9 e2e</text>
       <text x="596" y="681" font-size="9.5" font-weight="400" fill="#B91C1C" text-anchor="middle">most accurate AMI</text>
     </g>
 
@@ -130,8 +130,8 @@
       <text x="364" y="624" font-size="9" font-weight="400" fill="#A16207" text-anchor="middle">spherical k-means on test</text>
       <text x="280" y="645" font-size="10" font-weight="600" fill="#854D0E">③ fuse GLiNER label  (β = 0.05)</text>
       <line x1="296" y1="654" x2="432" y2="654" stroke="#FDE68A" stroke-width="1"/>
-      <text x="364" y="668" font-size="11" font-weight="700" fill="#854D0E" text-anchor="middle">39.4 e2e AMI</text>
-      <text x="364" y="683" font-size="9.5" font-weight="600" fill="#A16207" text-anchor="middle">best zero-shot system</text>
+      <text x="364" y="668" font-size="11" font-weight="700" fill="#854D0E" text-anchor="middle">36.1 gold · 33.8 e2e</text>
+      <text x="364" y="683" font-size="9.5" font-weight="600" fill="#A16207" text-anchor="middle">label-free · no target labels</text>
     </g>
 
     <text x="480" y="726" font-size="10" font-weight="500" fill="#6366F1" text-anchor="middle">same pipeline · the typing head is the only target-fitted part · GMM is an ablation only</text>
