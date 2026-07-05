@@ -28,16 +28,16 @@ Embedder, detector and heads are exactly those of the general-domain OPENER (\au
 
 \begin{table}[htbp]
 \centering
-\caption{Test-set bootstrap of typing-on-gold AMI ($K{=}1000$ resamples of the gold mentions) for the released, frozen embedder: bootstrap mean $\pm$ std with the $95\%$ percentile CI. The point estimates match \autoref{tab:legal-gold}; the narrow $\pm 1.3$--$1.7$ AMI intervals show the reported scores are stable rather than seed-specific.}
+\caption{Test-set bootstrap of typing-on-gold AMI ($K{=}1000$ resamples of the gold mentions) on three representative datasets for the released, frozen embedder: bootstrap mean $\pm$ std (the $95\%$ percentile CI is $\pm1.96\,$std). The point estimates match \autoref{tab:legal-gold}; the narrow $\pm 1.3$--$1.7$ AMI std shows the reported scores are stable rather than seed-specific.}
 \label{tab:legal-bootstrap}
 \small
-\begin{tabular}{@{}lcc@{}}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lccc@{}}
 \toprule
-Dataset & OPENER-Sup AMI & OPENER-ZS AMI \\
+System & E-NER (en) & LeNER-Br (pt) & German (de) \\
 \midrule
-E-NER (en)      & $70.4 \pm 1.5$~[$67.5$, $73.4$] & $44.4 \pm 1.3$~[$41.7$, $47.0$] \\
-LeNER-Br (pt)   & $53.8 \pm 1.7$~[$50.6$, $57.0$] & $32.0 \pm 1.3$~[$29.5$, $34.3$] \\
-German-LER (de) & $59.7 \pm 1.5$~[$56.9$, $62.7$] & $23.1 \pm 1.3$~[$20.6$, $25.5$] \\
+\rowcolor{hlyellow} OPENER-ZS  & $44.4 \pm 1.3$ & $32.0 \pm 1.3$ & $23.1 \pm 1.3$ \\
+\rowcolor{hlred} OPENER-Sup    & $70.4 \pm 1.5$ & $53.8 \pm 1.7$ & $59.7 \pm 1.5$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -47,35 +47,11 @@ For end-to-end runs the detector is a frozen, off-the-shelf GLiNER at threshold 
 \label{sec:exp:results}
 Keeping the two protocols apart, \autoref{tab:legal-gold} reports typing-on-gold AMI (OPENER heads, perfect detection) and \autoref{tab:legal-main} the end-to-end comparison against the baselines; \autoref{tab:legal-latency} and \autoref{tab:legal-energy} give the accompanying per-dataset latency and energy. Three findings stand out.
 
-\textbf{Supervised typing transfers well, including across languages.} Fitting a balanced linear probe on the frozen, general-domain embedder reaches $61.1$ mean typing-on-gold AMI over the four sets -- $70.0$ / $61.9$ on the two English corpora (E-NER, Indian court judgments), and still $53.3$ / $59.1$ on Portuguese LeNER-Br and German German-LER despite the English-centric embedder (\autoref{fig:legal-gold}). The probe adapts to whatever the embedder encodes, so target-label supervision largely absorbs the cross-lingual gap at typing time.
+\textbf{Supervised typing transfers well, including across languages.} Fitting a balanced linear probe on the frozen, general-domain embedder reaches $61.1$ mean typing-on-gold AMI over the four sets -- $70.0$ / $61.9$ on the two English corpora (E-NER, Indian court judgments), and still $53.3$ / $59.1$ on Portuguese LeNER-Br and German German-LER despite the English-centric embedder (\autoref{tab:legal-gold}). The probe adapts to whatever the embedder encodes, so target-label supervision largely absorbs the cross-lingual gap at typing time.
 
 \textbf{Label-free typing is strong in English but degrades cross-lingually.} OPENER-ZS is usable on the two English sets -- $44.0$ (E-NER) and $46.3$ (Indian), from English label-name prototypes alone -- but drops to $31.6$ (pt) and $22.6$ (de): its English prototypes align well with English legal mentions, far less with other-language ones. The zero-shot head is where the cross-lingual distribution shift bites hardest.
 
 \textbf{End-to-end, detection sets the ceiling.} On these legal-specific schemas every system clusters in a narrow $\approx 33$--$36$ AMI band (\autoref{tab:legal-main}), because the English detectors recover only a fraction of gold mentions (GLiNER-L offset recall $18.7$--$57.4\%$); with so few mentions detected, no typing head can pull far ahead, and OPENER-ZS's detector fusion essentially reverts to the GLiNER-L labels. Per-dataset winners are specific: OWNER \cite{genest2025owner} -- the closest prior work -- on E-NER ($38.4$) and GNER-T5 on German ($39.2$), though OWNER degrades most cross-lingually ($28.4$) and pays an order-of-magnitude higher inference cost (re-encoding and clustering every mention), while Qwen trails throughout ($23.1$ mean) and is the slowest. \emph{Averaged over the four sets, OPENER-Sup posts the best end-to-end AMI ($35.9$)} -- narrowly ahead of GLiNER-L ($35.0$) and GLiNER-M ($34.9$) -- and leads outright on Indian-Legal ($35.4$), while OPENER-ZS ($33.8$) essentially ties OWNER ($33.7$). The margins are small, exactly as expected when detection is the ceiling, but they confirm OPENER's typing head is not the weak link; this is consistent with the typing-on-gold results, where OPENER-Sup leads by a wide margin.
-
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-  ybar, bar width=8pt,
-  width=\linewidth, height=5cm,
-  ymin=0, ymax=82,
-  ylabel={Typing-on-gold AMI},
-  symbolic x coords={E-NER (en), Indian (en), LeNER-Br (pt), German (de)},
-  xtick=data, x tick label style={font=\footnotesize, rotate=25, anchor=east},
-  legend style={at={(0.5,1.03)}, anchor=south, legend columns=2, font=\small, draw=none},
-  ymajorgrids, grid style={gray!20},
-  nodes near coords, nodes near coords style={font=\tiny},
-  enlarge x limits=0.18,
-]
-\addplot[fill=yellow!75!orange, draw=black!40] coordinates {(E-NER (en),44.0) (Indian (en),46.3) (LeNER-Br (pt),31.6) (German (de),22.6)};
-\addplot[fill=red!55, draw=black!40] coordinates {(E-NER (en),70.0) (Indian (en),61.9) (LeNER-Br (pt),53.3) (German (de),59.1)};
-\legend{OPENER-ZS, OPENER-Sup}
-\end{axis}
-\end{tikzpicture}
-\caption{Typing-on-gold AMI by dataset (two English, then Portuguese and German). OPENER-Sup stays high across all four legal schemas ($53$--$70$); the label-free OPENER-ZS is usable in English ($44$--$46$) but degrades under the cross-lingual shift ($22$--$32$).}
-\label{fig:legal-gold}
-\end{figure}
 
 \begin{table}[htbp]
 \centering
@@ -165,28 +141,7 @@ OWNER$^\S$ & --- & --- & --- & --- & $11$ \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-  ybar, bar width=10pt,
-  width=\linewidth, height=5cm,
-  ymode=log, ymin=10, ymax=20000, log origin=infty,
-  ylabel={Latency p50 (ms/sent, log)},
-  symbolic x coords={GLiNER-S,GLiNER-M,GLiNER-L,OWNER,OP-ZS,OP-Sup,Qwen,GNER},
-  xtick=data, x tick label style={rotate=35, anchor=east, font=\footnotesize},
-  ymajorgrids, grid style={gray!20}, enlarge x limits=0.09,
-]
-\addplot[fill=blue!30, draw=black!40] coordinates {(GLiNER-S,22)(GLiNER-M,37)(GLiNER-L,81)(OWNER,420)(Qwen,5427)(GNER,8289)};
-\addplot[fill=red!55, draw=black!40] coordinates {(OP-ZS,133)(OP-Sup,84)};
-\legend{baselines, OPENER}
-\end{axis}
-\end{tikzpicture}
-\caption{End-to-end per-sentence latency (log scale, mean over the four datasets; \autoref{tab:legal-latency}). OPENER (red) and the GLiNER family run in $22$--$133$\,ms, whereas the generative GNER-T5 and Qwen are $60$--$100\times$ slower ($\approx 5$--$8$\,s per sentence).}
-\label{fig:legal-efficiency}
-\end{figure}
-
-The three-axis picture (\autoref{tab:legal-latency}, \autoref{tab:legal-energy}, \autoref{fig:legal-efficiency}) mirrors the general-domain study: OPENER runs a sentence end-to-end in $84$--$133$\,ms for $1.4$--$2.2$\,Wh -- on par with the GLiNER family and OWNER, and \emph{one to two orders of magnitude} below the generative GNER-T5 ($8.3$\,s, $79$\,Wh) and Qwen ($5.4$\,s, ${\approx}20$\,Wh). Zero-shot typing on gold is cheaper still ($0.5$\,Wh, $32$\,ms), as it embeds no training split. OPENER-Sup thus holds the best end-to-end accuracy at a small, fixed inference cost, which is the operating point that makes it deployable on modest hardware.
+The three-axis picture (\autoref{tab:legal-latency}, \autoref{tab:legal-energy}) mirrors the general-domain study: OPENER runs a sentence end-to-end in $84$--$133$\,ms for $1.4$--$2.2$\,Wh -- on par with the GLiNER family and OWNER, and \emph{one to two orders of magnitude} below the generative GNER-T5 ($8.3$\,s, $79$\,Wh) and Qwen ($5.4$\,s, ${\approx}20$\,Wh). Zero-shot typing on gold is cheaper still ($0.5$\,Wh, $32$\,ms), as it embeds no training split. OPENER-Sup thus holds the best end-to-end accuracy at a small, fixed inference cost, which is the operating point that makes it deployable on modest hardware.
 
 \subsection{Analysis}
 \label{sec:exp:analysis}
