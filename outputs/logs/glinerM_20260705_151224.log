@@ -1,0 +1,255 @@
+>>> [1/3] Sup e2e (GLiNER-M, gold-fit)
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\huggingface_hub\utils\_validators.py:189: UserWarning: The `resume_download` argument is deprecated and ignored in `snapshot_download`. Downloads always resume whenever possible.
+  warnings.warn(
+Embedder       : ../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big
+MD (GLiNER)    : urchade/gliner_medium-v2.1  thresholds=[0.3]
+Loading GLiNER urchade/gliner_medium-v2.1 on cuda...
+Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]Fetching 5 files: 100%|██████████| 5/5 [00:00<?, ?it/s]
+<All keys matched successfully>
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 498 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 511 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 418 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 478 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 1260 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 587 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 432 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 1033 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 421 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 723 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 393 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 664 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 549 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 810 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 569 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 482 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 534 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 756 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+Datasets : ['e_ner', 'indian_legal', 'mapa_en', 'mapa_fr', 'lener_br', 'german_ler_coarse']
+
+=== e_ner ===
+  2000 train / 877 test sentences, 7 labels
+  fit : 4109 train spans, 7 classes
+  [t=0.3] recall=0.611  linear_svm_balanced: AMI=0.3538  F1=0.3662
+
+=== indian_legal ===
+  2000 train / 866 test sentences, 14 labels
+  fit : 4949 train spans, 13 classes
+  [t=0.3] recall=0.426  linear_svm_balanced: AMI=0.3401  F1=0.1974
+
+=== mapa_en ===
+  317 train / 72 test sentences, 4 labels
+  fit : 1031 train spans, 5 classes
+  [t=0.3] recall=0.782  linear_svm_balanced: AMI=0.3417  F1=0.2823
+
+=== mapa_fr ===
+  438 train / 156 test sentences, 5 labels
+  fit : 1023 train spans, 5 classes
+  [t=0.3] recall=0.687  linear_svm_balanced: AMI=0.3142  F1=0.2452
+
+=== lener_br ===
+  2000 train / 636 test sentences, 6 labels
+  fit : 5156 train spans, 6 classes
+  [t=0.3] recall=0.290  linear_svm_balanced: AMI=0.3432  F1=0.1525
+
+=== german_ler_coarse ===
+  2000 train / 1000 test sentences, 7 labels
+  fit : 3617 train spans, 7 classes
+  [t=0.3] recall=0.102  linear_svm_balanced: AMI=0.3694  F1=0.0698
+
+Rapport : outputs\results\legal\sup_e2e_glinerM\SUMMARY_opener_e2e_glinerM_2026-07-05_152449.md
+  t=0.3   AMI moyen (linear_svm_balanced) = 0.3437
+>>> [2/3] Sup e2e (GLiNER-M, fit-on-detected)
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\huggingface_hub\utils\_validators.py:189: UserWarning: The `resume_download` argument is deprecated and ignored in `snapshot_download`. Downloads always resume whenever possible.
+  warnings.warn(
+Embedder       : ../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big
+MD (GLiNER)    : urchade/gliner_medium-v2.1  thresholds=[0.3]
+Loading GLiNER urchade/gliner_medium-v2.1 on cuda...
+Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]Fetching 5 files: 100%|██████████| 5/5 [00:00<00:00, 5000.36it/s]
+<All keys matched successfully>
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 463 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 397 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 417 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 456 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 498 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 511 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 418 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 478 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 1260 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 587 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 432 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 1033 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 421 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 723 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 393 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 664 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 549 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 810 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 569 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 482 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 534 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 657 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 709 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 924 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 541 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 476 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 970 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 723 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 915 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 706 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 730 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 404 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 561 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 418 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 463 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 450 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 756 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+Datasets : ['e_ner', 'indian_legal', 'mapa_en', 'mapa_fr', 'lener_br', 'german_ler_coarse']
+
+=== e_ner ===
+  2000 train / 877 test sentences, 7 labels
+  fit (on DETECTED train spans) : 3116 spans, 7 classes
+  [t=0.3] recall=0.611  linear_svm_balanced: AMI=0.3555  F1=0.3543
+
+=== indian_legal ===
+  2000 train / 866 test sentences, 14 labels
+  fit (on DETECTED train spans) : 4700 spans, 13 classes
+  [t=0.3] recall=0.426  linear_svm_balanced: AMI=0.3539  F1=0.2072
+
+=== mapa_en ===
+  317 train / 72 test sentences, 4 labels
+  fit (on DETECTED train spans) : 753 spans, 4 classes
+  [t=0.3] recall=0.782  linear_svm_balanced: AMI=0.3467  F1=0.2811
+
+=== mapa_fr ===
+  438 train / 156 test sentences, 5 labels
+  fit (on DETECTED train spans) : 848 spans, 5 classes
+  [t=0.3] recall=0.687  linear_svm_balanced: AMI=0.3095  F1=0.2659
+
+=== lener_br ===
+  2000 train / 636 test sentences, 6 labels
+  fit (on DETECTED train spans) : 2529 spans, 6 classes
+  [t=0.3] recall=0.290  linear_svm_balanced: AMI=0.3422  F1=0.1507
+
+=== german_ler_coarse ===
+  2000 train / 1000 test sentences, 7 labels
+  fit (on DETECTED train spans) : 2603 spans, 7 classes
+  [t=0.3] recall=0.102  linear_svm_balanced: AMI=0.3840  F1=0.0684
+
+Rapport : outputs\results\legal\sup_e2e_glinerM_det\SUMMARY_opener_e2e_glinerMdet_2026-07-05_154402.md
+  t=0.3   AMI moyen (linear_svm_balanced) = 0.3486
+>>> [3/3] ZS e2e (GLiNER-M)
+[15:44:05] === Opener ZS e2e + FUSION GLiNER<->centroide ===
+[15:44:05] Embedder ../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big | MD urchade/gliner_medium-v2.1 thr=0.3 | proto=ensemble refine=3 | betas=[0.0, 0.05, 0.1, 0.2, 0.3, 0.5, 1.0, 2.0]
+[15:44:14] Chargement GLiNER urchade/gliner_medium-v2.1 sur cuda...
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\huggingface_hub\utils\_validators.py:189: UserWarning: The `resume_download` argument is deprecated and ignored in `snapshot_download`. Downloads always resume whenever possible.
+  warnings.warn(
+Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]Fetching 5 files: 100%|██████████| 5/5 [00:00<?, ?it/s]
+[15:44:21] --- e_ner ---
+[codecarbon INFO @ 15:44:23] offline tracker init
+[codecarbon WARNING @ 15:44:23] Multiple instances of codecarbon are allowed to run at the same time.
+<All keys matched successfully>
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 498 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 511 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+[15:45:44]   gliner_pure=0.3393 | best transd β=0.3 AMI=0.3396 | centroid(β0)=0.3160
+[15:45:44] --- indian_legal ---
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 418 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 478 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 1260 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 587 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 432 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 1033 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 421 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 723 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 393 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 664 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 549 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 810 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 569 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 482 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 534 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+[15:47:55]   gliner_pure=0.3483 | best transd β=0.3 AMI=0.3483 | centroid(β0)=0.3471
+[15:47:55] --- mapa_en ---
+[15:48:16]   gliner_pure=0.5250 | best transd β=0.3 AMI=0.5250 | centroid(β0)=0.3768
+[15:48:16] --- mapa_fr ---
+[15:48:39]   gliner_pure=0.4064 | best transd β=0.3 AMI=0.4064 | centroid(β0)=0.3141
+[15:48:39] --- lener_br ---
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 756 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+[15:49:43]   gliner_pure=0.3478 | best transd β=0.2 AMI=0.3480 | centroid(β0)=0.3266
+[15:49:43] --- german_ler_coarse ---
+[15:51:02]   gliner_pure=0.3608 | best transd β=0.2 AMI=0.3608 | centroid(β0)=0.3465
+[15:51:02] Rapport : outputs\results\legal\zs_e2e_glinerM\SUMMARY_zs_fusion_2026-07-05_155102.md
+[15:51:02] MEILLEUR : transductive β=0.3 AMI=0.3880 | gliner_pure=0.3879
+=== ALL GLINER-M DONE ===

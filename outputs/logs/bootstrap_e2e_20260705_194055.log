@@ -1,0 +1,29 @@
+[19:41:09] === Bootstrap e2e (K=1000, seeds=[42, 7, 123]) sur cuda ===
+[19:41:09] Embedder outputs/models/embedder_contrastive_hard_big | thr=0.3 | datasets=['e_ner', 'indian_legal', 'lener_br', 'german_ler_coarse']
+[19:41:15] Chargement detecteur SUP urchade/gliner_medium-v2.1 ...
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\huggingface_hub\utils\_validators.py:189: UserWarning: The `resume_download` argument is deprecated and ignored in `snapshot_download`. Downloads always resume whenever possible.
+  warnings.warn(
+Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]Fetching 5 files: 100%|██████████| 5/5 [00:00<00:00, 5096.36it/s]
+[19:41:22] [GLiNER-M] e_ner: fit-on-detected (train=2000) ...
+Traceback (most recent call last):
+  File "C:\Users\garel\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Users\garel\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "D:\Loisir\Code_python\LyRIDS_Opener_Legal\scripts\run_bootstrap_e2e.py", line 267, in <module>
+    main()
+  File "D:\Loisir\Code_python\LyRIDS_Opener_Legal\scripts\run_bootstrap_e2e.py", line 186, in main
+    fitted, ntr, ncl = fit_classifiers_on_detected(md, embedder, train, labels, args.threshold)
+  File "D:\Loisir\Code_python\LyRIDS_Opener_Legal\scripts\run_opener_e2e.py", line 114, in fit_classifiers_on_detected
+    emb = embedder.embed_entities([text[s:en] for (s, en) in sp],
+  File "D:\Loisir\Code_python\LyRIDS_Opener_Legal\src\models\embedder.py", line 82, in embed_entities
+    self._ensure_loaded()
+  File "D:\Loisir\Code_python\LyRIDS_Opener_Legal\src\models\embedder.py", line 43, in _ensure_loaded
+    self._model = SentenceTransformer(
+  File "C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\sentence_transformers\util\decorators.py", line 41, in wrapper
+    return func(*args, **kwargs)
+  File "C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\sentence_transformers\sentence_transformer\model.py", line 184, in __init__
+    super().__init__(
+  File "C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\sentence_transformers\base\model.py", line 194, in __init__
+    raise FileNotFoundError(f"Path {model_name_or_path} not found")
+FileNotFoundError: Path outputs/models/embedder_contrastive_hard_big not found

@@ -1,0 +1,38 @@
+Embedder (fixe, seed 42) : ../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big
+Bootstrap K=1000 | datasets=['e_ner', 'indian_legal', 'lener_br', 'german_ler_coarse']
+
+=== e_ner ===
+<All keys matched successfully>
+  spans: train 4109, test 1793, labels 7
+  OPENER-SUP AMI point= 70.0  boot= 70.4±1.5  CI95=[67.5,73.4]
+  OPENER-ZS  AMI point= 44.0  boot= 44.4±1.3  CI95=[41.7,47.0]
+
+=== indian_legal ===
+Using the latest cached version of the dataset since AjayMukundS/Indian_Legal_NER_Dataset couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\AjayMukundS___indian_legal_ner_dataset\default\0.0.0\84f8b4533691b65148d8420025788bb0ca1b5deb (last modified on Fri Jul  3 15:05:23 2026).
+Using the latest cached version of the dataset since AjayMukundS/Indian_Legal_NER_Dataset couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\AjayMukundS___indian_legal_ner_dataset\default\0.0.0\84f8b4533691b65148d8420025788bb0ca1b5deb (last modified on Fri Jul  3 15:05:23 2026).
+  spans: train 4949, test 3028, labels 14
+  OPENER-SUP AMI point= 61.9  boot= 62.5±0.8  CI95=[60.9,64.2]
+  OPENER-ZS  AMI point= 46.3  boot= 46.8±0.8  CI95=[45.1,48.4]
+
+=== lener_br ===
+Using the latest cached version of the dataset since peluz/lener_br couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\peluz___lener_br\default\0.0.0\91d05de7e811cbea249b5888cb02cd527c31a8e7 (last modified on Tue Jun 30 16:22:45 2026).
+Using the latest cached version of the dataset since peluz/lener_br couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\peluz___lener_br\default\0.0.0\91d05de7e811cbea249b5888cb02cd527c31a8e7 (last modified on Tue Jun 30 16:22:45 2026).
+  spans: train 5156, test 1536, labels 6
+  OPENER-SUP AMI point= 53.3  boot= 53.8±1.7  CI95=[50.6,57.0]
+  OPENER-ZS  AMI point= 31.6  boot= 32.0±1.3  CI95=[29.5,34.3]
+
+=== german_ler_coarse ===
+Using the latest cached version of the dataset since elenanereiss/german-ler couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\elenanereiss___german-ler\default\0.0.0\ef036115edb7322e109af6d56cc529265f65b505 (last modified on Tue Jun 30 16:21:43 2026).
+Using the latest cached version of the dataset since elenanereiss/german-ler couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\elenanereiss___german-ler\default\0.0.0\ef036115edb7322e109af6d56cc529265f65b505 (last modified on Tue Jun 30 16:21:43 2026).
+  spans: train 3617, test 1740, labels 7
+  OPENER-SUP AMI point= 59.1  boot= 59.7±1.5  CI95=[56.9,62.7]
+  OPENER-ZS  AMI point= 22.6  boot= 23.1±1.3  CI95=[20.6,25.5]
+
+Rapport : outputs\results\bootstrap_ci\SUMMARY_bootstrap_ci_2026-07-05_234213.md
+MOYENNE AMI : Sup 61.1 (boot 61.6±1.4) | ZS 36.1 (boot 36.5±1.2)

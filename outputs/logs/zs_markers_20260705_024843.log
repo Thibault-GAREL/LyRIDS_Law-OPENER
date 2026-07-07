@@ -1,0 +1,23 @@
+[02:48:45] === Opener ZS (nearest label-name centroid, zero-shot typing) ===
+[02:48:45] Embedder    : ../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big
+[02:48:45] Anchor mode : dict
+[02:48:48] Dictionnaire anchors : configs/legal_anchors.yaml (6 blocs)
+[02:48:48] Datasets : ['e_ner', 'indian_legal', 'mapa_en', 'lener_br', 'german_ler_coarse']
+[02:48:48] --- e_ner ---
+<All keys matched successfully>
+[02:49:24]   labels=7  spans=1793  AMI=0.3875  acc=0.4467  macroF1=0.3724  fit=137ms
+[02:49:24]   energy={'kwh': 0.000435, 'gco2eq': 0.0244, 'seconds': 23.96, 'country': 'FRA', 'method': 'codecarbon'}  p50=19.1ms
+[02:49:24] --- indian_legal ---
+[02:50:11]   labels=14  spans=3028  AMI=0.4468  acc=0.3402  macroF1=0.3061  fit=345ms
+[02:50:11]   energy={'kwh': 0.000807, 'gco2eq': 0.0452, 'seconds': 44.57, 'country': 'FRA', 'method': 'codecarbon'}  p50=27.0ms
+[02:50:11] --- mapa_en ---
+[02:50:19]   labels=4  spans=225  AMI=0.4704  acc=0.6711  macroF1=0.6441  fit=184ms
+[02:50:19]   energy={'kwh': 6.7e-05, 'gco2eq': 0.0037, 'seconds': 3.8, 'country': 'FRA', 'method': 'codecarbon'}  p50=21.8ms
+[02:50:19] --- lener_br ---
+[02:50:47]   labels=6  spans=1536  AMI=0.3575  acc=0.3880  macroF1=0.4369  fit=198ms
+[02:50:47]   energy={'kwh': 0.000468, 'gco2eq': 0.0262, 'seconds': 26.13, 'country': 'FRA', 'method': 'codecarbon'}  p50=23.9ms
+[02:50:47] --- german_ler_coarse ---
+[02:51:21]   labels=7  spans=1740  AMI=0.2462  acc=0.1966  macroF1=0.2576  fit=226ms
+[02:51:21]   energy={'kwh': 0.000553, 'gco2eq': 0.031, 'seconds': 30.99, 'country': 'FRA', 'method': 'codecarbon'}  p50=22.0ms
+[02:51:21] Rapport : outputs\results\legal\zs_gold_markers\SUMMARY_opener_zs_dict_2026-07-05_025121.md
+[02:51:21] MOYENNES  AMI=0.3817  acc=0.4085  macroF1=0.4034  (sur 5 datasets)

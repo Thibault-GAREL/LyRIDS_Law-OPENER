@@ -1,0 +1,5 @@
+Embedder (fixe, seed 42) : ../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big
+Bootstrap K=1000 | datasets=['e_ner', 'indian_legal', 'lener_br', 'german_ler_coarse']
+
+=== e_ner ===
+<All keys matched successfully>

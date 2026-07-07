@@ -1,0 +1,28 @@
+>>> Sup gold CUAD
+<All keys matched successfully>
+Embedder : ../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big
+Datasets : ['cuad']
+
+=== cuad ===
+  embeddings : train (2000, 768), test (1000, 768)
+    logreg                   AMI=0.3044  acc=0.4060  macro_f1=0.1253
+    logreg_balanced          AMI=0.2919  acc=0.3440  macro_f1=0.1179
+    linear_svm               AMI=0.4569  acc=0.5240  macro_f1=0.2133
+    linear_svm_balanced      AMI=0.4375  acc=0.4960  macro_f1=0.2713
+  energy  : {'kwh': 0.001256, 'gco2eq': 0.0704, 'seconds': 76.74, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=20.0ms  p95=31.4ms  throughput=45.5 batch/s
+
+Rapport : outputs\results\legal\sup_gold\SUMMARY_balanced_classifiers_2026-07-03_173735.md
+Moyennes AMI : [('logreg', 0.3044), ('logreg_balanced', 0.2919), ('linear_svm', 0.4569), ('linear_svm_balanced', 0.4375)]
+>>> ZS gold CUAD
+[17:37:37] === Opener ZS (nearest label-name centroid, zero-shot typing) ===
+[17:37:37] Embedder    : ../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big
+[17:37:37] Anchor mode : auto
+[17:37:41] Datasets : ['cuad']
+[17:37:41] --- cuad ---
+<All keys matched successfully>
+[17:38:18]   labels=39  spans=1000  AMI=0.1907  acc=0.0790  macroF1=0.0510  fit=914ms
+[17:38:18]   energy={'kwh': 0.000417, 'gco2eq': 0.0234, 'seconds': 23.38, 'country': 'FRA', 'method': 'codecarbon'}  p50=20.9ms
+[17:38:18] Rapport : outputs\results\legal\zs_gold\SUMMARY_opener_zs_auto_2026-07-03_173818.md
+[17:38:18] MOYENNES  AMI=0.1907  acc=0.0790  macroF1=0.0510  (sur 1 datasets)
+=== CUAD gold DONE ===

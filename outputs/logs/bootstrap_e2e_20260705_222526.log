@@ -1,0 +1,172 @@
+[22:25:38] === Bootstrap e2e (K=1000, seeds=[42, 7, 123]) sur cuda ===
+[22:25:38] Embedder ../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big | thr=0.3 | datasets=['e_ner', 'indian_legal', 'lener_br', 'german_ler_coarse']
+Using the latest cached version of the dataset since AjayMukundS/Indian_Legal_NER_Dataset couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\AjayMukundS___indian_legal_ner_dataset\default\0.0.0\84f8b4533691b65148d8420025788bb0ca1b5deb (last modified on Fri Jul  3 15:05:23 2026).
+Using the latest cached version of the dataset since peluz/lener_br couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\peluz___lener_br\default\0.0.0\91d05de7e811cbea249b5888cb02cd527c31a8e7 (last modified on Tue Jun 30 16:22:45 2026).
+Using the latest cached version of the dataset since elenanereiss/german-ler couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\elenanereiss___german-ler\default\0.0.0\ef036115edb7322e109af6d56cc529265f65b505 (last modified on Tue Jun 30 16:21:43 2026).
+[22:25:39] Chargement detecteur SUP urchade/gliner_medium-v2.1 ...
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\huggingface_hub\utils\_validators.py:189: UserWarning: The `resume_download` argument is deprecated and ignored in `snapshot_download`. Downloads always resume whenever possible.
+  warnings.warn(
+The tokenizer you are loading from 'microsoft/deberta-v3-base' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+[22:25:44] [GLiNER-M] e_ner: fit-on-detected (train=2000) ...
+<All keys matched successfully>
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 463 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 397 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 417 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 456 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+[22:27:45] [GLiNER-M] e_ner: predictions e2e (test=877) ...
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 498 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 511 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+Using the latest cached version of the dataset since AjayMukundS/Indian_Legal_NER_Dataset couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\AjayMukundS___indian_legal_ner_dataset\default\0.0.0\84f8b4533691b65148d8420025788bb0ca1b5deb (last modified on Fri Jul  3 15:05:23 2026).
+Using the latest cached version of the dataset since AjayMukundS/Indian_Legal_NER_Dataset couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\AjayMukundS___indian_legal_ner_dataset\default\0.0.0\84f8b4533691b65148d8420025788bb0ca1b5deb (last modified on Fri Jul  3 15:05:23 2026).
+[22:28:51] [GLiNER-M] indian_legal: fit-on-detected (train=2000) ...
+[22:31:23] [GLiNER-M] indian_legal: predictions e2e (test=866) ...
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 418 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 478 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 1260 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 587 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 432 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 1033 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 421 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 723 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 393 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 664 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 549 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 810 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 569 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 482 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 534 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+Using the latest cached version of the dataset since peluz/lener_br couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\peluz___lener_br\default\0.0.0\91d05de7e811cbea249b5888cb02cd527c31a8e7 (last modified on Tue Jun 30 16:22:45 2026).
+Using the latest cached version of the dataset since peluz/lener_br couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\peluz___lener_br\default\0.0.0\91d05de7e811cbea249b5888cb02cd527c31a8e7 (last modified on Tue Jun 30 16:22:45 2026).
+[22:33:14] [GLiNER-M] lener_br: fit-on-detected (train=2000) ...
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 730 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 404 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 561 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 418 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 463 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 450 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+[22:35:36] [GLiNER-M] lener_br: predictions e2e (test=636) ...
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 756 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+Using the latest cached version of the dataset since elenanereiss/german-ler couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\elenanereiss___german-ler\default\0.0.0\ef036115edb7322e109af6d56cc529265f65b505 (last modified on Tue Jun 30 16:21:43 2026).
+Using the latest cached version of the dataset since elenanereiss/german-ler couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\elenanereiss___german-ler\default\0.0.0\ef036115edb7322e109af6d56cc529265f65b505 (last modified on Tue Jun 30 16:21:43 2026).
+[22:36:35] [GLiNER-M] german_ler_coarse: fit-on-detected (train=2000) ...
+[22:38:59] [GLiNER-M] german_ler_coarse: predictions e2e (test=1000) ...
+[22:40:10] Checkpoint Phase A -> outputs\results\legal\bootstrap_e2e\phaseA_cache.json
+[22:40:10] Chargement detecteur ZS urchade/gliner_large-v2.1 ...
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\huggingface_hub\utils\_validators.py:189: UserWarning: The `resume_download` argument is deprecated and ignored in `snapshot_download`. Downloads always resume whenever possible.
+  warnings.warn(
+The tokenizer you are loading from 'microsoft/deberta-v3-large' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+[22:40:22] [GLiNER-L] e_ner: prototypes + transductif + fusion (test=877) ...
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 498 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 511 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+Using the latest cached version of the dataset since AjayMukundS/Indian_Legal_NER_Dataset couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\AjayMukundS___indian_legal_ner_dataset\default\0.0.0\84f8b4533691b65148d8420025788bb0ca1b5deb (last modified on Fri Jul  3 15:05:23 2026).
+[22:42:09] [GLiNER-L] indian_legal: prototypes + transductif + fusion (test=866) ...
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 418 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 478 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 1260 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 587 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 432 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 1033 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 421 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 723 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 393 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 664 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 549 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 810 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 569 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 482 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 534 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+Using the latest cached version of the dataset since peluz/lener_br couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\peluz___lener_br\default\0.0.0\91d05de7e811cbea249b5888cb02cd527c31a8e7 (last modified on Tue Jun 30 16:22:45 2026).
+[22:44:55] [GLiNER-L] lener_br: prototypes + transductif + fusion (test=636) ...
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\gliner\data_processing\processor.py:395: UserWarning: Sentence of length 756 has been truncated to 384
+  batch = [self.preprocess_example(b["tokenized_text"], b[key], class_to_ids) for b in batch_list]
+Using the latest cached version of the dataset since elenanereiss/german-ler couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at C:\Users\garel\.cache\huggingface\datasets\elenanereiss___german-ler\default\0.0.0\ef036115edb7322e109af6d56cc529265f65b505 (last modified on Tue Jun 30 16:21:43 2026).
+[22:46:56] [GLiNER-L] german_ler_coarse: prototypes + transductif + fusion (test=1000) ...
+[22:48:55] Rejeu termine. Bootstrap CPU ...
+[22:51:43] --- seed 42 : Avg AMI ---
+[22:51:43]     GLiNER-M     35.3 +- 0.36  CI[34.6,36.0]
+[22:51:43]     OPENER-Sup   36.3 +- 0.42  CI[35.5,37.1]
+[22:51:43]     GLiNER-L     35.3 +- 0.33  CI[34.7,36.0]
+[22:51:43]     OPENER-ZS    34.0 +- 0.34  CI[33.4,34.7]
+[22:51:43] --- seed 42 : differences appariees (Avg) ---
+[22:51:43]     OPENER-Sup-GLiNER-L     +0.97  CI[+0.15,+1.85]  SIGNIF
+[22:51:43]     OPENER-Sup-GLiNER-M     +1.05  CI[+0.44,+1.69]  SIGNIF
+[22:51:43]     OPENER-ZS-GLiNER-L      -1.29  CI[-1.74,-0.80]  SIGNIF
+[22:51:43]     OPENER-Sup-OPENER-ZS    +2.26  CI[+1.46,+3.06]  SIGNIF
+[22:54:24] --- seed 7 : Avg AMI ---
+[22:54:24]     GLiNER-M     35.2 +- 0.37  CI[34.5,36.0]
+[22:54:24]     OPENER-Sup   36.3 +- 0.42  CI[35.5,37.2]
+[22:54:24]     GLiNER-L     35.3 +- 0.32  CI[34.7,35.9]
+[22:54:24]     OPENER-ZS    34.0 +- 0.34  CI[33.4,34.7]
+[22:54:24] --- seed 7 : differences appariees (Avg) ---
+[22:54:24]     OPENER-Sup-GLiNER-L     +0.94  CI[+0.06,+1.81]  SIGNIF
+[22:54:24]     OPENER-Sup-GLiNER-M     +1.06  CI[+0.44,+1.67]  SIGNIF
+[22:54:24]     OPENER-ZS-GLiNER-L      -1.30  CI[-1.77,-0.85]  SIGNIF
+[22:54:24]     OPENER-Sup-OPENER-ZS    +2.25  CI[+1.41,+3.04]  SIGNIF
+[22:57:11] --- seed 123 : Avg AMI ---
+[22:57:11]     GLiNER-M     35.2 +- 0.37  CI[34.5,36.0]
+[22:57:11]     OPENER-Sup   36.3 +- 0.42  CI[35.5,37.1]
+[22:57:11]     GLiNER-L     35.3 +- 0.32  CI[34.7,35.9]
+[22:57:11]     OPENER-ZS    34.0 +- 0.32  CI[33.4,34.7]
+[22:57:11] --- seed 123 : differences appariees (Avg) ---
+[22:57:11]     OPENER-Sup-GLiNER-L     +0.98  CI[+0.06,+1.87]  SIGNIF
+[22:57:11]     OPENER-Sup-GLiNER-M     +1.07  CI[+0.47,+1.76]  SIGNIF
+[22:57:11]     OPENER-ZS-GLiNER-L      -1.29  CI[-1.77,-0.85]  SIGNIF
+[22:57:11]     OPENER-Sup-OPENER-ZS    +2.27  CI[+1.44,+3.04]  SIGNIF
+[22:57:11] Sauvegarde -> outputs\results\legal\bootstrap_e2e\bootstrap_e2e_2026-07-05_225711.json
