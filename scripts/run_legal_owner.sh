@@ -19,7 +19,7 @@ PY="${PY:-/c/0-Code_py_temp/pytorch_cuda_env/Scripts/python.exe}"   # venv (expo
 OWNERPY="D:/conda_envs/owner/python.exe"                            # env conda OWNER (inference)
 OWNER_REPO="../LyRIDS_Opener/external/OWNER"                        # sous-module partage (repo principal)
 OWNER_ABS="D:/Loisir/Code_python/LyRIDS_Opener/external/OWNER"
-DS="${DS:-e_ner lener_br german_ler_coarse}"
+DS="${DS:-e_ner indian_legal lener_br german_ler_coarse}"   # benchmark du paper (4 datasets)
 LOG="outputs/logs/legal_owner_$(date +%Y%m%d_%H%M%S).log"
 mkdir -p outputs/logs outputs/results/baselines/owner
 ts(){ date +'%H:%M:%S'; }

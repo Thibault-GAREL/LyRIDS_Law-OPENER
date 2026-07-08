@@ -15,12 +15,17 @@ set -e
 PY="${PY:-/c/0-Code_py_temp/pytorch_cuda_env/Scripts/python.exe}"
 
 # Embedder repris depuis HuggingFace (intent du papier : réutilisation, pas de
-# ré-entraînement). Si le chargement HF échoue, basculer sur le poids local :
+# ré-entraînement). Vérifié bit à bit identique au poids local du papier principal
+# (scripts/verify_hf_embedder.py). Fallback local :
 #   EMBEDDER=../LyRIDS_Opener/outputs/models/embedder_contrastive_hard_big bash scripts/run_legal.sh
 EMBEDDER="${EMBEDDER:-Thibault-GAREL/opener-sup}"
-MD="urchade/gliner_large-v2.1"
+# Détecteur par tête (protocole du paper, cf. Setup) : GLiNER-M pour Sup
+# (probe re-fittée sur les détections du train), GLiNER-L pour ZS.
+MD_SUP="urchade/gliner_medium-v2.1"
+MD_ZS="urchade/gliner_large-v2.1"
 ANCHORS="configs/legal_anchors.yaml"
-MAIN_DS="e_ner lener_br german_ler_coarse"   # table principale (schémas <= 7 types)
+# Benchmark du paper : 4 datasets (2 en + pt + de), schémas <= 14 types.
+MAIN_DS="e_ner indian_legal lener_br german_ler_coarse"
 STRESS_DS="german_ler"                         # schéma fin 19 types (Analysis)
 LOG="outputs/logs/legal_run_$(date +%Y%m%d_%H%M%S).log"
 mkdir -p outputs/logs outputs/results/legal
@@ -33,10 +38,10 @@ echo ">>> [1/4] OPENER-Sup gold" | tee -a "$LOG"
   --datasets $MAIN_DS $STRESS_DS \
   --output-dir outputs/results/legal/sup_gold 2>&1 | tee -a "$LOG"
 
-# 2. OPENER-Sup — end-to-end (GLiNER détecteur + LinearSVC balanced + offsets/sentinels)
+# 2. OPENER-Sup — end-to-end (GLiNER-M + fit-on-detected + LinearSVC balanced + offsets/sentinels)
 echo ">>> [2/4] OPENER-Sup e2e" | tee -a "$LOG"
-"$PY" -m scripts.run_opener_e2e --legal --embedder "$EMBEDDER" --md-checkpoint "$MD" \
-  --datasets $MAIN_DS --threshold 0.3 \
+"$PY" -m scripts.run_opener_e2e --legal --embedder "$EMBEDDER" --md-checkpoint "$MD_SUP" \
+  --datasets $MAIN_DS --threshold 0.3 --fit-on-detected \
   --output-dir outputs/results/legal/sup_e2e 2>&1 | tee -a "$LOG"
 
 # 3. OPENER-ZS — typing-on-gold (prototypes label-name, anchors EN via dict)
@@ -48,9 +53,12 @@ echo ">>> [3/4] OPENER-ZS gold" | tee -a "$LOG"
 
 # 4. OPENER-ZS — end-to-end : transductif + fusion détecteur (β balayé, β=0.05 retenu)
 echo ">>> [4/4] OPENER-ZS e2e + fusion" | tee -a "$LOG"
-"$PY" -m scripts.run_opener_zs_e2e_fusion --legal --embedder "$EMBEDDER" --md-checkpoint "$MD" \
+"$PY" -m scripts.run_opener_zs_e2e_fusion --legal --embedder "$EMBEDDER" --md-checkpoint "$MD_ZS" \
   --datasets $MAIN_DS \
   --anchor-mode dict --anchor-dict "$ANCHORS" --proto-mode ensemble --refine-iters 3 \
   --output-dir outputs/results/legal/zs_e2e_fusion 2>&1 | tee -a "$LOG"
 
+# NB : les chiffres e2e + intervalles du paper viennent de scripts/run_bootstrap_e2e.py
+# (bootstrap apparié par phrases, K=1000, seeds 42/7/123) ; les stds gold de
+# scripts/run_bootstrap_ci.py. Ce driver reproduit les points de fonctionnement.
 echo "=== DONE $(date). Résultats : outputs/results/legal/ ===" | tee -a "$LOG"
