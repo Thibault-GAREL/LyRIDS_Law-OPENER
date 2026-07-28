@@ -1,0 +1,68 @@
+% =====================================================================
+% OPENER-Legal: Frugal Open-World NER applied to the Legal Domain
+% Target venue: NLLP @ EMNLP (ACL style). Double-blind submission.
+% Switch "review" -> "final" for camera-ready, "preprint" for a named arXiv version.
+% Compilation: pdflatex main && bibtex main && pdflatex main && pdflatex main
+% =====================================================================
+\documentclass[11pt]{article}
+
+\usepackage[review]{acl}
+
+% Standard ACL includes
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{graphicx}
+\graphicspath{{assets/}{../assets/}}
+
+% Project-specific packages used by the section files
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{float}        % [H] float placement
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{threeparttable} % short caption + notes block below each table (KBS-style)
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\definecolor{hlyellow}{rgb}{1,0.93,0.5}   % OPENER-ZS rows
+\definecolor{hlred}{HTML}{FECACA}         % OPENER-Sup rows
+
+% --- figure palette (matches the general-domain OPENER paper, for consistent styling) ---
+\definecolor{figamber}{HTML}{F59E0B}
+\definecolor{figcyan}{HTML}{06B6D4}
+\definecolor{figsky}{HTML}{0EA5E9}
+\definecolor{figviolet}{HTML}{8B5CF6}
+\definecolor{figgold}{HTML}{EAB308}
+\definecolor{figgreen}{HTML}{10B981}
+\definecolor{figpink}{HTML}{EC4899}
+\definecolor{figred}{HTML}{DC2626}
+
+% Zero-shot shorthand reused from the main paper
+\newcommand{\zstr}{\textsc{OPENER-ZS}}
+
+\title{OPENER-Legal: A Frugal Open-World NER Pipeline for the Legal Domain}
+
+% Anonymous for double-blind review (the [review] option hides this anyway).
+\author{Anonymous ACL submission}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\input{sections/00_abstract}
+\end{abstract}
+
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_method}
+\input{sections/04_experiments}
+\input{sections/05_conclusion}
+
+% NB: acl.sty already sets \bibliographystyle{acl_natbib} and \cite -> \citep.
+\bibliography{references}
+
+\end{document}
