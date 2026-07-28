@@ -1,0 +1,40 @@
+\section{Full evaluation setup}
+\label{sec:appendix:setup}
+
+\autoref{tab:legal-setup} lists every component, hyperparameter and measurement convention behind the results of \autoref{sec:exp:results}. Nothing in it was tuned on legal data: the pipeline settings are those released with the general-domain OPENER, and the only legal-side choice is which of the two typing heads consumes target labels.
+
+\begin{table}[H]
+\centering
+\caption{Legal evaluation setup.}
+\label{tab:legal-setup}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{threeparttable}
+\begin{tabular}{@{}p{0.34\linewidth}p{0.60\linewidth}@{}}
+\toprule
+Component & Setting \\
+\midrule
+Entity embedder & Nomic v1.5, $D{=}768$, span-in-context, loaded from the Hub, \emph{not} retrained \citep{nussbaum2024nomic} \\
+Detector (OPENER-ZS) & GLiNER-L, frozen, threshold $0.3$ \citep{zaratiana2024gliner} \\
+Detector (OPENER-Sup) & GLiNER-M, frozen, threshold $0.3$, probe fit on its own train detections \\
+Zero-shot typing (end-to-end) & English anchor dictionary ($2$ to $5$ words per type), each anchor embedded in $4$ short templates and averaged before $\ell_2$ normalisation, then $3$ transductive spherical $k$-means iterations and detector fusion $\beta{=}0.05$ \\
+Zero-shot typing (on gold) & plain nearest prototype, single-word anchor embeddings, no transductive pass and no fusion (no detector in the loop) \\
+Supervised typing & LinearSVC one-vs-rest, $C{=}1.0$, \texttt{class\_weight=balanced}, target train labels \citep{fan2008liblinear} \\
+\midrule
+Baselines & GLiNER-S/M/L \citep{zaratiana2024gliner}, GNER-T5-base \citep{ding2024gner}, OWNER \citep{genest2025owner}, 4-bit Qwen2.5-1.5B-Instruct \citep{qwen2025}, all zero-shot on the target type names \\
+Test splits & first $1000$ sentences of each test split, Qwen on a $200$-sentence subsample \\
+German-LER schema & $7$-type coarse in the tables, $19$-type fine as a stress test \\
+\midrule
+Quality & AMI ($\times 100$), typing-on-gold and end-to-end kept apart \\
+Embedder seeds & $7$ / $42$ / $123$, full retraining per seed ($42$ released) \\
+Test-set bootstrap & $K{=}1000$, mentions resampled on gold (std ${\pm}0.8$--$1.7$ AMI), sentences resampled \emph{paired} end-to-end \\
+Latency / energy & p50 per sentence, CodeCarbon, released embedder, $6$\,GB GPU, ${\approx}{\pm}15\%$ (thermal throttling) \\
+OWNER cost & amortised from wall-clock $t$: energy $=t\times110$\,W, latency $=t/\text{sentences}$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\scriptsize
+\item The detector, the embedder and every baseline are ready-to-use checkpoints. Only the supervised typing head sees legal labels. Detector variants are a modular, no-cost choice, so each OPENER head uses the one that maximises it. The baselines detect and type jointly, so they are compared only end-to-end. Bootstraps are invariant across resampling seeds $42$ / $7$ / $123$ (CIs agree to ${\pm}0.1$ AMI).
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

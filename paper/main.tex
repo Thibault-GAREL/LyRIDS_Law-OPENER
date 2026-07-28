@@ -7,6 +7,10 @@
 \documentclass[11pt]{article}
 
 \usepackage[review]{acl}
+% acl.sty forces \flushbottom, which stretches the glue between the result
+% tables to equalise column heights and opens large gaps. Columns may end
+% short instead: margins, fonts and spacing are untouched.
+\raggedbottom
 
 % Standard ACL includes
 \usepackage{times}
@@ -20,9 +24,22 @@
 
 % Project-specific packages used by the section files
 \usepackage{amsmath,amssymb,amsfonts}
+\usepackage{dsfont}       % \mathds{1} : indicator symbol (amssymb has no blackboard digit)
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{float}        % [H] float placement
+% The architecture figure spans both columns at full width: without this, LaTeX
+% refuses to put a float that tall at the top of a page and defers it to the end.
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\textfraction}{0.06}
+\renewcommand{\floatpagefraction}{0.80}
+\renewcommand{\dbltopfraction}{0.95}      % two-column floats use the dbl* limits
+\renewcommand{\dblfloatpagefraction}{0.70}
+\setcounter{dbltopnumber}{2}
+% Tighter space around floats (document-level spacing only, margins untouched).
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{8pt plus 2pt minus 2pt}
 \usepackage{xcolor}
 \usepackage{colortbl}
 \usepackage{threeparttable} % short caption + notes block below each table (KBS-style)
@@ -43,6 +60,13 @@
 
 % Zero-shot shorthand reused from the main paper
 \newcommand{\zstr}{\textsc{OPENER-ZS}}
+% Indicator function (dsfont renders the digit 1, unlike amssymb's \mathbb)
+\newcommand{\indic}{\mathds{1}}
+
+% \autoref names: ACL style capitalises cross-references as "Section"/"Appendix".
+\renewcommand{\sectionautorefname}{Section}
+\renewcommand{\subsectionautorefname}{Section}
+\renewcommand{\subsubsectionautorefname}{Section}
 
 \title{OPENER-Legal: A Frugal Open-World NER Pipeline for the Legal Domain}
 
@@ -64,5 +88,8 @@
 
 % NB: acl.sty already sets \bibliographystyle{acl_natbib} and \cite -> \citep.
 \bibliography{references}
+
+\appendix
+\input{sections/06_appendix}
 
 \end{document}
