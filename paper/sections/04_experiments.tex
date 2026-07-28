@@ -30,10 +30,44 @@ German-LER \citep{leitner2020germanler} & de & 3{,}018 & 5{,}322 & Legal-norm 38
 
 \subsection{Setup}
 \label{sec:exp:setup}
-Embedder, detector and heads are exactly those of the general-domain OPENER (\autoref{sec:method}). The entity embedder is loaded from the Hugging Face Hub and is \emph{not} retrained on legal data. Each test split is capped at $1000$ sentences. Following the general-domain protocol, we report two orthogonal sources of uncertainty. First, the reused embedder's \emph{training} is stochastic: the general-domain study retrains the complete embedder under three seeds ($7$, $42$ and $123$, with $42$ released), and we repeat the whole legal transfer study with each. Every OPENER cell therefore reports the mean\,$\pm$\,std over the three retraining seeds. The baselines are frozen, deterministic checkpoints, reported as single runs. Second, for a fixed embedder no stage of the pipeline is stochastic at inference, so the remaining uncertainty is the finite test set, quantified with a non-parametric bootstrap ($K{=}1000$): resampling the gold mentions for typing-on-gold (std ${\pm}0.8$--$1.7$ AMI), and resampling the \emph{test sentences}, paired across systems, for the significance test in \autoref{sec:exp:results}. All bootstraps are invariant across the resampling seeds ($42$, $7$ and $123$, with CIs agreeing to ${\pm}0.1$ AMI).
+\autoref{tab:legal-setup} gives the full configuration. Embedder, detector and heads are exactly those of the general-domain OPENER (\autoref{sec:method}), the embedder is loaded from the Hugging Face Hub, and nothing is retrained on legal data.
 
-For end-to-end runs the detector is a frozen, off-the-shelf GLiNER at threshold $0.3$, fed the target type names. Since the detector is a modular, no-cost choice, each OPENER head uses the variant that maximises it (GLiNER-L for OPENER-ZS, and GLiNER-M for OPENER-Sup, whose probe is then fit on the detector's own train detections). As baselines we evaluate the same open-world systems as the general-domain benchmark, applied to legal text: GLiNER-S/M/L \citep{zaratiana2024gliner} (DeBERTaV3 \citep{he2023debertav3}), the generative GNER-T5-base \citep{ding2024gner} (T5 \citep{raffel2020t5}), and a 4-bit Qwen2.5-1.5B-Instruct \citep{qwen2025}, quantised to NF4 as in QLoRA \citep{dettmers2023qlora}, prompted for entities, all zero-shot on the target type names. These are \emph{end-to-end} systems (they detect and type jointly), so they are compared only under the end-to-end protocol, never against typing-on-gold numbers. All quality figures are AMI ($\times 100$). German-LER uses its $7$-type coarse schema in the tables, and its $19$-type fine schema as a stress test below.
-We also report per-sentence latency (p50) and energy (CodeCarbon), measured with the released embedder on the same $6$\,GB GPU, which thermally throttles under sustained load. Per-dataset efficiency cells therefore carry ${\approx}{\pm}15\%$ variance and are read as indicative. Efficiency is deliberately \emph{not} averaged over the retraining seeds: a different seed changes the embedder's weights but not its architecture or per-sentence FLOPs, so any spread across seed re-runs would reflect the machine's thermal state, not the model. OWNER \citep{genest2025owner} runs in batch and exposes no per-sentence call. Following the general-domain protocol, we therefore report an \emph{amortised} cost from its per-dataset wall-clock time $t$ (model load $+$ mention encoding $+$ clustering): energy $= t\times110$\,W (TDP estimate) and latency $= t/\text{sentences}$.
+Two points deserve a word beyond the table. First, we report two orthogonal sources of uncertainty. The reused embedder's \emph{training} is stochastic, so we repeat the whole legal study under the three retraining seeds and report mean\,$\pm$\,std in every OPENER cell, while the baselines are frozen, deterministic checkpoints reported as single runs. Inference itself is deterministic for a fixed embedder, so the remaining uncertainty is the finite test set, quantified with a paired bootstrap for the significance test in \autoref{sec:exp:results}. Second, efficiency is deliberately \emph{not} averaged over the retraining seeds. A different seed changes the embedder's weights but not its architecture or per-sentence FLOPs, so any spread across seed re-runs would reflect the machine's thermal state, not the model.
+
+\begin{table}[H]
+\centering
+\caption{Legal evaluation setup.}
+\label{tab:legal-setup}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{threeparttable}
+\begin{tabular}{@{}p{0.29\linewidth}p{0.65\linewidth}@{}}
+\toprule
+Component & Setting \\
+\midrule
+Entity embedder & Nomic v1.5, $D{=}768$, span-in-context, loaded from the Hub, \emph{not} retrained \citep{nussbaum2024nomic} \\
+Detector (OPENER-ZS) & GLiNER-L, frozen, threshold $0.3$ \citep{zaratiana2024gliner} \\
+Detector (OPENER-Sup) & GLiNER-M, frozen, threshold $0.3$, probe fit on its own train detections \\
+Zero-shot typing & English label-name prototypes $+$ transductive $+$ fusion ($\beta{=}0.05$) \\
+Supervised typing & LinearSVC, balanced weights, target train labels \citep{fan2008liblinear} \\
+\midrule
+Baselines & GLiNER-S/M/L \citep{zaratiana2024gliner}, GNER-T5-base \citep{ding2024gner}, OWNER \citep{genest2025owner}, 4-bit Qwen2.5-1.5B-Instruct \citep{qwen2025}, all zero-shot on the target type names \\
+Test splits & capped at $1000$ sentences, Qwen on a $200$-sentence subsample \\
+German-LER schema & $7$-type coarse in the tables, $19$-type fine as a stress test \\
+\midrule
+Quality & AMI ($\times 100$), typing-on-gold and end-to-end kept apart \\
+Embedder seeds & $7$ / $42$ / $123$, full retraining per seed ($42$ released) \\
+Test-set bootstrap & $K{=}1000$, mentions resampled on gold (std ${\pm}0.8$--$1.7$ AMI), sentences resampled \emph{paired} end-to-end \\
+Latency / energy & p50 per sentence, CodeCarbon, released embedder, $6$\,GB GPU, ${\approx}{\pm}15\%$ (thermal throttling) \\
+OWNER cost & amortised from wall-clock $t$: energy $=t\times110$\,W, latency $=t/\text{sentences}$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\scriptsize
+\item The detector, the embedder and every baseline are ready-to-use checkpoints. Only the supervised typing head sees legal labels. Detector variants are a modular, no-cost choice, so each OPENER head uses the one that maximises it. The baselines detect and type jointly, so they are compared only end-to-end. Bootstraps are invariant across resampling seeds $42$ / $7$ / $123$ (CIs agree to ${\pm}0.1$ AMI).
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
 
 \subsection{Results}
 \label{sec:exp:results}
@@ -45,43 +79,47 @@ Keeping the two protocols apart, \autoref{tab:legal-gold} reports typing-on-gold
 
 \textbf{End-to-end, detection sets the ceiling, and OPENER-ZS's standing slips relative to the general domain.} On these legal-specific schemas every system clusters in a narrow $\approx 33$--$36$ AMI band (\autoref{tab:legal-main}), because the English detectors recover only a fraction of gold mentions (GLiNER-L offset recall $18.7$--$57.4\%$). With so few mentions detected, no typing head can pull far ahead, and OPENER-ZS's detector fusion essentially reverts to the GLiNER-L labels. Per-dataset winners are specific (OWNER \citep{genest2025owner} on E-NER, GNER-T5 on German), though OWNER degrades most cross-lingually and pays an order-of-magnitude higher inference cost, while Qwen trails throughout and is the slowest. \emph{Averaged over the four sets, OPENER-Sup posts the best end-to-end AMI ($35.9$)}, narrowly ahead of GLiNER-L ($35.0$) and GLiNER-M ($34.9$), for every retraining seed. OPENER-ZS ($33.4$) sits just below OWNER ($33.7$), a marked step down from its \emph{general-domain} standing, where the same fused zero-shot head led every compared system end-to-end ($39.5$ vs GLiNER-L's $38.9$). The margins are small, as expected when detection is the ceiling, yet a \emph{paired} bootstrap on the released model ($K{=}1000$) shows OPENER-Sup's end-to-end lead is nonetheless \textbf{statistically significant} ($+1.0$ AMI over both GLiNER-M and GLiNER-L, $95\%$ CI $[+0.4,+1.7]$ and $[+0.1,+1.9]$). OPENER-ZS's fusion, by contrast, sits significantly \emph{below} GLiNER-L ($-1.3$, $[-1.8,-0.8]$), largely deferring to the detector's labels. Detection remains the ceiling, but OPENER-Sup's typing head is not the weak link, consistent with the typing-on-gold results, where it leads by a wide margin.
 
-\begin{table*}[t]
+\begin{table}[H]
 \centering
 \caption{Typing-on-gold AMI ($\times100$, $\uparrow$).}
 \label{tab:legal-gold}
-\small
+\scriptsize
+\setlength{\tabcolsep}{1.5pt}
 \begin{threeparttable}
 \begin{tabular}{@{}lccccc@{}}
 \toprule
-System & E-NER (en) & Indian (en) & LeNER-Br (pt) & German (de) & Mean \\
+System & E-NER & Indian & LeNER-Br & German & Mean \\
+       & (en)  & (en)   & (pt)     & (de)   &      \\
 \midrule
 \rowcolor{hlyellow} OPENER-ZS & $47.7_{\pm3.5}$ & $49.1_{\pm3.0}$ & $37.4_{\pm6.0}$ & $23.8_{\pm4.3}$ & $39.5_{\pm3.0}$ \\
 \rowcolor{hlred} OPENER-Sup   & $\mathbf{70.9}_{\pm1.2}$ & $\mathbf{60.8}_{\pm1.4}$ & $\mathbf{53.7}_{\pm1.2}$ & $\mathbf{60.3}_{\pm1.0}$ & $\mathbf{61.4}_{\pm0.4}$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]
-\footnotesize
+\scriptsize
 \item Typing on gold mentions, isolating the typing head. Cells report mean\,$\pm$\,std over the three embedder-retraining seeds (\autoref{sec:exp:setup}). The released model's test-set bootstrap std is ${\pm}0.8$--$1.7$ AMI. Bold marks the best per column.
 \end{tablenotes}
 \end{threeparttable}
-\end{table*}
+\end{table}
 
-\begin{table*}[t]
+\begin{table}[H]
 \centering
 \caption{Open-world legal NER, end-to-end AMI ($\times100$, $\uparrow$).}
 \label{tab:legal-main}
-\small
+\scriptsize
+\setlength{\tabcolsep}{1.5pt}
 \begin{threeparttable}
 \begin{tabular}{@{}lccccc@{}}
 \toprule
-Model & E-NER (en) & Indian (en) & LeNER-Br (pt) & German (de) & Avg \\
+Model & E-NER & Indian & LeNER-Br & German & Avg \\
+      & (en)  & (en)   & (pt)     & (de)   &     \\
 \midrule
 \multicolumn{6}{l}{\emph{Zero-shot (no target labels)}} \\
 GLiNER-S & $33.4$ & $33.9$ & $33.7$ & $31.1$ & $33.0$ \\
 GLiNER-M & $33.9$ & $34.8$ & $34.8$ & $36.1$ & $34.9$ \\
 GLiNER-L & $34.7$ & $\mathbf{35.2}$ & $\mathbf{36.3}$ & $34.0$ & $35.0$ \\
 GNER-T5  & $28.7$ & $28.6$ & $33.2$ & $\mathbf{39.2}$ & $32.4$ \\
-Qwen2.5-1.5B$^\ddagger$ & $24.9$ & $28.1$ & $24.9$ & $14.5$ & $23.1$ \\
+Qwen-1.5B$^\ddagger$ & $24.9$ & $28.1$ & $24.9$ & $14.5$ & $23.1$ \\
 OWNER    & $\mathbf{38.4}$ & $33.3$ & $34.8$ & $28.4$ & $33.7$ \\
 \rowcolor{hlyellow} OPENER-ZS & $33.4_{\pm0.2}$ & $33.8_{\pm0.5}$ & $33.5_{\pm1.2}$ & $32.8_{\pm0.4}$ & $33.4_{\pm0.4}$ \\
 \midrule
@@ -90,53 +128,14 @@ OWNER    & $\mathbf{38.4}$ & $33.3$ & $34.8$ & $28.4$ & $33.7$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]
-\footnotesize
+\scriptsize
 \item Detector mentions with offset/sentinel alignment (setup and per-head detectors in \autoref{sec:exp:setup}). Systems are grouped by supervision, and bold marks the best per column. OPENER rows report mean\,$\pm$\,std over the three embedder-retraining seeds. The baselines are frozen checkpoints with deterministic inference (single run). German-LER: $7$-type coarse schema.
 \item[$\ddagger$] Qwen on a $200$-sentence subsample.
 \end{tablenotes}
 \end{threeparttable}
-\end{table*}
+\end{table}
 
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-  width=\linewidth, height=4.0cm,
-  ymin=10, ymax=42,
-  ylabel={End-to-end AMI ($\times100$)}, ylabel style={font=\scriptsize},
-  symbolic x coords={ENER,Indian,LeNERBr,German},
-  xtick=data, xticklabels={E-NER,Indian,LeNER-Br,German},
-  xticklabel style={font=\scriptsize},
-  ytick={10,20,30,40}, yticklabel style={font=\scriptsize},
-  grid=both, major grid style={black!12},
-  enlarge x limits=0.15,
-  legend style={at={(0.5,1.04)}, anchor=south, legend columns=2, font=\tiny, draw=none,
-                /tikz/every even column/.append style={column sep=4pt}},
-]
-\addplot[figsky, semithick, mark=o, mark size=1.1pt] coordinates
-  {(ENER,33.4)(Indian,33.9)(LeNERBr,33.7)(German,31.1)};
-\addplot[figcyan!85!black, semithick, mark=square, mark size=1.1pt] coordinates
-  {(ENER,33.9)(Indian,34.8)(LeNERBr,34.8)(German,36.1)};
-\addplot[blue!60!black, semithick, mark=diamond, mark size=1.3pt] coordinates
-  {(ENER,34.7)(Indian,35.2)(LeNERBr,36.3)(German,34.0)};
-\addplot[figgreen!65!black, semithick, mark=triangle, mark size=1.4pt] coordinates
-  {(ENER,28.7)(Indian,28.6)(LeNERBr,33.2)(German,39.2)};
-\addplot[figviolet, thick, mark=x, mark size=1.8pt] coordinates
-  {(ENER,24.9)(Indian,28.1)(LeNERBr,24.9)(German,14.5)};
-\addplot[figpink, semithick, mark=pentagon, mark size=1.4pt] coordinates
-  {(ENER,38.4)(Indian,33.3)(LeNERBr,34.8)(German,28.4)};
-\addplot[figgold!90!black, very thick, mark=square*, mark size=1.5pt] coordinates
-  {(ENER,33.4)(Indian,33.8)(LeNERBr,33.5)(German,32.8)};
-\addplot[figred, very thick, densely dashed, mark=*, mark size=1.5pt] coordinates
-  {(ENER,35.7)(Indian,35.2)(LeNERBr,34.1)(German,38.5)};
-\legend{GLiNER-S,GLiNER-M,GLiNER-L,GNER-T5,Qwen2.5-1.5B,OWNER,OPENER-ZS,OPENER-Sup}
-\end{axis}
-\end{tikzpicture}
-\caption{End-to-end AMI per legal dataset (\autoref{tab:legal-main}). OPENER-Sup is the dashed red line. Qwen is evaluated on a subsample (\autoref{sec:exp:setup}).}
-\label{fig:legal-main}
-\end{figure}
-
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \caption{Median per-sentence latency (ms, $\downarrow$), end-to-end.}
 \label{tab:legal-latency}
@@ -152,7 +151,7 @@ GLiNER-S & $\mathbf{20}$ & $\mathbf{22}$ & $\mathbf{24}$ & $\mathbf{22}$ & $\mat
 GLiNER-M & $36$ & $35$ & $37$ & $39$ & $37$ \\
 GLiNER-L & $65$ & $88$ & $92$ & $78$ & $81$ \\
 GNER-T5  & $2897$ & $15784$ & $8768$ & $5705$ & $8289$ \\
-Qwen2.5-1.5B$^\ddagger$ & $4852$ & $8068$ & $5929$ & $2857$ & $5427$ \\
+Qwen-1.5B$^\ddagger$ & $4852$ & $8068$ & $5929$ & $2857$ & $5427$ \\
 OWNER$^\S$ & $328$ & $755$ & $420$ & $398$ & $475$ \\
 \rowcolor{hlyellow} OPENER-ZS & $104$ & $140$ & $172$ & $115$ & $133$ \\
 \rowcolor{hlred} OPENER-Sup & $78$ & $102$ & $85$ & $73$ & $84$ \\
@@ -167,43 +166,7 @@ OWNER$^\S$ & $328$ & $755$ & $420$ & $398$ & $475$ \\
 \end{threeparttable}
 \end{table}
 
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-  width=\linewidth, height=4.0cm,
-  ymode=log, ymin=15, ymax=20000, log origin=infty,
-  ylabel={Latency p50 (ms, log)}, ylabel style={font=\scriptsize},
-  symbolic x coords={ENER,Indian,LeNERBr,German},
-  xtick=data, xticklabels={E-NER,Indian,LeNER-Br,German},
-  xticklabel style={font=\scriptsize},
-  yticklabel style={font=\scriptsize},
-  grid=both, major grid style={black!12},
-  enlarge x limits=0.15,
-]
-\addplot[figsky, semithick, mark=o, mark size=1.1pt] coordinates
-  {(ENER,20)(Indian,22)(LeNERBr,24)(German,22)};
-\addplot[figcyan!85!black, semithick, mark=square, mark size=1.1pt] coordinates
-  {(ENER,36)(Indian,35)(LeNERBr,37)(German,39)};
-\addplot[blue!60!black, semithick, mark=diamond, mark size=1.3pt] coordinates
-  {(ENER,65)(Indian,88)(LeNERBr,92)(German,78)};
-\addplot[figgreen!65!black, semithick, mark=triangle, mark size=1.4pt] coordinates
-  {(ENER,2897)(Indian,15784)(LeNERBr,8768)(German,5705)};
-\addplot[figviolet, thick, mark=x, mark size=1.8pt] coordinates
-  {(ENER,4852)(Indian,8068)(LeNERBr,5929)(German,2857)};
-\addplot[figpink, semithick, mark=pentagon, mark size=1.4pt] coordinates
-  {(ENER,328)(Indian,755)(LeNERBr,420)(German,398)};
-\addplot[figgold!90!black, very thick, mark=square*, mark size=1.5pt] coordinates
-  {(ENER,104)(Indian,140)(LeNERBr,172)(German,115)};
-\addplot[figred, very thick, densely dashed, mark=*, mark size=1.5pt] coordinates
-  {(ENER,78)(Indian,102)(LeNERBr,85)(German,73)};
-\end{axis}
-\end{tikzpicture}
-\caption{Per-sentence inference latency (p50, ms, \emph{log} scale) per legal dataset (\autoref{tab:legal-latency}). Same systems and styling as \autoref{fig:legal-main}. OPENER tracks the GLiNER family, while GNER-T5 and Qwen are one to two orders of magnitude slower.}
-\label{fig:legal-latency}
-\end{figure}
-
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \caption{Energy per run (Wh, $\downarrow$), end-to-end.}
 \label{tab:legal-energy}
@@ -219,7 +182,7 @@ GLiNER-S & $\mathbf{0.4}$ & $\mathbf{0.4}$ & $\mathbf{0.3}$ & $\mathbf{0.5}$ & $
 GLiNER-M & $0.6$ & $0.7$ & $0.5$ & $0.7$ & $0.6$ \\
 GLiNER-L & $1.2$ & $1.5$ & $1.1$ & $1.6$ & $1.3$ \\
 GNER-T5  & $43.2$ & $139.4$ & $67.6$ & $67.3$ & $79.4$ \\
-Qwen2.5-1.5B$^\ddagger$ & $16.1$ & $31.5$ & $577^\P$ & $12.6$ & $20.1$ \\
+Qwen-1.5B$^\ddagger$ & $16.1$ & $31.5$ & $577^\P$ & $12.6$ & $20.1$ \\
 OWNER$^\S$ & $8.8$ & $20.0$ & $8.2$ & $12.2$ & $12.3$ \\
 \rowcolor{hlyellow} OPENER-ZS & $1.9$ & $2.9$ & $2.1$ & $2.1$ & $2.2$ \\
 \rowcolor{hlred} OPENER-Sup & $1.3$ & $2.1$ & $1.0$ & $1.3$ & $1.4$ \\
@@ -235,43 +198,7 @@ OWNER$^\S$ & $8.8$ & $20.0$ & $8.2$ & $12.2$ & $12.3$ \\
 \end{threeparttable}
 \end{table}
 
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-  width=\linewidth, height=4.0cm,
-  ymode=log, ymin=0.2, ymax=700, log origin=infty,
-  ylabel={Energy consumption (Wh, log)}, ylabel style={font=\scriptsize},
-  symbolic x coords={ENER,Indian,LeNERBr,German},
-  xtick=data, xticklabels={E-NER,Indian,LeNER-Br,German},
-  xticklabel style={font=\scriptsize},
-  yticklabel style={font=\scriptsize},
-  grid=both, major grid style={black!12},
-  enlarge x limits=0.15,
-]
-\addplot[figsky, semithick, mark=o, mark size=1.1pt] coordinates
-  {(ENER,0.4)(Indian,0.4)(LeNERBr,0.3)(German,0.5)};
-\addplot[figcyan!85!black, semithick, mark=square, mark size=1.1pt] coordinates
-  {(ENER,0.6)(Indian,0.7)(LeNERBr,0.5)(German,0.7)};
-\addplot[blue!60!black, semithick, mark=diamond, mark size=1.3pt] coordinates
-  {(ENER,1.2)(Indian,1.5)(LeNERBr,1.1)(German,1.6)};
-\addplot[figgreen!65!black, semithick, mark=triangle, mark size=1.4pt] coordinates
-  {(ENER,43.2)(Indian,139.4)(LeNERBr,67.6)(German,67.3)};
-\addplot[figviolet, thick, mark=x, mark size=1.8pt] coordinates
-  {(ENER,16.1)(Indian,31.5)(LeNERBr,577)(German,12.6)};
-\addplot[figpink, semithick, mark=pentagon, mark size=1.4pt] coordinates
-  {(ENER,8.8)(Indian,20.0)(LeNERBr,8.2)(German,12.2)};
-\addplot[figgold!90!black, very thick, mark=square*, mark size=1.5pt] coordinates
-  {(ENER,1.9)(Indian,2.9)(LeNERBr,2.1)(German,2.1)};
-\addplot[figred, very thick, densely dashed, mark=*, mark size=1.5pt] coordinates
-  {(ENER,1.3)(Indian,2.1)(LeNERBr,1.0)(German,1.3)};
-\end{axis}
-\end{tikzpicture}
-\caption{Per-run energy consumption (Wh, \emph{log} scale) per legal dataset (\autoref{tab:legal-energy}). Same systems and styling as \autoref{fig:legal-main}. The Qwen/LeNER-Br point ($577$\,Wh, $\P$) is the isolated CodeCarbon over-count noted in \autoref{tab:legal-energy}, plotted as measured. OPENER sits an order of magnitude below GNER-T5 and Qwen, and several times below OWNER.}
-\label{fig:legal-energy}
-\end{figure}
-
-\begin{table}[t]
+\begin{table}[H]
 \centering
 \caption{Quality vs efficiency, $4$-set means, end-to-end.}
 \label{tab:legal-efficiency}
@@ -283,24 +210,24 @@ OWNER$^\S$ & $8.8$ & $20.0$ & $8.2$ & $12.2$ & $12.3$ \\
 Model & Params & AMI$\uparrow$ & p50$\downarrow$ & En.$\downarrow$ & CO\textsubscript{2}$\downarrow$ \\
 \midrule
 \multicolumn{6}{l}{\emph{Zero-shot (no target labels)}} \\
-GLiNER-S & 50M & 33.0 & 22 & 0.4 & 0.02 \\
+GLiNER-S & 50M & 33.0 & $\mathbf{22}$ & $\mathbf{0.4}$ & $\mathbf{0.02}$ \\
 GLiNER-M & 200M & 34.9 & 37 & 0.6 & 0.04 \\
 GLiNER-L & 330M & 35.0 & 81 & 1.3 & 0.08 \\
 GNER-T5 & 220M & 32.4 & 8289 & 79.4 & 4.45 \\
 Qwen-1.5B$^\ddagger$ & 1.5B & 23.1 & 5427 & 20.1 & 1.13 \\
-OWNER$^\S$ & 294M & 33.7 & 475 & 12.3 & 0.64$^\dagger$ \\
+OWNER$^\S$ & 294M & 33.7 & 475 & 12.3 & 0.69$^\dagger$ \\
 \rowcolor{hlyellow} OPENER-ZS & 467M & $33.4_{\pm0.4}$ & 133 & 2.2 & 0.13 \\
 \addlinespace
 \multicolumn{6}{l}{\emph{Supervised (target labels)}} \\
-\rowcolor{hlred} OPENER-Sup & 337M & $35.9_{\pm0.4}$ & 84 & 1.4 & 0.08 \\
+\rowcolor{hlred} OPENER-Sup & 337M & $\mathbf{35.9}_{\pm0.4}$ & 84 & 1.4 & 0.08 \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]
 \footnotesize
-\item AMI ($\times100$, $\uparrow$, OPENER rows: mean\,$\pm$\,std over three retraining seeds). p50 (ms), energy (Wh) and CO\textsubscript{2} (g) measured on the released seed-$42$ run ($\downarrow$). Params: end-to-end pipeline (OPENER-ZS $=$ GLiNER-L $330$M $+$ embedder $137$M $=$ $467$M, OPENER-Sup uses the smaller GLiNER-M detector, $200$M $+$ $137$M $=$ $337$M, and OWNER $\approx$294M).
+\item Best per column in bold. AMI ($\times100$, $\uparrow$, OPENER rows: mean\,$\pm$\,std over three retraining seeds). p50 (ms), energy (Wh) and CO\textsubscript{2} (g) measured on the released seed-$42$ run ($\downarrow$). Params: end-to-end pipeline (OPENER-ZS $=$ GLiNER-L $330$M $+$ embedder $137$M $=$ $467$M, OPENER-Sup uses the smaller GLiNER-M detector, $200$M $+$ $137$M $=$ $337$M, and OWNER $\approx$294M).
 \item[$\ddagger$] Qwen on a subsample.
 \item[$\S$] OWNER latency/energy are amortised (\autoref{sec:exp:setup}).
-\item[$\dagger$] OWNER logs no per-run CO\textsubscript{2}: this is a derived estimate at the France-grid intensity used elsewhere in this study ($52$\,gCO\textsubscript{2}/kWh), not a direct measurement.
+\item[$\dagger$] OWNER logs no per-run CO\textsubscript{2}: this is a derived estimate at the France-grid intensity CodeCarbon applied to every measured run in this study ($56$\,gCO\textsubscript{2}/kWh), not a direct measurement.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
