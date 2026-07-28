@@ -29,14 +29,14 @@
 
   <!-- Title -->
   <text x="40" y="50" font-size="18" font-weight="700" fill="#111827">OPENER Architecture</text>
-  <text x="40" y="71" font-size="12" font-weight="400" fill="#6B7280">Open Partitioning Embedding for NER  ·  pipeline Detect → Embed → Type  ·  no encoder trained from scratch</text>
+  <text x="40" y="71" font-size="12" font-weight="400" fill="#6B7280">Open Partitioning Embedding for NER  ·  Detect → Embed → Type  ·  reused as is, nothing retrained on legal data</text>
   <line x1="40" y1="80" x2="320" y2="80" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round"/>
 
   <!-- ============ 1. INPUT ============ -->
   <g>
     <rect x="290" y="100" width="380" height="54" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5" filter="url(#shadow-sm)"/>
     <text x="480" y="124" font-size="13" font-weight="600" fill="#92400E" text-anchor="middle">Raw text</text>
-    <text x="480" y="142" font-size="11" font-weight="400" fill="#B45309" text-anchor="middle">« Marie Curie discovered radium in 1898. »</text>
+    <text x="480" y="142" font-size="11" font-weight="400" fill="#B45309" text-anchor="middle">« The Court applied Section 10(b) of the Exchange Act. »</text>
   </g>
 
   <line x1="480" y1="154" x2="480" y2="182" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
@@ -45,7 +45,7 @@
   <g>
     <rect x="290" y="186" width="380" height="92" rx="10" fill="#ECFEFF" stroke="#06B6D4" stroke-width="1.5" filter="url(#shadow-sm)"/>
     <rect x="290" y="186" width="4" height="92" rx="2" fill="#06B6D4"/>
-    <text x="312" y="216" font-size="13" font-weight="600" fill="#164E63">Mention Detection (GLiNER-L)</text>
+    <text x="312" y="216" font-size="13" font-weight="600" fill="#164E63">Mention Detection (GLiNER-L / -M)</text>
     <text x="312" y="236" font-size="11" font-weight="400" fill="#0E7490">zero-shot span extractor · finds entity spans</text>
     <text x="312" y="256" font-size="11" font-weight="400" fill="#0E7490">also predicts a candidate label per span</text>
     <rect x="580" y="198" width="76" height="20" rx="10" fill="#FFFFFF" stroke="#06B6D4" stroke-width="1"/>
@@ -79,8 +79,8 @@
     <rect x="40" y="318" width="4" height="96" rx="2" fill="#F59E0B"/>
     <text x="58" y="342" font-size="12" font-weight="600" fill="#92400E">Offline embedder training</text>
     <text x="58" y="361" font-size="9.5" font-weight="400" fill="#B45309">① Triplet contrastive · CoNLL · margin 1</text>
-    <text x="58" y="378" font-size="9.5" font-weight="400" fill="#B45309">② Hard-neg mining · target train (cross-val)</text>
-    <text x="58" y="398" font-size="9.5" font-weight="500" fill="#92400E">one-time · 65% hard · seen by no test label</text>
+    <text x="58" y="378" font-size="9.5" font-weight="400" fill="#B45309">② Hard-neg mining · general-domain train</text>
+    <text x="58" y="398" font-size="9.5" font-weight="500" fill="#92400E">one-time · general domain · no legal data</text>
   </g>
   <line x1="266" y1="366" x2="286" y2="366" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-amber)"/>
 
@@ -116,9 +116,9 @@
     <!-- (left) OPENER-ZS — selected (highlighted) -->
     <g>
       <rect x="266" y="496" width="196" height="196" rx="10" fill="#FEF9C3" stroke="#EAB308" stroke-width="2.5" filter="url(#shadow-md)"/>
-      <text x="364" y="520" font-size="12" font-weight="700" fill="#854D0E" text-anchor="middle">OPENER-ZS<tspan baseline-shift="sub" font-size="8.5">trans</tspan> (zero-shot)</text>
+      <text x="364" y="520" font-size="12" font-weight="700" fill="#854D0E" text-anchor="middle">OPENER-ZS (zero-shot)</text>
       <rect x="296" y="530" width="136" height="19" rx="9.5" fill="#FACC15"/>
-      <text x="364" y="543" font-size="9.5" font-weight="700" fill="#713F12" text-anchor="middle">★ selected · no target labels</text>
+      <text x="364" y="543" font-size="9.5" font-weight="700" fill="#713F12" text-anchor="middle">label-free · no target labels</text>
       <text x="280" y="571" font-size="10" font-weight="400" fill="#854D0E">① label-name prototypes</text>
       <text x="364" y="587" font-size="9" font-weight="400" fill="#A16207" text-anchor="middle">cosine to type-name centroid</text>
       <text x="280" y="608" font-size="10" font-weight="400" fill="#854D0E">② transductive refine</text>
@@ -126,7 +126,7 @@
       <text x="280" y="645" font-size="10" font-weight="600" fill="#854D0E">③ fuse GLiNER label  (β = 0.05)</text>
       <line x1="296" y1="654" x2="432" y2="654" stroke="#FDE68A" stroke-width="1"/>
       <text x="364" y="668" font-size="11" font-weight="700" fill="#854D0E" text-anchor="middle">33.4 e2e AMI · 39.5 gold</text>
-      <text x="364" y="683" font-size="9.5" font-weight="600" fill="#A16207" text-anchor="middle">label-free · no target labels</text>
+      <text x="364" y="683" font-size="9.5" font-weight="600" fill="#A16207" text-anchor="middle">gold: step ① alone (no detector)</text>
     </g>
 
     <text x="480" y="726" font-size="10.5" font-weight="600" fill="#8B5CF6" text-anchor="middle">Same detector, same embedder: only the typing head changes.</text>
@@ -138,7 +138,7 @@
     <rect x="40" y="514" width="204" height="84" rx="10" fill="#FFFFFF" stroke="#EAB308" stroke-width="1.5" filter="url(#shadow-sm)"/>
     <rect x="40" y="514" width="4" height="84" rx="2" fill="#EAB308"/>
     <text x="58" y="538" font-size="11.5" font-weight="600" fill="#854D0E">Label names (open set)</text>
-    <text x="58" y="557" font-size="9.5" font-weight="400" fill="#A16207">person, location, scientist…</text>
+    <text x="58" y="557" font-size="9.5" font-weight="400" fill="#A16207">court, legislation, case law…</text>
     <text x="58" y="575" font-size="9.5" font-weight="400" fill="#A16207">embedded → type prototypes</text>
     <text x="58" y="591" font-size="9.5" font-weight="500" fill="#854D0E">no target annotation needed</text>
   </g>
@@ -160,7 +160,7 @@
   <g>
     <rect x="290" y="790" width="380" height="64" rx="10" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5" filter="url(#shadow-md)"/>
     <text x="480" y="816" font-size="13" font-weight="600" fill="#065F46" text-anchor="middle">Typed entities</text>
-    <text x="480" y="838" font-size="11" font-weight="400" fill="#047857" text-anchor="middle">(span, type)   e.g.  « Marie Curie » → scientist</text>
+    <text x="480" y="838" font-size="11" font-weight="400" fill="#047857" text-anchor="middle">(span, type)   e.g.  « Section 10(b) » → legislation</text>
   </g>
 
   <!-- ============ LEGEND ============ -->
@@ -181,7 +181,7 @@
     <text x="322" y="47" font-size="10" fill="#1E293B">OPENER-Sup (supervised typing, needs labels)</text>
 
     <rect x="300" y="60" width="14" height="14" rx="3" fill="#FEF9C3" stroke="#EAB308" stroke-width="2"/>
-    <text x="322" y="71" font-size="10" fill="#1E293B">OPENER-ZS<tspan baseline-shift="sub" font-size="7.5">trans</tspan>: selected zero-shot head</text>
+    <text x="322" y="71" font-size="10" fill="#1E293B">OPENER-ZS (label-free typing, no labels)</text>
 
     <rect x="300" y="84" width="14" height="14" rx="3" fill="#ECFDF5" stroke="#10B981"/>
     <text x="322" y="95" font-size="10" fill="#1E293B">Output</text>

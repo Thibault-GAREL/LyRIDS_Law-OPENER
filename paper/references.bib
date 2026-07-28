@@ -192,13 +192,27 @@
 % Energy / carbon footprint measurement (used for the frugality axis)
 % ---------------------------------------------------------------------
 
-% Verified against the PDF in paper_used/01_technology_used/ (Quantifying the Carbon Emissions.pdf).
-% This is the canonical reference for the CodeCarbon tool we use to measure kWh / gCO2eq.
-@article{lacoste2019codecarbon,
+% Emission-accounting framework (energy x grid carbon intensity) that our numbers follow.
+% Verified 2026-07-29 against paper_used/04_opener_pipeline/Quantifying the Carbon Emissions.pdf:
+% title page reads Lacoste, Luccioni, Schmidt, Dandres (equal contribution), arXiv:1910.09700v2.
+% CAREFUL: this paper presents the web-based "Machine Learning Emissions Calculator"
+% (mlco2.github.io/impact), NOT the CodeCarbon package. The tool itself is codecarbon2024.
+% Key renamed 2026-07-29 (was lacoste2019codecarbon, which wrongly implied CodeCarbon).
+@article{lacoste2019quantifying,
   title   = {Quantifying the Carbon Emissions of Machine Learning},
   author  = {Lacoste, Alexandre and Luccioni, Alexandra and Schmidt, Victor and Dandres, Thomas},
   journal = {arXiv preprint arXiv:1910.09700},
   year    = {2019}
+}
+
+% The measurement tool actually used (Python package, same mlco2 group as above).
+% Software citation, so no PDF in paper_used/ by construction.
+@misc{codecarbon2024,
+  title        = {{CodeCarbon}: Estimate and Track Carbon Emissions from Machine Learning Computing},
+  author       = {Courty, Benoit and Schmidt, Victor and Luccioni, Sasha and others},
+  year         = {2024},
+  howpublished = {Software, v2.4.1},
+  doi          = {10.5281/zenodo.11171501}
 }
 
 

@@ -2,7 +2,10 @@
 
 Dossier **autonome** : il contient les PDFs de **toutes** les références citées par le workshop paper, y compris les briques techniques partagées avec le papier journal (recopiées depuis `../../LyRIDS_Opener/paper/paper_used/`, où elles ont été vérifiées titre/auteurs/venue). Plus besoin d'ouvrir le repo du journal pour relire une référence.
 
-**État : 36 PDFs présents sur 38 références citées. 2 restent à fournir** (liste en bas, contexte optionnel uniquement).
+**État (audit du 2026-07-29) : 39 références citées, 38 ont leur PDF ici, 0 manquant, 0 orphelin.** ✅
+La 39e (`codecarbon2024`) est un **logiciel**, donc sans article à archiver par construction.
+
+Audit reproductible : `\citation{...}` de `paper/main.aux` croisé avec `references.bib` et la 1re page de chaque PDF (titre, 1er auteur, année). Trois entrées ressortent « à vérifier » par simple artefact d'automate et ont été relues à la main : `anon2026opener` (auteur « Anonymous » exprès, double aveugle), `kalusev2025serbian` (accent de Kalušev), `schwartz2020greenai` (titre « Green AI » trop court pour le test).
 
 Correspondance : 1 ligne = 1 clé `references.bib`. Vérification d'une entrée bib = ouvrir le PDF de la même ligne et lire la page de titre.
 
@@ -52,7 +55,7 @@ Les datasets du benchmark (Table 1 + section Datasets). 4 PDFs vérifiés page d
 | LIBLINEAR | `fan2008liblinear` | Solveur du LinearSVC (OPENER-Sup). |
 | Scikit-learn | `pedregosa2011scikit` | LinearSVC, AMI. |
 | Information Theoretic Measures (AMI) | `vinh2010ami` | Métrique principale. |
-| Quantifying the Carbon Emissions (CodeCarbon) | `lacoste2019codecarbon` | Mesure énergie/CO2. |
+| Quantifying the Carbon Emissions | `lacoste2019quantifying` | **Clé renommée le 2026-07-29** (était `lacoste2019codecarbon`). Relu page de titre : Lacoste, Luccioni, Schmidt, Dandres, arXiv:1910.09700v2. Ce papier présente le calculateur web *ML CO2 Impact*, **pas** le paquet CodeCarbon. Il est donc cité pour le **cadre de comptage** (énergie × intensité carbone du réseau), et l'outil de mesure est cité à part sous `codecarbon2024` (logiciel, sans PDF). ⚠️ Le papier KBS a la même confusion sous la clé `luccioni2019quantifying`, avec en plus un ordre d'auteurs qui ne correspond pas à la page de titre. |
 | CoNLL-2003 | `tjongkimsang2003conll` | Source d'entraînement (généraliste) de l'embedder, jamais du légal. |
 
 ## `05_baselines/` — systèmes comparés et leurs backbones (10)
@@ -64,7 +67,7 @@ Les datasets du benchmark (Table 1 + section Datasets). 4 PDFs vérifiés page d
 | Qwen2.5 Technical Report | `qwen2025` | Baseline LLM 4-bit. |
 | DeBERTaV3 | `he2023debertav3` | Backbone de GLiNER. |
 | T5 | `raffel2020t5` | Backbone de GNER. |
-| QLoRA | `dettmers2023qlora` | Quantification NF4 4-bit. |
+| QLoRA | `dettmers2023qlora` | Quantification NF4 4-bit. Recâblé le 2026-07-29 dans la ligne « Baselines » de la Table 4 (annexe) : la baseline Qwen tournait en NF4 sans que la méthode soit sourcée. Note : on n'utilise que la **quantification** NF4, pas le fine-tuning LoRA. |
 | UniversalNER | `zhou2024universalner` | LLM open-NER (discuté, non mesuré). |
 | GoLLIE | `sainz2024gollie` | LLM open-NER (discuté, non mesuré). |
 | ChatIE | `wei2024chatie` | Extraction par prompting (discuté). |
@@ -81,19 +84,17 @@ Les datasets du benchmark (Table 1 + section Datasets). 4 PDFs vérifiés page d
 | Sustainable AI | `wu2022sustainable` |
 | Power Hungry Processing | `luccioni2024power` |
 
-## `07_legal_models_benchmarks/` — contexte NLP juridique (0 / 2)
+## `07_legal_models_benchmarks/` — contexte NLP juridique (2 / 2) ✅
 
-**Vide : optionnel.** Cités une fois chacun en Related Work comme contexte (« l'adaptation au domaine compte en NLU juridique »). Venues déjà vérifiées, PDF non indispensable.
+Cités une fois chacun en Related Work comme contexte (« l'adaptation au domaine compte en NLU juridique »). 2 PDFs déposés et relus page de titre le 2026-07-29.
 
-| Attendu | Clé bib | Où le prendre |
+| Fichier | Clé bib | Vérifié |
 |---|---|---|
-| LEGAL-BERT | `chalkidis2020legalbert` | Findings of EMNLP 2020, pp. 2898-2904 (aussi arXiv:2010.02559) |
-| LexGLUE | `chalkidis2022lexglue` | ACL 2022, pp. 4310-4330 (aussi arXiv:2110.00976) |
+| LEGAL-BERT: The Muppets straight out of Law School | `chalkidis2020legalbert` | Chalkidis, Fergadiotis, Malakasiotis, Aletras, Androutsopoulos. Findings of EMNLP 2020, pp. 2898-2904. ✅ 5 auteurs et pagination conformes à l'entrée bib. Contenu conforme à la phrase qui le cite : le papier compare BERT out-of-the-box, further-pretraining et pretraining from scratch sur corpus juridique, et conclut que l'adaptation au domaine paie. |
+| LexGLUE: A Benchmark Dataset for Legal Language Understanding in English | `chalkidis2022lexglue` | Chalkidis, Jana, Hartung, Bommarito, Androutsopoulos, Katz, Aletras. ACL 2022 (Vol. 1: Long Papers), pp. 4310-4330. ✅ 7 auteurs dans l'ordre de la page de titre, pagination conforme. Contenu conforme : benchmark multi-tâches de NLU juridique, montre que les modèles orientés légal apportent un gain constant. |
 
 ---
 
-## 📥 À fournir (2, optionnel)
+## ✅ Rien à fournir
 
-**Priorité basse — contexte, dossier `07_legal_models_benchmarks/`** : Legal-BERT (`chalkidis2020legalbert`, arXiv:2010.02559) et LexGLUE (`chalkidis2022lexglue`, arXiv:2110.00976). Cités une fois chacun en Related Work comme simple contexte, entrées bib déjà vérifiées via ACL Anthology, PDF non indispensable pour la relecture.
-
-Les 36 autres références sont présentes et vérifiées. Les 4 datasets du benchmark sont au complet.
+Les 39 références citées sont couvertes : 38 PDFs présents et vérifiés, plus `codecarbon2024` qui est un logiciel. Les 4 datasets du benchmark sont au complet. Aucun PDF orphelin dans le dossier.
