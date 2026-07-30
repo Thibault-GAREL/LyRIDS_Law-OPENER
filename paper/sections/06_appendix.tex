@@ -32,9 +32,9 @@ OWNER cost & amortised from wall-clock $t$: energy $=t\times110$\,W, latency $=t
 \end{tabular}
 \begin{tablenotes}[flushleft]
 \scriptsize
-\item The detector, the embedder and every baseline are ready-to-use checkpoints. Only the supervised typing head sees legal labels. Detector variants are a modular, no-cost choice, so each OPENER head uses the one that maximises it. The baselines detect and type jointly, so they are compared only end-to-end. Bootstraps are invariant across resampling seeds $42$ / $7$ / $123$ (CIs agree to ${\pm}0.1$ AMI).
+\item Only the supervised typing head sees legal labels, every other component is a ready-to-use checkpoint. Detector variants are a free modular choice, so each OPENER head takes its best one. Baselines detect and type jointly, hence the end-to-end comparison only. Bootstrap CIs agree to ${\pm}0.1$ AMI across resampling seeds $42$ / $7$ / $123$.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-\autoref{tab:legal-setup} lists every component, hyperparameter and measurement convention behind the results of \autoref{sec:exp:results}. Nothing in it was tuned on legal data.
+% \autoref{tab:legal-setup} lists every component, hyperparameter and measurement convention behind the results of \autoref{sec:exp:results}. Nothing in it was tuned on legal data.

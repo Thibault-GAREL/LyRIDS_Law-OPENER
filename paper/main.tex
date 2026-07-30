@@ -11,6 +11,9 @@
 % tables to equalise column heights and opens large gaps. Columns may end
 % short instead: margins, fonts and spacing are untouched.
 \raggedbottom
+% acl.sty loads hyperref and colours every link darkblue, which is loud in the
+% bibliography. Links stay clickable, they just render in the body text colour.
+\hypersetup{colorlinks=true, citecolor=black, linkcolor=black, urlcolor=black}
 
 % Standard ACL includes
 \usepackage{times}
