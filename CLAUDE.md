@@ -84,7 +84,7 @@ L'embedding des datasets légaux **nécessite le GPU** (6 Go). Tant que le **run
 
 ### ▶️ Commande à lancer quand le GPU est libre
 ```powershell
-& c:\0-Code_py_temp\pytorch_cuda_env\Scripts\Activate.ps1
+& c:\0-Code_py_temp\pytorch_py310\Scripts\Activate.ps1
 bash scripts/run_legal.sh   # 4 datasets, détecteurs par tête (M/L) ; embedder HF par défaut, fallback via $EMBEDDER
 ```
 Le script écrit un log horodaté dans `outputs/logs/legal_run_*.log` (suivi : `Get-Content <log> -Wait -Tail 30`).

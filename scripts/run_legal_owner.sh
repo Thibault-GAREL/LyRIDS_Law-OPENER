@@ -15,7 +15,7 @@
 #   (ou pour un autre set : DS="indian_legal" bash scripts/run_legal_owner.sh)
 # =====================================================================
 set -u
-PY="${PY:-/c/0-Code_py_temp/pytorch_cuda_env/Scripts/python.exe}"   # venv (export + collect)
+PY="${PY:-/c/0-Code_py_temp/pytorch_py310/Scripts/python.exe}"   # venv (export + collect)
 OWNERPY="D:/conda_envs/owner/python.exe"                            # env conda OWNER (inference)
 OWNER_REPO="../LyRIDS_Opener/external/OWNER"                        # sous-module partage (repo principal)
 OWNER_ABS="D:/Loisir/Code_python/LyRIDS_Opener/external/OWNER"

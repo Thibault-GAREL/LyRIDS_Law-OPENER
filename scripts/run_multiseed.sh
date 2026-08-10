@@ -24,7 +24,7 @@
 # Agrégation ensuite : python -m scripts.aggregate_multiseed [--latex]
 # =====================================================================
 set -u
-PY="${PY:-/c/0-Code_py_temp/pytorch_cuda_env/Scripts/python.exe}"
+PY="${PY:-/c/0-Code_py_temp/pytorch_py310/Scripts/python.exe}"
 export OMP_NUM_THREADS=4
 export MKL_NUM_THREADS=4
 # Modèles (GLiNER M/L) et datasets HF déjà dans le cache local des runs seed 42.

@@ -5,14 +5,14 @@
 #
 # Lancer APRÈS le run multi-seed du papier principal (GPU 6 Go -> pas de
 # contention). Activer le venv d'abord :
-#   & c:\0-Code_py_temp\pytorch_cuda_env\Scripts\Activate.ps1
+#   & c:\0-Code_py_temp\pytorch_py310\Scripts\Activate.ps1
 #   bash scripts/run_legal.sh
 # (ou en PowerShell, lancer chaque commande python -m ... individuellement)
 # =====================================================================
 set -e
 
-# Python du venv pytorch_cuda_env (bare `python` = Python système SANS torch/yaml).
-PY="${PY:-/c/0-Code_py_temp/pytorch_cuda_env/Scripts/python.exe}"
+# Python du venv pytorch_py310 (bare `python` = Python système SANS torch/yaml).
+PY="${PY:-/c/0-Code_py_temp/pytorch_py310/Scripts/python.exe}"
 
 # Embedder repris depuis HuggingFace (intent du papier : réutilisation, pas de
 # ré-entraînement). Vérifié bit à bit identique au poids local du papier principal

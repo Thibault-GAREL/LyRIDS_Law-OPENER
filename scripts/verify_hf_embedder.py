@@ -5,7 +5,7 @@ les runs finaux ont utilisé le checkpoint local du papier principal. Ce script
 valide (sans GPU) que les deux repos HF portent bit à bit les mêmes poids que le
 checkpoint local, ce qui rend la claim du paper exacte.
 
-Usage (venv pytorch_cuda_env, CPU seulement) :
+Usage (venv pytorch_py310, CPU seulement) :
     python -m scripts.verify_hf_embedder
     python -m scripts.verify_hf_embedder --local <chemin> --repos user/repo ...
 """
