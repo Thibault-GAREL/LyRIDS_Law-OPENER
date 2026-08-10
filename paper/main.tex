@@ -51,6 +51,15 @@
 \definecolor{hlyellow}{rgb}{1,0.93,0.5}   % OPENER-ZS rows
 \definecolor{hlred}{HTML}{FECACA}         % OPENER-Sup rows
 
+% --- REVISION MARKUP (2026-08) ------------------------------------------------
+% Reframing: OPENER is presented as designed for the legal domain first, the
+% general-domain study becoming the follow-up. Every rewritten passage is wrapped
+% in \rev{} and printed in red. To produce a clean PDF, redefine it as
+%   \DeclareRobustCommand{\rev}[1]{#1}
+\definecolor{revred}{HTML}{CC0000}
+\DeclareRobustCommand{\rev}[1]{\textcolor{revred}{#1}}
+% -----------------------------------------------------------------------------
+
 % --- figure palette (matches the general-domain OPENER paper, for consistent styling) ---
 \definecolor{figamber}{HTML}{F59E0B}
 \definecolor{figcyan}{HTML}{06B6D4}
@@ -71,7 +80,9 @@
 \renewcommand{\subsectionautorefname}{Section}
 \renewcommand{\subsubsectionautorefname}{Section}
 
-\title{OPENER-Legal: A Frugal Open-World NER Pipeline for the Legal Domain}
+% The system is no longer framed as a legal variant of a general-domain pipeline,
+% so it drops the "-Legal" suffix and keeps its own name.
+\title{\rev{OPENER}: A Frugal Open-World NER Pipeline for the Legal Domain}
 
 % Anonymous for double-blind review (the [review] option hides this anyway).
 \author{Anonymous ACL submission}
