@@ -6,16 +6,16 @@
 \begin{figure*}[t]
 \centering
 \IfFileExists{assets/opener-architecture-v3.pdf}{%
-  \includegraphics[width=0.70\linewidth]{assets/opener-architecture-v3.pdf}%
+  \includegraphics[width=0.62\linewidth]{assets/opener-architecture-v3.pdf}%
 }{\IfFileExists{../assets/opener-architecture-v3.pdf}{%
-  \includegraphics[width=0.70\linewidth]{../assets/opener-architecture-v3.pdf}%
+  \includegraphics[width=0.62\linewidth]{../assets/opener-architecture-v3.pdf}%
 }{\fbox{\parbox{0.9\linewidth}{\centering architecture figure (opener-architecture-v3.pdf)}}}}
 \caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type), \rev{with no component fitted to legal data}, with its two typing heads: OPENER-ZS (label-name prototypes, transductive refinement, detector fusion) and OPENER-Sup (supervised linear probe). Nothing is retrained on legal data. The legal AMI figures shown are means over the three embedder-retraining seeds. The end-to-end ones use the full OPENER-ZS head, the typing-on-gold ones its first step alone, since no detector is in the loop (\autoref{sec:exp:setup}).}
 \label{fig:pipeline}
 \end{figure*}
 
 \subsection{Mention detection and embedding}
-Spans are proposed by a frozen GLiNER detector \citep{zaratiana2024gliner} (GLiNER-L for OPENER-ZS, GLiNER-M for OPENER-Sup, see \autoref{sec:exp:setup}) and embedded \emph{in context} by Nomic v1.5 \citep{nussbaum2024nomic}, a Sentence-BERT-style \citep{reimers2019sbert}, Matryoshka-truncatable embedder \citep{kusupati2022matryoshka} \rev{that we sharpen once, with a FaceNet triplet step \citep{schroff2015facenet} on English, general-domain CoNLL-2003 \citep{tjongkimsang2003conll} spans and an error-driven hard-negative mining pass. Training it away from any legal schema is deliberate. An open-world space has to stay unspecialised, or it silently turns into the closed-set representation this pipeline is meant to replace, and the same single checkpoint then serves all four legal schemas here without re-fitting. Nothing in the pipeline is therefore legal-specific except the type inventory it is asked about, and that is exactly the design this paper puts to the test.}
+Spans are proposed by a frozen GLiNER detector \citep{zaratiana2024gliner} (GLiNER-L for OPENER-ZS, GLiNER-M for OPENER-Sup, see \autoref{sec:exp:setup}) and embedded \emph{in context} by Nomic v1.5 \citep{nussbaum2024nomic}, a Sentence-BERT-style \citep{reimers2019sbert}, Matryoshka-truncatable embedder \citep{kusupati2022matryoshka} \rev{that we sharpen once, with a FaceNet triplet step \citep{schroff2015facenet} on English, general-domain CoNLL-2003 \citep{tjongkimsang2003conll} spans and an error-driven hard-negative mining pass. Training it away from any legal schema is deliberate, and the same single checkpoint then serves all four legal schemas here without re-fitting. Nothing in the pipeline is legal-specific except the type inventory it is asked about, and that is exactly the design this paper puts to the test.}
 % ANONYMITY (double-blind): do NOT name the Hub repositories while under review.
 % Camera-ready, point "the embedder" to the two public checkpoints:
 %   OPENER-Sup embedder : https://huggingface.co/Thibault-GAREL/opener-sup
