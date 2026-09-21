@@ -56,8 +56,8 @@
 % dans \rev{...}. Pour produire le PDF A SOUMETTRE, remplacer la definition
 % par \newcommand{\rev}[1]{#1} : le texte redevient noir, rien d'autre ne
 % bouge. Le PDF final ne doit PAS partir en rouge (regle ACL sur la couleur).
-\newcommand{\rev}[1]{\textcolor{red}{#1}}
-%\newcommand{\rev}[1]{#1}   % <-- decommenter pour la version finale
+%\newcommand{\rev}[1]{\textcolor{red}{#1}}   % <-- version de relecture, revisions en rouge
+\newcommand{\rev}[1]{#1}                     % <-- VERSION A SOUMETTRE, tout en noir
 
 % Valeur en attente d'un run. Volontairement criarde : le PDF final ne doit
 % plus en contenir aucune. Verifier avec :  grep -rn "tbd" paper/sections/

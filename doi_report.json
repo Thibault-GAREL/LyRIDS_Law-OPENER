@@ -1,0 +1,230 @@
+[
+ {
+  "key": "zaratiana2024gliner",
+  "verdict": "DOUTEUX",
+  "doi": "10.18653/v1/2024.naacl-long.300",
+  "info": "sim=1.00 an=2024/2024 aut=False | GLiNER: Generalist Model for Named Entity Recognitio"
+ },
+ {
+  "key": "kusupati2022matryoshka",
+  "verdict": "DOUTEUX",
+  "doi": "10.52202/068431-2192",
+  "info": "sim=1.00 an=/2022 aut=False | Matryoshka Representation Learning"
+ },
+ {
+  "key": "nussbaum2024nomic",
+  "verdict": "DOUTEUX",
+  "doi": "10.1145/3097766.3097773",
+  "info": "sim=0.42 an=2025/2017 aut=False | Testbeds Support for Reproducible Research"
+ },
+ {
+  "key": "genest2025owner",
+  "verdict": "DEJA",
+  "doi": "",
+  "info": ""
+ },
+ {
+  "key": "lacoste2019quantifying",
+  "verdict": "DOUTEUX",
+  "doi": "10.1109/iceee69936.2026.11598393",
+  "info": "sim=0.66 an=/2026 aut=False | Quantifying Carbon Emissions of Machine Learning Inf"
+ },
+ {
+  "key": "codecarbon2024",
+  "verdict": "DEJA",
+  "doi": "",
+  "info": ""
+ },
+ {
+  "key": "vinh2010ami",
+  "verdict": "DOUTEUX",
+  "doi": "10.1145/1553374.1553511",
+  "info": "sim=0.66 an=/2009 aut=False | Information theoretic measures for clusterings compa"
+ },
+ {
+  "key": "fan2008liblinear",
+  "verdict": "DOUTEUX",
+  "doi": "10.32614/cran.package.liblinear",
+  "info": "sim=0.32 an=/2010 aut=False | LiblineaR: Linear Predictive Models Based on the LIB"
+ },
+ {
+  "key": "schroff2015facenet",
+  "verdict": "DOUTEUX",
+  "doi": "10.1109/cvpr.2015.7298682",
+  "info": "sim=1.00 an=/2015 aut=False | FaceNet: A unified embedding for face recognition an"
+ },
+ {
+  "key": "reimers2019sbert",
+  "verdict": "DOUTEUX",
+  "doi": "10.18653/v1/d19-1410",
+  "info": "sim=1.00 an=/2019 aut=False | Sentence-BERT: Sentence Embeddings using Siamese BER"
+ },
+ {
+  "key": "pedregosa2011scikit",
+  "verdict": "DOUTEUX",
+  "doi": "10.1002/9781119557500.ch5",
+  "info": "sim=0.62 an=/2019 aut=False | Getting Started with Scikit‐learn for Machine Learni"
+ },
+ {
+  "key": "he2023debertav3",
+  "verdict": "DOUTEUX",
+  "doi": "10.1101/2025.08.17.670700",
+  "info": "sim=0.46 an=/2025 aut=False | NucEL: Single-Nucleotide ELECTRA-Style Genomic Pre-t"
+ },
+ {
+  "key": "raffel2020t5",
+  "verdict": "DOUTEUX",
+  "doi": "10.18653/v1/2021.inlg-1.38",
+  "info": "sim=0.54 an=/2021 aut=False | Controllable Sentence Simplification with a Unified "
+ },
+ {
+  "key": "qwen2025",
+  "verdict": "DOUTEUX",
+  "doi": "10.2172/1906802",
+  "info": "sim=0.54 an=/2022 aut=False | Waste Control Specialists Technical Review Team Repo"
+ },
+ {
+  "key": "dettmers2023qlora",
+  "verdict": "DOUTEUX",
+  "doi": "10.52202/075280-0441",
+  "info": "sim=1.00 an=/2023 aut=False | QLoRA: Efficient Finetuning of Quantized LLMs"
+ },
+ {
+  "key": "tjongkimsang2003conll",
+  "verdict": "DOUTEUX",
+  "doi": "10.3115/1119176.1119195",
+  "info": "sim=0.65 an=/2003 aut=False | Introduction to the CoNLL-2003 shared task"
+ },
+ {
+  "key": "zhou2024universalner",
+  "verdict": "DOUTEUX",
+  "doi": "10.2139/ssrn.5564928",
+  "info": "sim=0.69 an=/2025 aut=False | Harnessing Large Language Models for Biomedical Name"
+ },
+ {
+  "key": "sainz2024gollie",
+  "verdict": "DOUTEUX",
+  "doi": "10.18653/v1/2025.findings-acl.1245",
+  "info": "sim=0.63 an=/2025 aut=False | GUIDEX: Guided Synthetic Data Generation for Zero-Sh"
+ },
+ {
+  "key": "wei2024chatie",
+  "verdict": "DOUTEUX",
+  "doi": "10.1016/j.ijmedinf.2023.105321",
+  "info": "sim=0.70 an=/2024 aut=False | Zero-shot information extraction from radiological r"
+ },
+ {
+  "key": "ding2024gner",
+  "verdict": "DOUTEUX",
+  "doi": "10.18653/v1/2024.findings-acl.206",
+  "info": "sim=1.00 an=/2024 aut=False | Rethinking Negative Instances for Generative Named E"
+ },
+ {
+  "key": "schwartz2020greenai",
+  "verdict": "DOUTEUX",
+  "doi": "10.1201/9781003544388-2",
+  "info": "sim=1.00 an=/2026 aut=True | Green AI"
+ },
+ {
+  "key": "strubell2019energy",
+  "verdict": "DOUTEUX",
+  "doi": "10.18653/v1/p19-1355",
+  "info": "sim=1.00 an=/2019 aut=False | Energy and Policy Considerations for Deep Learning i"
+ },
+ {
+  "key": "patterson2022carbon",
+  "verdict": "DOUTEUX",
+  "doi": "10.36227/techrxiv.19139645",
+  "info": "sim=1.00 an=/2022 aut=False | The Carbon Footprint of Machine Learning Training Wi"
+ },
+ {
+  "key": "aly2021zeroshot",
+  "verdict": "DOUTEUX",
+  "doi": "10.18653/v1/2021.acl-long.120",
+  "info": "sim=1.00 an=/2021 aut=False | Leveraging Type Descriptions for Zero-shot Named Ent"
+ },
+ {
+  "key": "luccioni2024power",
+  "verdict": "DOUTEUX",
+  "doi": "10.1145/3630106.3658542",
+  "info": "sim=1.00 an=/2024 aut=False | Power Hungry Processing: Watts Driving the Cost of A"
+ },
+ {
+  "key": "henderson2020systematic",
+  "verdict": "DOUTEUX",
+  "doi": "10.21275/sc26211100444",
+  "info": "sim=0.57 an=/2026 aut=False | Green AI: Strategies for Mitigating Carbon Footprint"
+ },
+ {
+  "key": "wu2022sustainable",
+  "verdict": "DOUTEUX",
+  "doi": "10.1109/igsc64514.2024.00016",
+  "info": "sim=0.85 an=/2024 aut=False | Sustainable LLM Serving: Environmental Implications,"
+ },
+ {
+  "key": "au2022ener",
+  "verdict": "DOUTEUX",
+  "doi": "10.18653/v1/2022.nllp-1.22",
+  "info": "sim=1.00 an=2022/2022 aut=False | E-NER — An Annotated Named Entity Recognition Corpus"
+ },
+ {
+  "key": "kalamkar2022indianlegal",
+  "verdict": "DOUTEUX",
+  "doi": "10.18653/v1/2022.nllp-1.15",
+  "info": "sim=1.00 an=2022/2022 aut=False | Named Entity Recognition in Indian court judgments"
+ },
+ {
+  "key": "luzdearaujo2018lenerbr",
+  "verdict": "DOUTEUX",
+  "doi": "10.1007/978-3-319-99722-3_32",
+  "info": "sim=1.00 an=2018/2018 aut=False | LeNER-Br: A Dataset for Named Entity Recognition in "
+ },
+ {
+  "key": "leitner2020germanler",
+  "verdict": "DOUTEUX",
+  "doi": "10.5220/0011749400003393",
+  "info": "sim=0.64 an=2020/2023 aut=False | German BERT Model for Legal Named Entity Recognition"
+ },
+ {
+  "key": "chalkidis2020legalbert",
+  "verdict": "DOUTEUX",
+  "doi": "10.18653/v1/2020.findings-emnlp.261",
+  "info": "sim=1.00 an=2020/2020 aut=False | LEGAL-BERT: The Muppets straight out of Law School"
+ },
+ {
+  "key": "chalkidis2022lexglue",
+  "verdict": "DOUTEUX",
+  "doi": "10.2139/ssrn.3936759",
+  "info": "sim=1.00 an=2022/2021 aut=False | LexGLUE: A Benchmark Dataset for Legal Language Unde"
+ },
+ {
+  "key": "ariai2025legalnlp",
+  "verdict": "DOUTEUX",
+  "doi": "10.1145/3777009",
+  "info": "sim=1.00 an=2025/2025 aut=False | Natural Language Processing for the Legal Domain: A "
+ },
+ {
+  "key": "karamitsos2025legner",
+  "verdict": "DEJA",
+  "doi": "",
+  "info": ""
+ },
+ {
+  "key": "kalusev2025serbian",
+  "verdict": "DOUTEUX",
+  "doi": "10.1007/978-3-032-04890-5_30",
+  "info": "sim=1.00 an=2025/2026 aut=False | Named Entity Recognition for Serbian Legal Documents"
+ },
+ {
+  "key": "ramesh2023flairnlp",
+  "verdict": "DOUTEUX",
+  "doi": "10.18653/v1/2023.semeval-1.57",
+  "info": "sim=0.51 an=2023/2023 aut=True | Ginn-Khamov at SemEval-2023 Task 6, Subtask B: Legal"
+ },
+ {
+  "key": "lu2025financial",
+  "verdict": "DOUTEUX",
+  "doi": "10.1021/acs.jcim.5c00248.s001",
+  "info": "sim=0.60 an=2025/None aut=False | Rapid Adaptation of Chemical Named Entity Recognitio"
+ }
+]
