@@ -372,11 +372,14 @@
 % QLoRA: source of the 4-bit NormalFloat (NF4) quantization used by bitsandbytes
 % for the int4 baselines. NOTE: we use NF4 inference quantization only, NOT the
 % QLoRA (LoRA) fine-tuning method. arXiv:2305.14314.
-@article{dettmers2023qlora,
-  title   = {{QLoRA}: Efficient Finetuning of Quantized {LLMs}},
-  author  = {Dettmers, Tim and Pagnoni, Artidoro and Holtzman, Ari and Zettlemoyer, Luke},
-  journal = {arXiv preprint arXiv:2305.14314},
-  year    = {2023}
+% Camera-ready : version PUBLIEE (NeurIPS 2023), l'entree arXiv ne passe pas
+% les controles de reference des chairs NLLP.
+@inproceedings{dettmers2023qlora,
+  title     = {{QLoRA}: Efficient Finetuning of Quantized {LLMs}},
+  author    = {Dettmers, Tim and Pagnoni, Artidoro and Holtzman, Ari and Zettlemoyer, Luke},
+  booktitle = {Advances in Neural Information Processing Systems 36 ({NeurIPS} 2023)},
+  pages     = {10088--10115},
+  year      = {2023}
 }
 
 

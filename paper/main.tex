@@ -6,7 +6,7 @@
 % =====================================================================
 \documentclass[11pt]{article}
 
-\usepackage[review]{acl}
+\usepackage[final]{acl}   % camera-ready : plus de ruler ni de numeros de page
 % acl.sty forces \flushbottom, which stretches the glue between the result
 % tables to equalise column heights and opens large gaps. Columns may end
 % short instead: margins, fonts and spacing are untouched.
@@ -51,6 +51,14 @@
 \definecolor{hlyellow}{rgb}{1,0.93,0.5}   % OPENER-ZS rows
 \definecolor{hlred}{HTML}{FECACA}         % OPENER-Sup rows
 
+% --- Camera-ready (NLLP 2026) : marquage des revisions ------------------
+% Tout ce qui a ete ajoute ou reecrit en reponse aux reviewers est enveloppe
+% dans \rev{...}. Pour produire le PDF A SOUMETTRE, remplacer la definition
+% par \newcommand{\rev}[1]{#1} : le texte redevient noir, rien d'autre ne
+% bouge. Le PDF final ne doit PAS partir en rouge (regle ACL sur la couleur).
+\newcommand{\rev}[1]{\textcolor{red}{#1}}
+%\newcommand{\rev}[1]{#1}   % <-- decommenter pour la version finale
+
 % --- figure palette (matches the general-domain OPENER paper, for consistent styling) ---
 \definecolor{figamber}{HTML}{F59E0B}
 \definecolor{figcyan}{HTML}{06B6D4}
@@ -73,8 +81,15 @@
 
 \title{OPENER: A Frugal Open-World NER Pipeline for the Legal Domain}
 
-% Anonymous for double-blind review (the [review] option hides this anyway).
-\author{Anonymous ACL submission}
+% TODO CAMERA-READY : remplacer par les vrais auteurs et affiliations.
+% Regles ACL : prenoms complets (pas d'initiales), pas de NOM en capitales,
+% pas de footnote pour l'affiliation, et l'ordre/orthographe doivent coincider
+% avec ce qui est saisi dans OpenReview.
+\author{
+  \rev{Thibault Garel} \\
+  \rev{LyRIDS, ECE Paris} \\
+  \rev{\texttt{garel.thibault14@gmail.com}} \\
+}
 
 \begin{document}
 \maketitle
