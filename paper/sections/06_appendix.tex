@@ -216,6 +216,72 @@ OWNER$^\S$ & $10.0$ & $23.1$ & $12.9$ & $12.2$ & $14.6$ \\
 \end{threeparttable}
 \end{table}
 
+\section{\rev{Type anchors}}
+\label{sec:appendix:anchors}
+
+\rev{\autoref{tab:anchors} gives the full anchor dictionary used by OPENER-ZS. Every entry is English, including for the Portuguese and German schemas, and all of them were fixed before any result was seen. Two entries explain most of the label-free errors of \autoref{sec:appendix:errors}. On German, \textsc{nrm} and \textsc{reg} are given near-synonymous English names, which is why the zero-shot head merges them $213$ times. On Indian-Legal, the four person types are separated by a procedural role that no anchor word can carry.}
+
+\begin{table}[H]
+\centering
+\caption{\rev{The English anchor words naming each legal type.}}
+\label{tab:anchors}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{threeparttable}
+\rev{\begin{tabular}{@{}p{0.26\linewidth}p{0.66\linewidth}@{}}
+\toprule
+Type & Anchor words \\
+\midrule
+\multicolumn{2}{@{}l}{\emph{E-NER (en)}} \\
+\textsc{business} & business, company, corporation, firm \\
+\textsc{court} & court, tribunal, judiciary \\
+\textsc{government} & government, agency, authority, ministry \\
+\textsc{legislation/act} & legislation, act, law, statute \\
+\textsc{location} & location, place, country, city \\
+\textsc{person} & person, individual, name \\
+\textsc{miscellaneous} & miscellaneous, other, entity, thing \\
+\addlinespace[2pt]
+\multicolumn{2}{@{}l}{\emph{Indian-Legal (en)}} \\
+\textsc{case\_number} & case number, docket number, case no \\
+\textsc{court} & court, tribunal \\
+\textsc{date} & date, day, time \\
+\textsc{gpe} & location, place, state, city, country \\
+\textsc{judge} & judge, justice \\
+\textsc{lawyer} & lawyer, attorney, counsel, advocate \\
+\textsc{org} & organization, company, institution \\
+\textsc{other\_person} & person, individual, name \\
+\textsc{petitioner} & petitioner, plaintiff, appellant \\
+\textsc{precedent} & precedent, case law, prior case, judgment \\
+\textsc{provision} & provision, section, clause, article \\
+\textsc{respondent} & respondent, defendant, appellee \\
+\textsc{statute} & statute, act, law \\
+\textsc{witness} & witness \\
+\addlinespace[2pt]
+\multicolumn{2}{@{}l}{\emph{LeNER-Br (pt)}} \\
+\textsc{pessoa} & person, individual, name \\
+\textsc{organizacao} & organization, company, institution \\
+\textsc{local} & location, place, city, country \\
+\textsc{tempo} & time, date, period \\
+\textsc{legislacao} & legislation, law, statute, act \\
+\textsc{jurisprudencia} & case law, jurisprudence, court decision, precedent \\
+\addlinespace[2pt]
+\multicolumn{2}{@{}l}{\emph{German-LER (de), coarse schema}} \\
+\textsc{per} & person, individual, name \\
+\textsc{loc} & location, place, city, country \\
+\textsc{org} & organization, company, institution \\
+\textsc{nrm} & legal norm, law, statute \\
+\textsc{reg} & regulation, ordinance, directive \\
+\textsc{rs} & case law, court decision, ruling \\
+\textsc{lit} & legal literature, commentary, reference \\
+\bottomrule
+\end{tabular}}
+\begin{tablenotes}[flushleft]
+\scriptsize
+\item \rev{Released with the code as \texttt{configs/legal\_anchors.yaml}. A type whose name is missing falls back to the words of the schema code itself.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
 \section{Full evaluation setup}
 \label{sec:appendix:setup}
 
