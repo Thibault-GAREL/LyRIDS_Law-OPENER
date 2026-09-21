@@ -3,63 +3,30 @@
 
 \subsection{Datasets}
 \label{sec:exp:datasets}
-We evaluate on four legal-specific NER sets across three languages that, together, separate two kinds of distribution shift. \emph{Two are in English}, isolating a \emph{pure domain shift} from the general-domain spans the embedder was fine-tuned on: E-NER \citep{au2022ener} (annotated U.S.\ SEC/EDGAR filings, $7$ types) and Indian-Legal \citep{kalamkar2022indianlegal} (Indian court judgements, $14$ fine-grained legal types). LeNER-Br \citep{luzdearaujo2018lenerbr} (Brazilian court decisions, Portuguese) and German-LER \citep{leitner2020germanler} (German federal court decisions) add a \emph{cross-lingual} shift. All four annotate \emph{legal-specific} entity types (courts, statutes, legislation, case law, provisions), rather than the generic person/organisation/date schema of general NER. \autoref{tab:legal-datasets} summarises them with the entity-type distribution of their test mentions.
+We evaluate on four legal-specific NER sets across three languages that, together, separate two kinds of distribution shift. \emph{Two are in English}, isolating a \emph{pure domain shift} from the general-domain spans the embedder was fine-tuned on: E-NER \citep{au2022ener} (U.S.\ SEC/EDGAR filings, $7$ types) and Indian-Legal \citep{kalamkar2022indianlegal} (Indian court judgements, $14$ fine-grained legal types). LeNER-Br \citep{luzdearaujo2018lenerbr} (Brazilian court decisions) and German-LER \citep{leitner2020germanler} (German federal court decisions) add a \emph{cross-lingual} shift. All four annotate \emph{legal-specific} types (courts, statutes, legislation, case law, provisions) rather than the generic person/organisation/date schema of general NER. \rev{\autoref{tab:legal-datasets} in \autoref{sec:appendix:datasets} gives their sizes, along with the supervised topline published with each one, from $91.1$ to $96.1$ entity-level F1. Those figures set the scale our end-to-end numbers should be read against.}
 
-\rev{\autoref{tab:legal-datasets} also quotes the supervised topline published with each corpus ($90.5$ to $96.0$ entity-level F1), which sets the scale our end-to-end numbers should be read against. \autoref{sec:exp:analysis} shows how much of the gap to those figures is detection rather than typing.}
-
-\begin{table}[t]
-\centering
-\caption{Legal NER datasets\rev{, with the published supervised topline of each}.}
-\label{tab:legal-datasets}
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\begin{threeparttable}
-\begin{tabular}{@{}llrrcc@{}}
-\toprule
-Dataset & Lang & Sent. & Ment. & Types & \rev{Sup. F1$^\dagger$} \\
-\midrule
-E-NER & en & 877 & 1{,}793 & $7$ & \rev{$90.5$} \\
-Indian-Legal & en & 866 & 3{,}028 & $14$ & \rev{$91.1$} \\
-LeNER-Br & pt & 636 & 1{,}536 & $6$ & \rev{$92.5$} \\
-German-LER & de & 1{,}000$^\P$ & 1{,}740 & $7$ & \rev{$96.0$} \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}[flushleft]
-\scriptsize
-\item Test sentences carrying $\geq 1$ entity, and the mentions actually evaluated. Sentences with no gold entity are evaluated by no system. German-LER is shown with its 7-type \emph{coarse} schema (19-type \emph{fine} schema in \autoref{sec:exp:analysis}). \rev{Per-type distributions in \autoref{sec:appendix:datasets}.}
-\item[$\P$] Of $3{,}018$, the only split above our $1000$-sentence cap, every score for it being computed on those first $1000$.
-\item[$\dagger$] \rev{Entity-level F1 of the fully supervised tagger released with the corpus \citep{au2022ener,kalamkar2022indianlegal,luzdearaujo2018lenerbr,leitner2020germanler}, trained in-domain and learning detection jointly with typing. Not a competitor to a pipeline that retrains nothing, quoted as the scale of the task.}
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
 
 \subsection{Setup}
 \label{sec:exp:setup}
-Embedder, detector and heads are exactly those of \autoref{sec:method}, and nothing is retrained on legal data: Nomic v1.5 at $D{=}768$ in span-in-context mode, reused as released, behind a frozen GLiNER detector at threshold $0.3$ (GLiNER-L for OPENER-ZS, GLiNER-M for OPENER-Sup, whose probe is fit on its own train detections). The baselines are GLiNER-S/M/L, GNER-T5-base, OWNER and \rev{an instruction-tuned LLM baseline, Qwen2.5-1.5B-Instruct in $4$-bit}, all prompted zero-shot with the target type names. Test splits are capped at the first $1000$ entity-bearing sentences, with Qwen on a $200$-sentence subsample. \rev{That model is the largest our $6$\,GB GPU runs, and a hosted frontier model would have made the latency and energy axes unmeasurable, a constraint we spell out in the Limitations.}
+Embedder, detector and heads are exactly those of \autoref{sec:method}, and nothing is retrained on legal data. The baselines are GLiNER-S/M/L, GNER-T5-base, OWNER and \rev{an instruction-tuned LLM baseline, Qwen2.5-1.5B-Instruct in $4$-bit}, all prompted zero-shot with the target type names. Test splits are capped at the first $1000$ entity-bearing sentences, with Qwen on a $200$-sentence subsample. \rev{That model is the largest our $6$\,GB GPU runs, and a hosted frontier model would have made the latency and energy axes unmeasurable, a constraint we spell out in the Limitations.}
 
 \autoref{tab:legal-setup} in \autoref{sec:appendix:setup} gives the complete configuration. Every typing hyperparameter of \autoref{sec:method} is fixed a priori and never tuned on a legal set, $C{=}1$ for the balanced probe included. \rev{Evaluation code, anchor dictionaries, dataset loaders and per-run logs are public.\footnote{\scriptsize\url{https://github.com/Thibault-GAREL/LyRIDS_Law-OPENER}}}
-% Camera-ready, cite the two repositories here:
-%   this paper (legal)         : https://github.com/Thibault-GAREL/LyRIDS_Law-OPENER
-%   general-domain follow-up   : https://github.com/Thibault-GAREL/LyRIDS_OPENER
-% Datasets, all public, loaded by src/data/legal_datasets.py:
-%   E-NER        : https://github.com/terenceau1/E-NER-Dataset
-%   Indian-Legal : https://huggingface.co/datasets/AjayMukundS/Indian_Legal_NER_Dataset
-%   LeNER-Br     : https://huggingface.co/datasets/peluz/lener_br
-%   German-LER   : https://huggingface.co/datasets/elenanereiss/german-ler
+% Les URLs sont desormais dans le texte ci-dessus (footnote). Datasets publics,
+% charges par src/data/legal_datasets.py.
 
 The two protocols do not exercise the same zero-shot head (\autoref{tab:protocols}): \autoref{tab:legal-gold} measures the label-name geometry on its own, \autoref{tab:legal-main} the operating point one would deploy.
 
-We report two orthogonal sources of uncertainty. The embedder's \emph{training} is stochastic, so the whole study is repeated under three retraining seeds, every OPENER cell giving mean\,$\pm$\,std, the baselines being frozen deterministic checkpoints run once. Inference is deterministic for a fixed embedder, so the remaining uncertainty is the finite test set, quantified with a paired bootstrap in \autoref{sec:exp:results}. Efficiency is deliberately \emph{not} seed-averaged: a seed changes the embedder's weights, not its per-sentence FLOPs, so any spread would reflect the machine's thermal state.
+We report two orthogonal sources of uncertainty. The embedder's \emph{training} is stochastic, so the study is repeated under three retraining seeds, every OPENER cell giving mean\,$\pm$\,std, the baselines being frozen checkpoints run once. Inference being deterministic, the remaining uncertainty is the finite test set, quantified with a paired bootstrap in \autoref{sec:exp:results}. Efficiency is deliberately \emph{not} seed-averaged, since a seed changes the embedder's weights and not its per-sentence FLOPs.
 
 \subsection{Results}
 \label{sec:exp:results}
-Keeping the two protocols apart, \autoref{tab:legal-gold} reports typing-on-gold AMI and \autoref{tab:legal-main} the end-to-end comparison on all three axes. OWNER appears in both, as the one baseline that types mentions it is given rather than detecting and typing jointly. Three findings stand out.
+Keeping the two protocols apart, \autoref{tab:legal-gold} reports typing-on-gold quality and \autoref{tab:legal-main} the end-to-end comparison. OWNER appears in both, as the one baseline that types mentions it is given rather than detecting and typing jointly. Three findings stand out.
 
-\textbf{Label-free typing is strong in English but degrades cross-lingually.} OPENER-ZS is usable on the two English sets ($47.7$ on E-NER and $49.1$ on Indian, from English label-name prototypes alone), but it drops to $37.4$ (pt) and $23.8$ (de). Its English prototypes align well with English legal mentions, far less with other-language ones (\autoref{tab:legal-gold}). It also trails OWNER's own label-free typing on all four sets ($44.7$ mean against $39.5$), which trains an entity encoder rather than reusing one, so the label-free operating point is where reuse costs the most. The zero-shot head is where the cross-lingual distribution shift bites hardest. It is also the \emph{seed-sensitive} head: its gold scores vary by ${\pm}3$--$6$ AMI across the three embedder retrainings (the released one is in fact a low draw on the English sets), whereas the supervised probe varies by at most ${\pm}1.4$, because label-name prototypes depend on the fine geometry of the embedding space, which shifts from one contrastive retraining to the next, while a fitted probe absorbs those shifts.
+\textbf{Label-free typing is strong in English but degrades cross-lingually.} OPENER-ZS is usable on the two English sets ($47.7$ on E-NER and $49.1$ on Indian, from English label-name prototypes alone), but it drops to $37.4$ (pt) and $23.8$ (de). Its English prototypes align well with English legal mentions, far less with other-language ones (\autoref{tab:legal-gold}). It also trails OWNER's own label-free typing on all four sets ($44.7$ mean against $39.5$). OWNER trains an entity encoder rather than reusing one, so the label-free operating point is where reuse costs the most. It is also the \emph{seed-sensitive} head. Its gold scores vary by ${\pm}3$--$6$ AMI across the three embedder retrainings, and the released one is in fact a low draw on the English sets, whereas the supervised probe varies by at most ${\pm}1.4$. Label-name prototypes depend on the fine geometry of the embedding space, which shifts from one contrastive retraining to the next, while a fitted probe absorbs those shifts.
 
-\textbf{Supervised typing transfers well, including across languages, because the separation it learns is geometric, not just statistical.} Fitting a balanced linear probe on the same frozen, general-domain embedder reaches $61.4$ mean typing-on-gold AMI over the four sets ($70.9$ and $60.8$ on the two English corpora, and still $53.7$ and $60.3$ on Portuguese LeNER-Br and German-LER), and is stable across the embedder-retraining seeds (std ${\leq}1.4$ AMI). It leads OWNER on every set, by $16$ AMI on E-NER and by $35$ on German. It scores $62.3$ in a preliminary general-domain check (ongoing work), so keeping the space unspecialised costs under a point of AMI here: a balanced probe fits hyperplanes precise enough to pull apart legal types whose vectors sit \emph{close together} (a lawyer from a judge, a statute from a case citation), which a single label-name match cannot do without supervision. The probe adapts to whatever the embedder encodes, so target supervision largely absorbs the cross-lingual gap at typing time. \rev{Macro-F1 over the same gold predictions tells the same story ($89.1$ on E-NER, $74.6$ on average, against $46.1$ for the label-free head), so none of these conclusions hinges on the choice of metric. Those figures type mentions that are given, whereas the published toplines of \autoref{sec:exp:datasets} include detection, so the two are not two sides of one comparison. What the pair does show is that typing is not where a frozen, general-domain space falls short.}
+\textbf{Supervised typing transfers well, including across languages, because the separation it learns is geometric, not just statistical.} Fitting a balanced linear probe on the same frozen, general-domain embedder reaches $61.4$ mean typing-on-gold AMI over the four sets. That is $70.9$ and $60.8$ on the two English corpora, and still $53.7$ and $60.3$ on Portuguese LeNER-Br and German-LER, with a spread of at most ${\pm}1.4$ AMI across seeds. It leads OWNER on every set, by $16$ AMI on E-NER and by $35$ on German. It also scores $62.3$ in a preliminary general-domain check (ongoing work), so keeping the space unspecialised costs under a point of AMI here. A balanced probe fits hyperplanes precise enough to pull apart legal types whose vectors sit \emph{close together}, a lawyer from a judge, or a statute from a case citation. A single label-name match cannot draw that boundary without supervision. \rev{Macro-F1 over the same gold predictions tells the same story ($89.1$ on E-NER, $74.6$ on average, against $46.1$ for the label-free head), so no conclusion here hinges on the choice of metric. Those figures type mentions that are given, whereas the published toplines of \autoref{sec:exp:datasets} include detection, so the two are not two sides of one comparison. What the pair does show is that typing is not where a frozen, general-domain space falls short.}
 
-\textbf{End-to-end, detection sets the ceiling, and the label-free head cannot pull ahead of the detector it fuses with.} On these legal-specific schemas every system clusters in a narrow $\approx 33$--$36$ AMI band (\autoref{tab:legal-main}), because the English detectors recover only a fraction of gold mentions (GLiNER-L offset recall $18.7$--$57.4\%$, GLiNER-M $10.2$--$61.1\%$). With so few mentions detected, no typing head can pull far ahead. Per-dataset winners are specific (OWNER \citep{genest2025owner} on E-NER, GNER-T5 on German), though OWNER degrades most cross-lingually at several times the cost of either OPENER head, and Qwen trails throughout while being the most energy-hungry per sentence. \emph{Averaged over the four sets, OPENER-Sup posts the best end-to-end AMI ($35.9$)}, narrowly ahead of GLiNER-L ($35.0$) and GLiNER-M ($34.9$), for every retraining seed, and OPENER-ZS ($33.4$) sits just below OWNER ($33.7$). The margins are small, as expected when detection is the ceiling, yet a \emph{paired} bootstrap on the released model ($K{=}1000$) makes OPENER-Sup's lead \textbf{statistically significant} ($+1.0$ AMI over both GLiNER-M and GLiNER-L, $95\%$ CI $[+0.4,+1.7]$ and $[+0.1,+1.9]$), while OPENER-ZS's fusion sits significantly \emph{below} GLiNER-L ($-1.3$, $[-1.8,-0.8]$), largely deferring to the detector's labels.
+\textbf{End-to-end, detection sets the ceiling, and the label-free head cannot pull ahead of the detector it fuses with.} On these legal-specific schemas, every system clusters in a narrow $\approx 33$--$36$ AMI band (\autoref{tab:legal-main}), because the English detectors recover only a fraction of gold mentions (GLiNER-L offset recall $18.7$--$57.4\%$, GLiNER-M $10.2$--$61.1\%$). With so few mentions detected, no typing head can pull far ahead. Per-dataset winners are specific, OWNER \citep{genest2025owner} on E-NER and GNER-T5 on German, though OWNER degrades most across languages at several times the cost of either OPENER head. Qwen trails throughout, while being the most energy-hungry per sentence. \emph{Averaged over the four sets, OPENER-Sup posts the best end-to-end AMI ($35.9$)}, narrowly ahead of GLiNER-L ($35.0$) and GLiNER-M ($34.9$), for every retraining seed. OPENER-ZS ($33.4$) sits just below OWNER ($33.7$). The margins are small, as expected when detection is the ceiling. A \emph{paired} bootstrap on the released model ($K{=}1000$) nonetheless makes OPENER-Sup's lead \textbf{statistically significant}, at $+1.0$ AMI over both GLiNER-M and GLiNER-L ($95\%$ CI $[+0.4,+1.7]$ and $[+0.1,+1.9]$). OPENER-ZS's fusion sits significantly \emph{below} GLiNER-L ($-1.3$, $[-1.8,-0.8]$), largely deferring to the detector's labels.
 
 \begin{table}[tbp]
 \centering
@@ -68,7 +35,7 @@ Keeping the two protocols apart, \autoref{tab:legal-gold} reports typing-on-gold
 \scriptsize
 \setlength{\tabcolsep}{1.5pt}
 \begin{threeparttable}
-\begin{tabular}{@{}lccccc@{}}
+\begin{tabular}{@{}l@{\hskip 7pt}ccccc@{}}
 \toprule
 System & E-NER & Indian & LeNER-Br & German & Mean \\
        & (en)  & (en)   & (pt)     & (de)   &      \\
@@ -78,8 +45,7 @@ OWNER$^\S$ & $54.5$ & $59.0$ & $39.7$ & $25.7$ & $44.7$ \\
 \rowcolor{hlyellow} OPENER-ZS & $47.7_{\pm3.5}$ & $49.1_{\pm3.0}$ & $37.4_{\pm6.0}$ & $23.8_{\pm4.3}$ & $39.5_{\pm3.0}$ \\
 \rowcolor{hlred} OPENER-Sup$^\ast$   & $\mathbf{70.9}_{\pm1.2}$ & $\mathbf{60.8}_{\pm1.4}$ & $\mathbf{53.7}_{\pm1.2}$ & $\mathbf{60.3}_{\pm1.0}$ & $\mathbf{61.4}_{\pm0.4}$ \\
 \addlinespace
-\multicolumn{6}{l}{\rev{\emph{Macro-F1}}} \\
-\rev{OWNER$^\S$} & \rev{n/a$^\dagger$} & \rev{n/a$^\dagger$} & \rev{n/a$^\dagger$} & \rev{n/a$^\dagger$} & \rev{n/a$^\dagger$} \\
+\multicolumn{6}{l}{\rev{\emph{Macro-F1} (OWNER: n/a$^\dagger$)}} \\
 \rowcolor{hlyellow} \rev{OPENER-ZS} & \rev{$59.2_{\pm7.0}$} & \rev{$37.6_{\pm5.3}$} & \rev{$57.7_{\pm6.0}$} & \rev{$29.7_{\pm5.4}$} & \rev{$46.1_{\pm5.3}$} \\
 \rowcolor{hlred} \rev{OPENER-Sup$^\ast$} & \rev{$\mathbf{89.1}_{\pm0.2}$} & \rev{$\mathbf{58.3}_{\pm2.5}$} & \rev{$\mathbf{74.7}_{\pm1.5}$} & \rev{$\mathbf{76.3}_{\pm1.3}$} & \rev{$\mathbf{74.6}_{\pm0.3}$} \\
 \bottomrule
@@ -95,12 +61,12 @@ OWNER$^\S$ & $54.5$ & $59.0$ & $39.7$ & $25.7$ & $44.7$ \\
 
 \begin{table}[tbp]
 \centering
-\caption{Open-world legal NER, end-to-end\rev{: quality, with model size and cost}.}
+\caption{Open-world legal NER, end-to-end\rev{: quality on each corpus}.}
 \label{tab:legal-main}
 \scriptsize
 \setlength{\tabcolsep}{1.5pt}
 \begin{threeparttable}
-\begin{tabular}{@{}lccccc@{}}
+\begin{tabular}{@{}l@{\hskip 7pt}ccccc@{}}
 \toprule
 Model & E-NER & Indian & LeNER-Br & German & Avg \\
       & (en)  & (en)   & (pt)     & (de)   &     \\
@@ -116,69 +82,96 @@ OWNER$^\S$ & $\mathbf{38.4}$ & $33.3$ & $34.8$ & $28.4$ & $33.7$ \\
 \addlinespace[1pt]
 \multicolumn{6}{l}{\emph{AMI}, with target labels} \\
 \rowcolor{hlred} OPENER-Sup$^\ast$ & $35.7_{\pm0.3}$ & $35.2_{\pm0.3}$ & $34.1_{\pm0.7}$ & $38.5_{\pm0.3}$ & $\mathbf{35.9}_{\pm0.4}$ \\
-\midrule
-\multicolumn{6}{l}{\rev{\emph{Model size and cost}, four-set means}} \\
- & \rev{S} & \rev{M} & \rev{L} & \rev{GNER} & \rev{Qwen} \\
-\rev{Params} & \rev{$50$M} & \rev{$200$M} & \rev{$330$M} & \rev{$220$M} & \rev{$1.5$B} \\
-\rev{p50 (ms)} & \rev{$\mathbf{22}$} & \rev{$37$} & \rev{$81$} & \rev{$8289$} & \rev{$5427$} \\
-\rev{Wh} & \rev{$\mathbf{0.5}$} & \rev{$0.7$} & \rev{$1.6$} & \rev{$96.0$} & \rev{$100.5$} \\
-\addlinespace[1pt]
- & \rev{OWNER} & \rev{ZS} & \rev{Sup} & & \\
-\rev{Params} & \rev{${\approx}294$M} & \rev{$467$M} & \rev{$337$M} & & \\
-\rev{p50 (ms)} & \rev{$475$} & \rev{$133$} & \rev{$84$} & & \\
-\rev{Wh} & \rev{$14.6$} & \rev{$2.7$} & \rev{$1.7$} & & \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]
 \scriptsize
-\item Detector mentions, offset/sentinel alignment (\autoref{sec:exp:setup}). Best per column in bold, within each block, ties included, the two AMI sub-blocks bolded apart since OPENER-Sup is the only row that consumes target labels. OPENER AMI rows are mean\,$\pm$\,std over three retraining seeds, baselines are frozen checkpoints with a single deterministic run. \rev{Cost measured on the released seed-$42$ run, energy per $1000$ evaluated sentences (multiply by $0.056$ for gCO\textsubscript{2}), per-corpus values in \autoref{tab:legal-cost-detail}. Params count the whole pipeline, detector plus the $137$M embedder, so OPENER-Sup is lighter than OPENER-ZS only because it runs on GLiNER-M rather than GLiNER-L.}
-\item[$\ast$] Only OPENER-Sup uses target labels, every other row is zero-shot. $^\ddagger$\,Qwen AMI on a $200$-sentence subsample, its energy over three sets. $^\S$\,OWNER cost is amortised wall-clock, not a per-call latency.
+\item Detector mentions, offset/sentinel alignment (\autoref{sec:exp:setup}). Best per column in bold, within each block, ties included, the two AMI sub-blocks bolded apart since OPENER-Sup is the only row that consumes target labels. OPENER rows are mean\,$\pm$\,std over three retraining seeds, baselines are frozen checkpoints with a single deterministic run. \rev{Model size and cost in \autoref{tab:legal-efficiency}, per-corpus cost in \autoref{tab:legal-cost-detail}.}
+\item[$\ast$] Only OPENER-Sup uses target labels, every other row is zero-shot. $^\ddagger$\,Qwen AMI on a $200$-sentence subsample. $^\S$\,OWNER typing its own dynamically named clusters.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-Both heads match the frugal GLiNER family in cost, one to two orders of magnitude below the generative baselines and several times below OWNER, and OPENER-Sup does so while leading on AMI, at $337$M parameters against OWNER's $294$M and Qwen's $1.5$B. Quality and cost are therefore not traded off against each other here.
-
 \subsection{Analysis}
 \label{sec:exp:analysis}
-Two distribution shifts act together here, and the results separate them. Under a pure \emph{domain} shift (E-NER), the deliberately unspecialised embedder already places legal types far enough apart for a label-name prototype to separate them ($47.7$ gold AMI, no target label at all), and for a supervised hyperplane to do so far more precisely ($70.9$). A cross-lingual shift widens that gap, the label-free head dropping to $24$--$37$ while the probe stays high ($53.7$/$60.3$).
+Two distribution shifts act together here, and the results separate them. Under a pure \emph{domain} shift (E-NER), the unspecialised embedder already places legal types far enough apart for a label-name prototype to separate them ($47.7$ gold AMI, with no target label at all). A cross-lingual shift widens the gap, the label-free head dropping to $24$--$37$ while the probe stays high ($53.7$/$60.3$).
 
-A specialised-schema stress test isolates fineness of separation from language. On German-LER's fine $19$-type schema OPENER-ZS falls further to $22.7_{\pm2.1}$ gold AMI, as fine German type codes rarely have a faithful English label-name prototype, while OPENER-Sup still reaches $61.5_{\pm0.7}$, \emph{on a par with its coarse score} ($60.3$) despite nearly three times as many classes. The embedder separates even fine legal distinctions once a probe names them, so the zero-shot weakness is not the embedding geometry but the missing supervised signal.
+A stress test on German-LER's fine $19$-type schema isolates fineness of separation from language. OPENER-ZS falls to $22.7_{\pm2.1}$ gold AMI there, as fine German type codes rarely have a faithful English prototype. OPENER-Sup still reaches $61.5_{\pm0.7}$, \emph{on a par with its coarse score} ($60.3$) despite nearly three times as many classes. The zero-shot weakness is therefore not the embedding geometry, but the missing supervised signal.
 
-Language alone does not explain the collapse of detection on German: GLiNER-L recovers $43.9\%$ of the Portuguese mentions, on a par with the $44.5\%$ it reaches on English Indian judgements, and only German collapses. Its schema is as singular as its language, since legal-norm and case-law citations make up $62\%$ of its mentions and are long multi-token strings, while our alignment credits a mention only on an exact match of both character offsets. The reading is the same either way: an in-language \emph{detector} would lift the ceiling far more than a better typing head. Within our frugal, retraining-free budget, OPENER-Sup is therefore the practical default wherever even a modest labelled sample exists, and OPENER-ZS a no-label fallback for target languages close to the embedder's own.
+Language alone does not explain the collapse of detection on German. GLiNER-L recovers $43.9\%$ of the Portuguese mentions, on a par with the $44.5\%$ it reaches on English Indian judgements, and only German collapses. Its schema is as singular as its language, since legal-norm and case-law citations make up $62\%$ of its mentions, and both are long multi-token strings. Either way, an in-language \emph{detector} would lift the ceiling far more than a better typing head. Within our frugal, retraining-free budget, OPENER-Sup is therefore the practical default wherever even a modest labelled sample exists.
 
-\rev{\textbf{Where end-to-end quality is actually lost.} \autoref{tab:legal-decomp} splits each end-to-end score into its two stages, each OPENER head sharing its detector with the baseline above it so that the rows of a pair differ \emph{only} in the typing head. The supervised head is then worth far more than its $+1.0$ AMI suggests: on correctly detected mentions it assigns the right type $78.7\%$ of the time against the detector's own $64.6\%$, a $14$-point gain the average hides because it applies only to the $35.7\%$ of mentions that survive detection. The zero-shot head moves the other way ($64.5\%$ against GLiNER-L's $70.1\%$), which is why its fusion sits below the detector it fuses with. The oracle column settles the ceiling question: typing those same spans \emph{perfectly} would reach only ${\approx}42$ AMI, not $100$.}
+\rev{\textbf{Where end-to-end quality is actually lost.} \autoref{tab:legal-decomp} splits each end-to-end score into its two stages, the rows of a pair differing \emph{only} in the typing head. The supervised head is then worth more than its $+1.0$ AMI suggests. On correctly detected mentions, it types $78.7\%$ right, against the detector's own $64.6\%$. That $14$-point gain is hidden by the average, because it applies only to the $35.7\%$ of mentions that survive detection. The zero-shot head moves the other way, $64.5\%$ against $70.1\%$, which is why its fusion sits below the detector it fuses with. Typing those same spans \emph{perfectly} reaches only ${\approx}70$ AMI, so a third of the scale is out of reach before typing even begins. That bound is itself generous, since it credits the oracle with telling a spurious span from a real one, which is detection work.}
 
 \begin{table}[tbp]
 \centering
-\caption{\rev{End-to-end quality split into its two stages, four-set means (${\times}100$). Each pair shares a detector, so only the typing head differs.}}
+\caption{\rev{End-to-end quality split into its two stages, four-set means (${\times}100$). An arrow marks a head running \emph{on} the detector above it, so the two rows share their detected spans and differ only in the typing head.}}
 \label{tab:legal-decomp}
 \scriptsize
 \setlength{\tabcolsep}{2pt}
 \begin{threeparttable}
-\begin{tabular}{@{}lcccccc@{}}
+\begin{tabular}{@{}l@{\hskip 7pt}cccccc@{}}
 \toprule
 System & \multicolumn{2}{c}{Detection} & Typing & \multicolumn{3}{c}{End-to-end} \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-4}\cmidrule(lr){5-7}
  & exact & touched & acc. & F1 & AMI & oracle \\
 \midrule
-GLiNER-M & $35.7$ & $63.4$ & $64.6$ & $22.8$ & $34.9$ & $41.8$ \\
-\rowcolor{hlred} OPENER-Sup$^\ast$ & $35.7$ & $63.4$ & $\mathbf{78.7}$ & $\mathbf{25.3}$ & $\mathbf{35.9}$ & $42.1$ \\
+GLiNER-S & $34.4$ & $55.1$ & $62.2$ & $22.2$ & $33.0$ & $65.9$ \\
+GNER-T5 & $39.8$ & $77.2$ & $56.5$ & $18.4$ & $32.4$ & $74.2$ \\
+Qwen-1.5B$^\ddagger$ & $14.2$ & $20.5$ & $68.2$ & $10.4$ & $23.1$ & $42.2$ \\
+OWNER$^\S$ & n/a & n/a & n/a & n/a & $33.7$ & n/a \\
+\addlinespace[2pt]
+\multicolumn{7}{l}{\emph{Same detector, different typing head}} \\
+GLiNER-L & $41.1$ & $68.6$ & $70.1$ & $25.0$ & $35.0$ & $72.0$ \\
+\rowcolor{hlyellow} \hspace{4pt}$\hookrightarrow$ OPENER-ZS & $41.1$ & $68.6$ & $64.5$ & $23.1$ & $33.7$ & $72.0$ \\
 \addlinespace[1pt]
-GLiNER-L & $41.1$ & $68.6$ & $70.1$ & $25.0$ & $35.0$ & $41.0$ \\
-\rowcolor{hlyellow} OPENER-ZS & $41.1$ & $68.6$ & $64.5$ & $23.1$ & $33.7$ & $40.7$ \\
+GLiNER-M & $35.7$ & $63.4$ & $64.6$ & $22.8$ & $34.9$ & $69.8$ \\
+\rowcolor{hlred} \hspace{4pt}$\hookrightarrow$ OPENER-Sup$^\ast$ & $35.7$ & $63.4$ & $\mathbf{78.7}$ & $\mathbf{25.3}$ & $\mathbf{35.9}$ & $69.8$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]
 \scriptsize
-\item \rev{\emph{exact}: gold mentions recovered on both offsets (the recall of \autoref{sec:exp:results}). \emph{touched}: also counting mentions a prediction overlaps without matching their boundaries. \emph{acc.}: share of exactly detected mentions given the right type, which isolates the typing head. \emph{F1}: micro entity-level, offsets and type both correct. \emph{oracle}: AMI of a perfect typing of the same detected spans, the ceiling this detector allows. Released seed.}
-\item[$\ast$] \rev{Only OPENER-Sup uses target labels.}
+\item \rev{\emph{exact}: gold mentions recovered on both offsets (the recall of \autoref{sec:exp:results}). \emph{touched}: also counting mentions a prediction overlaps without matching their boundaries. \emph{acc.}: share of exactly detected mentions given the right type, which isolates the typing head. \emph{F1}: micro entity-level, offsets and type both correct. \emph{oracle}: the ceiling these detected spans allow, each correctly detected span taking its gold type and every spurious span a single shared label. It is a function of the detector alone, hence identical within a pair, and it is a \emph{loose} upper bound, since recognising a span as spurious is detection rather than typing. Every figure here is the released seed alone, so the AMI column can differ slightly from the three-seed means of \autoref{tab:legal-main} ($33.7$ against $33.4$ for OPENER-ZS, for instance).}
+\item[$\ast$] \rev{Only OPENER-Sup uses target labels.} $^\ddagger$\,\rev{Qwen on a $200$-sentence subsample per corpus.} $^\S$\,\rev{OWNER cannot be decomposed here for two independent reasons: it names its clusters dynamically, so neither typing accuracy nor F1 is defined against the target inventory, and it aligns mentions by word index rather than by character offset, so its detection columns would not be commensurable with the rest of the table. Its AMI is repeated from \autoref{tab:legal-main} for reference.}
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-\rev{\textbf{Most detection failures are boundaries, not blindness.} Counting a gold mention as \emph{touched} when a prediction overlaps it without necessarily matching both offsets, GLiNER-L touches $68.6\%$ of gold mentions on average but matches only $41.1\%$ exactly. On Indian-Legal the gap is widest ($44.5\%$ exact against $79.7\%$ touched), so the detector usually finds the mention and disagrees about where it ends, which long statute and precedent citations make routine. German is the one corpus this does not rescue: even relaxed, GLiNER-L reaches $38.4\%$ there. Cross-lingual transfer and long-span detection were confounded in that corpus, and this separates them: German fails as a language, not only as a schema of long spans.}
+\rev{\textbf{Most detection failures are boundaries, not blindness.} Counting a mention as \emph{touched} when a prediction overlaps it without matching both offsets, GLiNER-L touches $68.6\%$ of gold mentions but aligns only $41.1\%$ exactly, and the generative baseline is the extreme case at $77.2\%$ against $39.8\%$ (\autoref{tab:legal-decomp}). German is the one corpus this does not rescue, GLiNER-L reaching $38.4\%$ there even relaxed. Cross-lingual transfer and long-span detection were confounded in that corpus, and this separates them. German fails as a language, not only as a schema of long spans.}
 
-\rev{\textbf{What the two heads confuse.} The confusions are exactly the ones the design predicts (\autoref{sec:appendix:errors}). On German-LER, OPENER-ZS maps \textsc{norm} onto \textsc{regulation} $213$ times, by far its dominant error, since the two English anchor names are near-synonyms while the corpus separates them sharply. The probe makes that confusion $3$ times, and on citations such as \emph{\S\,63 Abs.\,1 AO} it answers \textsc{norm} where the zero-shot head answers \textsc{regulation}. On Indian-Legal, OPENER-ZS collapses \textsc{other-person} into the procedural roles \textsc{petitioner}, \textsc{witness} and \textsc{respondent} $123$ times, which no label-name prototype can avoid: the four types all name people, and which applies depends on a procedural role rather than on any surface form. This is the mechanism behind the gap between the two heads, and it is why supervision, not a better embedder, is what the label-free head lacks.}
+\rev{\textbf{What the two heads confuse.} The confusions are exactly the ones the design predicts (\autoref{sec:appendix:errors}). On German-LER, OPENER-ZS maps \textsc{norm} onto \textsc{regulation} $213$ times, its dominant error by far, where the probe makes that same confusion $3$ times, the two anchor names being near-synonyms in English while the corpus separates the types sharply. On Indian-Legal it collapses \textsc{other-person} into procedural roles $123$ times, which no label-name prototype can avoid, since those types all name people. Supervision, not a better embedder, is what the label-free head lacks.}
 
-\textbf{Fusion weight $\beta$.} \rev{Sweeping $\beta$ post-hoc (\autoref{sec:appendix:beta}) confirms the reading above: the label-free head interpolates from the refined prototypes alone ($32.4$ average AMI at $\beta{=}0$) up to the GLiNER-L labels ($35.0$), a plateau reached by $\beta{\approx}0.2$, so it can do no better end-to-end than the detector it fuses with. The sweep also shows the transductive pass failing to survive the transfer, which makes the label-free components the ones to re-examine first under a domain and language shift.}
+\rev{\textbf{Quality against cost.}} \autoref{tab:legal-efficiency} closes the picture, with every axis on one row per system. Both heads match the frugal GLiNER family in cost, one to two orders of magnitude below the generative baselines and several times below OWNER. OPENER-Sup does so while leading on \rev{both quality measures}, at $337$M parameters against OWNER's $294$M and Qwen's $1.5$B. Quality and cost are not traded off against each other here.
+
+\begin{table}[tbp]
+\centering
+\caption{\rev{Quality against cost}, four-set means of \autoref{tab:legal-main} \rev{and \autoref{tab:legal-decomp}}.}
+\label{tab:legal-efficiency}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{threeparttable}
+\begin{tabular}{@{}l@{\hskip 5pt}rrrrr@{}}
+\toprule
+Model & Params & AMI\,$\uparrow$ & \rev{F1\,$\uparrow$} & p50 (ms)\,$\downarrow$ & Energy (Wh)\,$\downarrow$ \\
+\midrule
+\multicolumn{6}{l}{\emph{Zero-shot (no target labels)}} \\
+GLiNER-S & $50$M & $33.0$ & \rev{$22.2$} & $\mathbf{22}$ & $\mathbf{0.5}$ \\
+GLiNER-M & $200$M & $34.9$ & \rev{$22.8$} & $37$ & $0.7$ \\
+GLiNER-L & $330$M & $\mathbf{35.0}$ & \rev{$\mathbf{25.0}$} & $81$ & $1.6$ \\
+GNER-T5 & $220$M & $32.4$ & \rev{$18.4$} & $8289$ & $96.0$ \\
+Qwen-1.5B$^\ddagger$ & $1.5$B & $23.1$ & \rev{$10.4$} & $5426$ & $100.5$ \\
+OWNER$^\S$ & ${\approx}294$M & $33.7$ & \rev{n/a$^\dagger$} & $475$ & $14.6$ \\
+\rowcolor{hlyellow} OPENER-ZS & $467$M & $33.4_{\pm0.4}$ & \rev{$23.1$} & $133$ & $2.7$ \\
+\addlinespace[1pt]
+\multicolumn{6}{l}{\emph{With target labels}} \\
+\rowcolor{hlred} OPENER-Sup$^\ast$ & $337$M & $\mathbf{35.9}_{\pm0.4}$ & \rev{$\mathbf{25.3}$} & $84$ & $1.7$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\scriptsize
+\item End-to-end, energy per $1000$ evaluated sentences (multiply by $0.056$ for gCO\textsubscript{2}), measured on the released seed-$42$ run. Best per column in bold, within each sub-block. Params count the whole pipeline, detector plus the $137$M embedder, so OPENER-Sup is lighter than OPENER-ZS only because it runs on GLiNER-M rather than GLiNER-L. \rev{F1 is the micro entity-level score of \autoref{tab:legal-decomp}.}
+\item[$\ast$] Only OPENER-Sup uses target labels. $^\ddagger$\,Qwen AMI on a $200$-sentence subsample, its energy over three sets (\autoref{tab:legal-cost-detail}). $^\S$\,OWNER cost is amortised wall-clock. $^\dagger$\,\rev{OWNER names its clusters dynamically, so no F1 is defined against the target inventory (\autoref{tab:legal-decomp}).}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\textbf{Fusion weight $\beta$.} \rev{Sweeping $\beta$ post-hoc (\autoref{sec:appendix:beta}) confirms the reading above. The label-free head interpolates from the refined prototypes alone ($32.4$ average AMI at $\beta{=}0$) up to the GLiNER-L labels ($35.0$), reaching a plateau by $\beta{\approx}0.2$. It can therefore do no better end-to-end than the detector it fuses with. The sweep also shows the transductive pass failing to survive the transfer, which makes the label-free components the ones to re-examine first under a domain and language shift.}

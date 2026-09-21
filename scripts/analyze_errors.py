@@ -35,7 +35,17 @@ from sklearn.metrics import adjusted_mutual_info_score
 
 LABEL_FN = '__gold_not_predicted__'
 LABEL_FP = '__predicted_not_gold__'
-SYSTEMS = ['GLiNER-M', 'OPENER-Sup', 'GLiNER-L', 'OPENER-ZS']
+# Ordre d'affichage. Les systemes absents d'un dump sont simplement sautes, et
+# une phrase qu'un systeme n'a pas evaluee (Qwen, limite a 200) est ignoree
+# pour CE systeme seulement, au lieu de compter comme une phrase sans
+# prediction, ce qui le penaliserait a tort.
+SYSTEMS = ['GLiNER-S', 'GLiNER-M', 'GLiNER-L', 'GNER-T5', 'Qwen-1.5B',
+           'OPENER-Sup', 'OPENER-ZS']
+
+
+def _evaluated(sentences, system):
+    """Phrases sur lesquelles ce systeme a reellement tourne."""
+    return [s for s in sentences if system in s['systems']]
 
 
 def log(msg):
@@ -48,18 +58,26 @@ def log(msg):
 def ami_with_sentinels(sentences, system, oracle=False):
     """AMI du papier : alignement par offsets exacts + sentinelles FP/FN.
 
-    oracle=True remplace le type predit par le type gold sur les spans
-    correctement detectes, ce qui donne le plafond atteignable avec ces spans.
+    oracle=True donne le PLAFOND atteignable sur les spans que ce detecteur a
+    proposes : chaque span correctement detecte recoit son type gold, et tous
+    les spans parasites recoivent une seule et meme etiquette.
+
+    Regrouper les parasites est indispensable. Si on leur laissait le type que
+    le systeme leur avait donne, la borne dependrait du systeme qu'elle est
+    censee borner, et deux systemes partageant un detecteur (donc des spans
+    identiques) auraient des plafonds differents. Cette borne suppose en
+    revanche qu'un oracle reconnaisse un span parasite, ce qui releve de la
+    detection et non du typage : c'est donc une borne superieure large.
     """
     y_gold, y_pred = [], []
-    for s in sentences:
+    for s in _evaluated(sentences, system):
         gold_d = {(a, b): lbl for a, b, lbl, _ in s['gold']}
-        pred_d = {(a, b): lbl for a, b, lbl, _ in s['systems'].get(system, [])}
+        pred_d = {(a, b): lbl for a, b, lbl, _ in s['systems'][system]}
         for k in set(gold_d) | set(pred_d):
             g = gold_d.get(k, LABEL_FP)
             p = pred_d.get(k, LABEL_FN)
-            if oracle and k in gold_d and k in pred_d:
-                p = g
+            if oracle and k in pred_d:
+                p = g if k in gold_d else LABEL_FP
             y_gold.append(g)
             y_pred.append(p)
     if not y_gold:
@@ -74,9 +92,9 @@ def entity_level_prf(sentences, system, typed=True):
     typed=False : detection seule (offsets), c'est-a-dire le plafond oracle.
     """
     tp = n_pred = n_gold = 0
-    for s in sentences:
+    for s in _evaluated(sentences, system):
         gold_d = {(a, b): lbl for a, b, lbl, _ in s['gold']}
-        pred_d = {(a, b): lbl for a, b, lbl, _ in s['systems'].get(system, [])}
+        pred_d = {(a, b): lbl for a, b, lbl, _ in s['systems'][system]}
         n_gold += len(gold_d)
         n_pred += len(pred_d)
         for k, p in pred_d.items():
@@ -96,9 +114,9 @@ def typing_accuracy_on_detected(sentences, system):
     goulot est la detection (accuracy haute) ou le typage (accuracy basse).
     """
     ok = tot = 0
-    for s in sentences:
+    for s in _evaluated(sentences, system):
         gold_d = {(a, b): lbl for a, b, lbl, _ in s['gold']}
-        for a, b, lbl, _ in s['systems'].get(system, []):
+        for a, b, lbl, _ in s['systems'][system]:
             if (a, b) in gold_d:
                 tot += 1
                 ok += (gold_d[(a, b)] == lbl)
@@ -114,9 +132,9 @@ def detection_breakdown(sentences, system):
     """
     g_exact = g_boundary = g_missed = 0
     p_exact = p_boundary = p_spurious = 0
-    for s in sentences:
+    for s in _evaluated(sentences, system):
         gold = [(a, b) for a, b, _, _ in s['gold']]
-        pred = [(a, b) for a, b, _, _ in s['systems'].get(system, [])]
+        pred = [(a, b) for a, b, _, _ in s['systems'][system]]
         gset, pset = set(gold), set(pred)
         for (a, b) in gold:
             if (a, b) in pset:
@@ -147,9 +165,9 @@ def detection_breakdown(sentences, system):
 def confusions(sentences, system, top=12):
     """Confusions de typage (gold -> predit) sur les mentions bien detectees."""
     c = Counter()
-    for s in sentences:
+    for s in _evaluated(sentences, system):
         gold_d = {(a, b): lbl for a, b, lbl, _ in s['gold']}
-        for a, b, lbl, _ in s['systems'].get(system, []):
+        for a, b, lbl, _ in s['systems'][system]:
             if (a, b) in gold_d and gold_d[(a, b)] != lbl:
                 c[(gold_d[(a, b)], lbl)] += 1
     return [{'gold': g, 'pred': p, 'n': n} for (g, p), n in c.most_common(top)]
@@ -225,7 +243,11 @@ def main():
                  'labels': d['labels'], 'systems': {}}
 
         for sys in SYSTEMS:
+            n_eval = len(_evaluated(sents, sys))
+            if n_eval == 0:
+                continue                      # systeme absent de ce dump
             m = {
+                'n_sentences_evaluated': n_eval,
                 'ami': ami_with_sentinels(sents, sys),
                 'ami_oracle': ami_with_sentinels(sents, sys, oracle=True),
                 'prf_typed': entity_level_prf(sents, sys, typed=True),
@@ -236,7 +258,8 @@ def main():
             }
             entry['systems'][sys] = m
             p, r, f = (m['prf_typed'][k] for k in ('precision', 'recall', 'f1'))
-            log(f"  {sys:11} AMI {100*m['ami']:5.1f}  (oracle {100*m['ami_oracle']:5.1f})"
+            log(f"  {sys:11} n={n_eval:4}  AMI {100*m['ami']:5.1f}"
+                f"  (oracle {100*m['ami_oracle']:5.1f})"
                 f"   P {100*p:5.1f}  R {100*r:5.1f}  F1 {100*f:5.1f}"
                 f"   typing-acc {100*m['typing_acc_on_detected']['accuracy']:5.1f}")
 

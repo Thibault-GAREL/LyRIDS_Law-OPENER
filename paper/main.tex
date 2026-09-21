@@ -59,6 +59,10 @@
 \newcommand{\rev}[1]{\textcolor{red}{#1}}
 %\newcommand{\rev}[1]{#1}   % <-- decommenter pour la version finale
 
+% Valeur en attente d'un run. Volontairement criarde : le PDF final ne doit
+% plus en contenir aucune. Verifier avec :  grep -rn "tbd" paper/sections/
+\newcommand{\tbd}{\textcolor{red}{\textbf{??}}}
+
 % --- figure palette (matches the general-domain OPENER paper, for consistent styling) ---
 \definecolor{figamber}{HTML}{F59E0B}
 \definecolor{figcyan}{HTML}{06B6D4}
@@ -81,14 +85,16 @@
 
 \title{OPENER: A Frugal Open-World NER Pipeline for the Legal Domain}
 
-% TODO CAMERA-READY : remplacer par les vrais auteurs et affiliations.
+% Auteurs et affiliation repris du papier journal OPENER.
 % Regles ACL : prenoms complets (pas d'initiales), pas de NOM en capitales,
-% pas de footnote pour l'affiliation, et l'ordre/orthographe doivent coincider
-% avec ce qui est saisi dans OpenReview.
+% pas de footnote pour l'affiliation. L'ordre et l'orthographe doivent
+% coincider avec ce qui est saisi dans OpenReview.
 \author{
-  \rev{Thibault Garel} \\
-  \rev{LyRIDS, ECE Paris} \\
-  \rev{\texttt{garel.thibault14@gmail.com}} \\
+  Thibault Garel \quad Faiza Belbachir \quad Assia Soukane \\
+  LyRIDS, ECE Engineering School, Paris, 75015, France \\
+  \small\texttt{garel.thibault14@gmail.com} \quad
+  \small\texttt{fbelbachir@ece.fr} \quad
+  \small\texttt{assia.soukane@ece.fr}
 }
 
 \begin{document}

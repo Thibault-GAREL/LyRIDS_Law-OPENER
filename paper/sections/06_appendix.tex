@@ -1,7 +1,33 @@
-\section{\rev{Entity-type distributions}}
+\section{\rev{Datasets}}
 \label{sec:appendix:datasets}
 
-\rev{Share (\%) of test mentions per entity type, for the splits evaluated in \autoref{tab:legal-datasets}.}
+\rev{\autoref{tab:legal-datasets} gives the size and the published supervised topline of each corpus, and \autoref{tab:legal-distributions} the share of test mentions taken by each entity type.}
+
+\begin{table}[H]
+\centering
+\caption{Legal NER datasets\rev{, with the published supervised topline of each}.}
+\label{tab:legal-datasets}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{threeparttable}
+\begin{tabular}{@{}llrrcc@{}}
+\toprule
+Dataset & Lang & Sent. & Ment. & Types & \rev{Sup. F1$^\dagger$} \\
+\midrule
+E-NER & en & 877 & 1{,}793 & $7$ & \rev{$96.1$} \\
+Indian-Legal & en & 866 & 3{,}028 & $14$ & \rev{$91.1$} \\
+LeNER-Br & pt & 636 & 1{,}536 & $6$ & \rev{$92.5$} \\
+German-LER & de & 1{,}000$^\P$ & 1{,}740 & $7$ & \rev{$96.0$} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\scriptsize
+\item Test sentences carrying $\geq 1$ entity, and the mentions actually evaluated. Sentences with no gold entity are evaluated by no system. German-LER is shown with its 7-type \emph{coarse} schema (19-type \emph{fine} schema in \autoref{sec:exp:analysis}).
+\item[$\P$] Of $3{,}018$, the only split above our $1000$-sentence cap, every score for it being computed on those first $1000$.
+\item[$\dagger$] \rev{Best entity-level F1 reported with the corpus itself \citep{au2022ener,kalamkar2022indianlegal,luzdearaujo2018lenerbr,leitner2020germanler}, by a tagger trained in-domain that learns detection jointly with typing (cross-validated on E-NER and German-LER, held-out test split on the other two). Not a competitor to a pipeline that retrains nothing, quoted as the scale of the task.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
 
 \begin{table}[H]
 \centering
@@ -146,7 +172,7 @@ Reported in & \autoref{tab:legal-gold} & \autoref{tab:legal-main} \\
 \section{\rev{Cost per corpus}}
 \label{sec:appendix:cost}
 
-\rev{\autoref{tab:legal-cost-detail} breaks the two cost axes down per corpus. \autoref{tab:legal-main} reports their four-set means, which is what the discussion uses, the per-corpus spread being driven by sentence length rather than by the system.}
+\rev{\autoref{tab:legal-cost-detail} breaks the two cost axes down per corpus. \autoref{tab:legal-efficiency} reports their four-set means, which is what the discussion uses, the per-corpus spread being driven by sentence length rather than by the system.}
 
 \begin{table}[H]
 \centering
@@ -165,7 +191,7 @@ GLiNER-S & $\mathbf{20}$ & $\mathbf{22}$ & $\mathbf{24}$ & $\mathbf{22}$ & $\mat
 GLiNER-M & $36$ & $35$ & $37$ & $39$ & $37$ \\
 GLiNER-L & $65$ & $88$ & $92$ & $78$ & $81$ \\
 GNER-T5  & $2897$ & $15784$ & $8768$ & $5705$ & $8289$ \\
-Qwen-1.5B$^\ddagger$ & $4852$ & $8068$ & $5929$ & $2857$ & $5427$ \\
+Qwen-1.5B$^\ddagger$ & $4852$ & $8068$ & $5929$ & $2857$ & $5426$ \\
 OWNER$^\S$ & $328$ & $755$ & $420$ & $398$ & $475$ \\
 \rowcolor{hlyellow} OPENER-ZS & $104$ & $140$ & $172$ & $115$ & $133$ \\
 \rowcolor{hlred} OPENER-Sup$^\ast$ & $78$ & $102$ & $85$ & $73$ & $84$ \\
@@ -183,9 +209,9 @@ OWNER$^\S$ & $10.0$ & $23.1$ & $12.9$ & $12.2$ & $14.6$ \\
 \end{tabular}
 \begin{tablenotes}[flushleft]
 \scriptsize
-\item Measured on the released seed-$42$ run, same machine for every system. For CO\textsubscript{2}, count $0.056$\,gCO\textsubscript{2} per Wh, the $56$\,gCO\textsubscript{2}/kWh grid intensity CodeCarbon applied to every run here.
+\item Measured on the released seed-$42$ run, same machine for every system. For CO\textsubscript{2}, count $0.056$\,gCO\textsubscript{2} per Wh, the $56$\,gCO\textsubscript{2}/kWh grid intensity CodeCarbon applied to every run here. \rev{Every Avg is computed on unrounded values, so it can differ by one unit in the last digit from the average of the rounded cells printed here.}
 \item[$\ast$] Only OPENER-Sup uses target labels. $^\ddagger$\,Qwen on a $200$-sentence subsample. $^\S$\,OWNER cost is amortised wall-clock, not a per-call latency.
-\item[$\P$] A value in parentheses is left out of its row's Avg. Here an isolated CodeCarbon over-count (Qwen/LeNER-Br), so that Avg uses the other three sets.
+\item[$\P$] A value in parentheses is left out of its row's Avg, which then uses the other three sets. \rev{The meter charges wall-clock time, and this run took $18$\,h for its $200$ sentences where its own median latency implies about $20$\,min, so a long idle stretch of the machine was billed to it as computation. Its latency, measured per sentence, is unaffected and is kept.}
 \end{tablenotes}
 \end{threeparttable}
 \end{table}

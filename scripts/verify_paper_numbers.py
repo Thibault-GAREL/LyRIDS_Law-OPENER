@@ -91,10 +91,15 @@ def main():
     for num in ['70.9', '49.1', '61.4', '47.7', '39.5', '35.9', '33.4',
                 '53.7', '60.3', '37.4', '23.8', '61.5', '22.7', '24$--$37']:
         check(f'texte contient {num}', num in full)
-    # anciens chiffres qui ne doivent PLUS apparaître comme valeurs OPENER
+    # Anciens chiffres qui ne doivent PLUS apparaître comme valeurs OPENER.
+    # Le Related Work est exclu : il cite des scores PUBLIES par d'autres
+    # (par exemple le 61.1 de transfert CoNLL->E-NER du papier E-NER), qui
+    # n'ont rien à voir avec nos cellules et peuvent coïncider numériquement.
+    own = ''.join(p.read_text(encoding='utf-8') for p in SECTIONS
+                  if '02_related_work' not in p.name)
     for old in ['$70.0$', '$46.3$', '$61.1$', '$44.0$', '$36.1$ mean', '$62.0$', '$22.1$',
                 '$22$--$32$', '$35.4$']:
-        check(f'ancien chiffre absent : {old}', old not in full)
+        check(f'ancien chiffre absent : {old}', old not in own)
 
     # ---- Passe 3 : phrases contenant « seed » (relecture humaine) ----
     print('== Passe 3 : phrases contenant "seed" (à relire) ==')
