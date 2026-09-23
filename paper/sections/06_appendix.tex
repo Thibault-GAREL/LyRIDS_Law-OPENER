@@ -59,9 +59,9 @@ German-LER (de) & Legal-norm 38.3, Case-law 23.4, Organization 15.0, Regulation 
 \section{\rev{Error analysis}}
 \label{sec:appendix:errors}
 
-\rev{\autoref{tab:confusions} lists, for each corpus, the typing confusions each head makes most often over the mentions its detector recovered exactly, and \autoref{tab:examples} shows real mentions on which the two heads disagree. Both are computed on the released seed.}
+\rev{\autoref{tab:confusions} lists, for each corpus, the typing confusions each head makes most often over the mentions its detector recovered exactly, and \autoref{tab:examples} shows real mentions on which at least one head errs. Both are computed on the released seed.}
 
-\rev{Three patterns run through them. Types whose \emph{names} are near-synonyms defeat the label-free head and not the probe, German \textsc{nrm} against \textsc{reg} being the extreme case ($213$ against $3$). Types that share a surface form and differ only by procedural role, as the Indian person types do, defeat prototypes by construction, since the anchor words cannot encode a role. And the probe is not uniformly better: on LeNER-Br it leaves \textsc{organizacao}\,$\rightarrow$\,\textsc{local} untouched ($36$ against $41$), which is why OPENER-Sup does not lead that corpus end-to-end.}
+\rev{Three patterns run through them. Types whose \emph{names} are near-synonyms defeat the label-free head and not the probe, German \textsc{nrm} against \textsc{reg} being the extreme case ($213$ against $3$). Types that share a surface form and differ only by procedural role, as the Indian person types do, defeat prototypes by construction, since the anchor words cannot encode a role. And the probe is not uniformly better. On LeNER-Br it sends \textsc{organizacao} to \textsc{local} as often as the label-free head does, $15\%$ of the detected organisations for both ($41$ against $36$ in raw counts).}
 
 \begin{table}[H]
 \centering
@@ -72,7 +72,7 @@ German-LER (de) & Legal-norm 38.3, Case-law 23.4, Organization 15.0, Regulation 
 \begin{threeparttable}
 \rev{\begin{tabular}{@{}llr@{\hskip 8pt}lr@{}}
 \toprule
- & \multicolumn{2}{c}{OPENER-ZS} & \multicolumn{2}{c}{OPENER-Sup} \\
+ & \multicolumn{2}{c}{\cellcolor{hlyellow}OPENER-ZS} & \multicolumn{2}{c}{\cellcolor{hlred}OPENER-Sup} \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}
 Corpus & confusion & $n$ & confusion & $n$ \\
 \midrule
@@ -92,6 +92,7 @@ German & \textsc{nrm}\,$\rightarrow$\,\textsc{reg} & $\mathbf{213}$ & \textsc{nr
 \end{tabular}}
 \begin{tablenotes}[flushleft]
 \scriptsize
+\item \rev{Raw counts, over different denominators. The heads run on different detectors (GLiNER-L for ZS, GLiNER-M for Sup), so they type different numbers of exactly detected mentions, $326$ against $177$ on German. As a share of the detected gold type, \textsc{nrm}\,$\rightarrow$\,\textsc{reg} is $96\%$ against $3.5\%$, and LeNER-Br \textsc{org}\,$\rightarrow$\,\textsc{local} $15\%$ for both.}
 \item \rev{Type codes abbreviated. German: \textsc{nrm} legal norm, \textsc{reg} regulation, \textsc{rs} case law. Indian: \textsc{o-per} other-person, \textsc{petit} petitioner, \textsc{resp} respondent, \textsc{prec} precedent, \textsc{witn} witness.}
 \end{tablenotes}
 \end{threeparttable}
@@ -99,14 +100,14 @@ German & \textsc{nrm}\,$\rightarrow$\,\textsc{reg} & $\mathbf{213}$ & \textsc{nr
 
 \begin{table}[H]
 \centering
-\caption{\rev{Real mentions on which the two typing heads disagree.}}
+\caption{\rev{Real mentions on which at least one typing head errs.}}
 \label{tab:examples}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
 \begin{threeparttable}
-\rev{\begin{tabular}{@{}p{0.30\linewidth}lll@{}}
+\rev{\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.30\linewidth}lll@{}}
 \toprule
-Mention & Gold & ZS & Sup \\
+Mention & Gold & \cellcolor{hlyellow}ZS & \cellcolor{hlred}Sup \\
 \midrule
 \multicolumn{4}{@{}l}{\emph{E-NER (en)}} \\
 \texttt{NXK}, \texttt{JSN}, \texttt{JGV} & \textsc{bus} & \textsc{misc} & \textsc{bus} \\
@@ -128,7 +129,7 @@ Mention & Gold & ZS & Sup \\
 \end{tabular}}
 \begin{tablenotes}[flushleft]
 \scriptsize
-\item \rev{The opaque E-NER tickers carry no lexical signal a label name could match, so the zero-shot head defaults to \textsc{misc} while the probe recovers them from the distribution. The last German row and the two Indian rows are cases both heads get wrong.}
+\item \rev{The opaque E-NER tickers carry no lexical signal a label name could match, so the zero-shot head defaults to \textsc{misc} while the probe recovers them from the distribution. The last German row and the two Indian rows are cases both heads get wrong. Each row is one occurrence. Typing is contextual (\autoref{sec:method:preprocessing}), so a recurring mention can be typed differently across sentences. The zero-shot head types \texttt{Uni\~{a}o} right in $3$ of its $4$ detected occurrences, and \texttt{State Of Gujarat} in $2$ of $3$.}
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -167,7 +168,7 @@ Reported in & \autoref{tab:legal-gold} & \autoref{tab:legal-main} \\
 
 \rev{The weight $\beta$ of Equation~(3) balances the label-name centroids against the detector's own labels. It is fixed a priori at $0.05$, and sweeping it post-hoc on the released model is a pure inference knob that leaves the embedder untouched. At $\beta{=}0$ the refined prototypes alone reach $32.4$ average AMI ($30.5$ without the transductive pass), and as $\beta$ grows the head interpolates up to the GLiNER-L labels ($35.0$), a plateau reached by $\beta{\approx}0.2$. The label-free head can therefore do no better end-to-end than the detector it fuses with.}
 
-\rev{The sweep also exposes a component that does not survive the transfer. At $\beta{=}0.05$, dropping the transductive pass would \emph{raise} the average from $33.7$ to $34.8$ (released seed, hence the offset from the $33.4$ of \autoref{tab:legal-main}). Re-estimating prototypes on test mentions helps when those are mostly true entities, as they are in our general-domain runs, whereas here two thirds of the detected spans are alignment noise and the centroids drift towards it. We keep the released configuration rather than tune it on legal test sets.}
+\rev{The sweep also exposes a component that does not survive the transfer. At $\beta{=}0.05$, dropping the transductive pass would \emph{raise} the average from $33.7$ to $34.8$ (released seed, hence the offset from the $33.4$ of \autoref{tab:legal-main}). Re-estimating prototypes on test mentions helps when those are mostly true entities, as they are in our general-domain runs \citep{garel2026opener}, whereas here two thirds of the detected spans are alignment noise and the centroids drift towards it. We keep the released configuration rather than tune it on legal test sets.}
 
 \section{\rev{Cost per corpus}}
 \label{sec:appendix:cost}
