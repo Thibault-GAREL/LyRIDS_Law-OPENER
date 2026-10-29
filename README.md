@@ -30,25 +30,10 @@
 
 ---
 
-## 🎥 Talk at NLLP 2026
-
-<p align="center">
-  <a href="https://youtu.be/oUS7c9HGJ_k?t=19013">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="assets/readme/legal-talk-thumbnail-dark.png">
-      <img src="assets/readme/legal-talk-thumbnail-light.png" alt="Play the Law-OPENER talk at NLLP 2026 on YouTube" width="85%">
-    </picture>
-  </a>
-</p>
-
-Lightning talk presented by Faiza Belbachir at the NLLP 2026 live session (EMNLP). The link opens the stream right at the Law-OPENER presentation.
-
----
-
 ## 📄 Full Paper
 
 <p align="center">
-  📄 <a href="https://aclanthology.org/2026.nllp-1.40/"><b>Read it on the ACL Anthology</b></a>
+  📄 <a href="https://aclanthology.org/2026.nllp-1.40/"><b>Read it on the ACL Anthology</b></a> &nbsp;·&nbsp; 🎥 <a href="https://youtu.be/oUS7c9HGJ_k?t=19013"><b>Watch the live talk at NLLP 2026</b></a>
 </p>
 
 <p align="center">
@@ -56,7 +41,7 @@ Lightning talk presented by Faiza Belbachir at the NLLP 2026 live session (EMNLP
 </p>
 
 <details>
-<summary>📄 <b>Show the remaining 14 pages (NLLP 2026 camera-ready)</b></summary>
+<summary>📄 <b>Show the remaining 14 pages (NLLP 2026 proceedings)</b></summary>
 
 <p align="center">
   <img src="assets/paper_pages/page-02.png" alt="Law-OPENER paper, page 02" width="800">
@@ -116,7 +101,7 @@ Lightning talk presented by Faiza Belbachir at the NLLP 2026 live session (EMNLP
 
 </details>
 
-Full PDF (text-selectable): [`OPENER-Legal_NLLP2026_camera-ready.pdf`](paper/OPENER-Legal_NLLP2026_camera-ready.pdf)
+Full PDF (text-selectable): [`OPENER-Legal_NLLP2026_ACL-Anthology.pdf`](paper/OPENER-Legal_NLLP2026_ACL-Anthology.pdf)
 
 ---
 
@@ -312,7 +297,7 @@ LyRIDS_Law-OPENER/
 ├── assets/
 │   ├── opener-architecture-v3.svg     # pipeline figure (README and paper)
 │   ├── readme/                        # README figures, light and dark
-│   └── paper_pages/                   # camera-ready pages as PNG
+│   └── paper_pages/                   # published pages as PNG
 │
 ├── configs/
 │   ├── legal.yaml                     # embedder, detectors, typing heads, datasets
@@ -351,7 +336,8 @@ LyRIDS_Law-OPENER/
 │   ├── sections/                      # one .tex per section
 │   ├── references.bib
 │   ├── paper_used/                    # reference PDFs, sorted by topic
-│   └── OPENER-Legal_NLLP2026_camera-ready.pdf
+│   ├── OPENER-Legal_NLLP2026_camera-ready.pdf
+│   └── OPENER-Legal_NLLP2026_ACL-Anthology.pdf   # published version (proceedings pages 469 to 483)
 │
 ├── outputs/                           # logs, energy, results (results gitignored)
 ├── data/                              # raw and processed corpora (gitignored)
@@ -445,7 +431,7 @@ This project is based on:
 - 📄 [OWNER](https://doi.org/10.1109/ACCESS.2025.3552122), the open-world baseline (my own re-implementation: [LyRIDS OWNER recreating](https://github.com/Thibault-GAREL/LyRIDS_OWNER_recreating)).
 - 📄 The four legal corpora: [E-NER](https://doi.org/10.18653/v1/2022.nllp-1.22), [Indian-Legal](https://doi.org/10.18653/v1/2022.nllp-1.15), [LeNER-Br](https://doi.org/10.1007/978-3-319-99722-3_32) and [German-LER](https://aclanthology.org/2020.lrec-1.551/).
 
-Paper: 📄 [ACL Anthology](https://aclanthology.org/2026.nllp-1.40/) (local copy: [`OPENER-Legal_NLLP2026_camera-ready.pdf`](paper/OPENER-Legal_NLLP2026_camera-ready.pdf)), co-authored with Faiza Belbachir and Assia Soukane (LyRIDS, ECE Paris).
+Paper: 📄 [ACL Anthology](https://aclanthology.org/2026.nllp-1.40/) (local copy: [`OPENER-Legal_NLLP2026_ACL-Anthology.pdf`](paper/OPENER-Legal_NLLP2026_ACL-Anthology.pdf)), co-authored with Faiza Belbachir and Assia Soukane (LyRIDS, ECE Paris).
 
 Talk: 🎥 [NLLP 2026 live on YouTube](https://youtu.be/oUS7c9HGJ_k?t=19013), starting at the Law-OPENER presentation.
 

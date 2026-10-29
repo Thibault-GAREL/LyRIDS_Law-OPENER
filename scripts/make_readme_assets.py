@@ -4,8 +4,8 @@ Deux figures, chacune en version claire et sombre (balise <picture> du README) :
   - legal-fig-gold   : AMI de typage sur mentions gold, par corpus (tab:legal-gold).
   - legal-fig-cost   : AMI end-to-end contre énergie, moyenne des 4 corpus (tab:legal-efficiency).
 Puis la miniature cliquable du talk NLLP (legal-talk-thumbnail, clair + sombre, lien YouTube
-dans le README, GitHub n'autorise pas d'iframe) et les 15 pages du PDF camera-ready en PNG
-(assets/paper_pages/).
+dans le README, GitHub n'autorise pas d'iframe) et les 15 pages du PDF publié en PNG
+(assets/paper_pages/). C'est la version ACL Anthology, avec le tampon des proceedings en page 1.
 
 Les chiffres sont recopiés des tables du paper (paper/sections/04_experiments.tex),
 elles-mêmes vérifiées par scripts/verify_paper_numbers.py. Aucun calcul ici.
@@ -23,7 +23,7 @@ from matplotlib.patches import FancyBboxPatch, PathPatch, Polygon, Rectangle
 
 OUT_DIR = Path('assets/readme')
 PAGES_DIR = Path('assets/paper_pages')
-PAPER_PDF = Path('paper/OPENER-Legal_NLLP2026_camera-ready.pdf')
+PAPER_PDF = Path('paper/OPENER-Legal_NLLP2026_ACL-Anthology.pdf')  # https://aclanthology.org/2026.nllp-1.40.pdf
 
 # Palette validée (skill dataviz, scripts/validate_palette.js, light + dark, all-pairs).
 THEMES = {
@@ -245,7 +245,8 @@ def render_paper_pages():
     PAGES_DIR.mkdir(parents=True, exist_ok=True)
     doc = fitz.open(PAPER_PDF)
     for i, page in enumerate(doc, start=1):
-        # 130 dpi : même largeur (1105 px) que les pages du README du repo principal.
+        # 130 dpi : environ 1100 px de large, comme les pages du README du repo principal
+        # (1075 px pour l'A4 de l'Anthology).
         page.get_pixmap(dpi=130).save(PAGES_DIR / f'page-{i:02d}.png')
     print(f'{doc.page_count} pages -> {PAGES_DIR}')
 
