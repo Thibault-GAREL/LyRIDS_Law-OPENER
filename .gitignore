@@ -23,7 +23,6 @@ paper/*.toc
 paper/*.synctex.gz
 paper/sections/*.aux
 
-paper/
 # Scratch render PNGs (real figures live in assets/)
 paper/*.png
 paper/.tmp/
