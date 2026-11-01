@@ -107,15 +107,11 @@ Full PDF (text-selectable): [`OPENER-Legal_NLLP2026_ACL-Anthology.pdf`](paper/OP
 
 ## ⚙️ Features
 
-  🔁 **Zero retraining**: the detector and the embedder are reused as released, only the typing head ever sees legal data.
-
-  🎯 **Two operating points** on one embedder, **OPENER-ZS** (no target labels at all) and **OPENER-Sup** (a balanced linear probe).
-
-  🌍 **Four legal corpora, three languages**: E-NER and Indian-Legal (en), LeNER-Br (pt), German-LER (de).
-
-  🔋 **Three axes at once** against GLiNER S/M/L, GNER, OWNER and a 4-bit Qwen: AMI, latency and energy (CodeCarbon).
-
-  📏 **Uncertainty reported**: 3 embedder seeds plus a paired bootstrap (K = 1000) on every test set.
+- **Zero retraining**: the detector and the embedder are reused as released, only the typing head ever sees legal data.
+- **Two operating points** on one embedder, **OPENER-ZS** (no target labels at all) and **OPENER-Sup** (a balanced linear probe).
+- **Four legal corpora, three languages**: E-NER and Indian-Legal (en), LeNER-Br (pt), German-LER (de).
+- **Three axes at once** against GLiNER S/M/L, GNER, OWNER and a 4-bit Qwen: AMI, latency and energy (CodeCarbon).
+- **Uncertainty reported**: 3 embedder seeds plus a paired bootstrap (K = 1000) on every test set.
 
 ---
 
@@ -213,39 +209,7 @@ Four-corpus means. Only AMI is a three-seed mean, F1, latency and energy come fr
 
 ---
 
-## ⚙️ How it works
-
-  🔍 **Detect**: a frozen GLiNER (M for OPENER-Sup, L for OPENER-ZS) proposes spans, prompted with the legal type names.
-
-  🧠 **Embed**: each span is embedded inside its sentence by the OPENER Nomic v1.5 embedder, pulled from the Hugging Face Hub as is.
-
-  🏷️ **Type with labels (OPENER-Sup)**: a balanced `LinearSVC` is fitted on the frozen embeddings of the target's training mentions.
-
-  🧭 **Type without labels (OPENER-ZS)**: English label-name prototypes, refined on the unlabelled test mentions, then fused with the detector's own label.
-
-  📏 **Score**: AMI over offset-aligned mentions, with sentinel classes so detection errors stay in the score.
-
-<details>
-<summary>🧩 <b>Span in context and type anchors</b></summary>
-
-- The embedder reads the whole sentence with the mention marked in place, `classification: The Court applied [ENT] Section 10(b) [/ENT] of the Exchange Act.`, so the same name can get a different type in two clauses.
-- OPENER-ZS needs one vector per type, and codes like `ORGANIZACAO` or `GS` mean little to an English encoder. Each type gets 1 to 5 English anchor words, fixed before any result was seen (`COURT` → court, tribunal, judiciary), listed in [`configs/legal_anchors.yaml`](configs/legal_anchors.yaml).
-
-</details>
-
-<details>
-<summary>📏 <b>Evaluation protocol</b></summary>
-
-- Predicted and gold mentions are aligned on exact character offsets. A missed gold mention and a spurious span each fall into a sentinel class.
-- Quality is the **Adjusted Mutual Information** between the gold and predicted partitions. It needs no label matching, so OWNER (which names its own clusters) is scored the same way.
-- Each test split is capped at its first 1000 entity-bearing sentences. Every hyperparameter is fixed a priori, none is tuned on a legal set.
-- OPENER cells are mean ± std over 3 embedder seeds (7, 42, 123). Latency and energy come from the released seed 42, since a seed changes the weights and not the FLOPs.
-
-</details>
-
----
-
-## 🗺️ Architecture Diagram
+## 🗺️ How it works
 
 <p align="center">
   <img src="assets/opener-architecture-v3.svg" alt="OPENER architecture applied to legal text" width="85%">
@@ -261,6 +225,34 @@ Same pipeline as OPENER, nothing retrained on legal data. Only the typing head c
 - **OPENER-Sup**: `LinearSVC(C=1, class_weight='balanced')`, refitted end-to-end on the detector's own training spans (`--fit-on-detected`).
 - **OPENER-ZS**: anchor words embedded through 4 templates, 3 iterations of spherical k-means on the test mentions, fusion weight β = 0.05.
 - Full configuration in [`configs/legal.yaml`](configs/legal.yaml).
+
+</details>
+
+<details>
+<summary>⚙️ <b>How it works, step by step</b></summary>
+
+- **Detect**: a frozen GLiNER (M for OPENER-Sup, L for OPENER-ZS) proposes spans, prompted with the legal type names.
+- **Embed**: each span is embedded inside its sentence by the OPENER Nomic v1.5 embedder, pulled from the Hugging Face Hub as is.
+- **Type with labels (OPENER-Sup)**: a balanced `LinearSVC` is fitted on the frozen embeddings of the target's training mentions.
+- **Type without labels (OPENER-ZS)**: English label-name prototypes, refined on the unlabelled test mentions, then fused with the detector's own label.
+- **Score**: AMI over offset-aligned mentions, with sentinel classes so detection errors stay in the score.
+
+</details>
+
+<details>
+<summary>🧩 <b>Span in context and type anchors</b></summary>
+
+- The embedder reads the whole sentence with the mention marked in place, `classification: The Court applied [ENT] Section 10(b) [/ENT] of the Exchange Act.`, so the same name can get a different type in two clauses.
+- OPENER-ZS needs one vector per type, and codes like `ORGANIZACAO` or `GS` mean little to an English encoder. Each type gets 1 to 5 English anchor words, fixed before any result was seen (`COURT` → court, tribunal, judiciary), listed in [`configs/legal_anchors.yaml`](configs/legal_anchors.yaml).
+
+</details>
+<details>
+<summary>📏 <b>Evaluation protocol</b></summary>
+
+- Predicted and gold mentions are aligned on exact character offsets. A missed gold mention and a spurious span each fall into a sentinel class.
+- Quality is the **Adjusted Mutual Information** between the gold and predicted partitions. It needs no label matching, so OWNER (which names its own clusters) is scored the same way.
+- Each test split is capped at its first 1000 entity-bearing sentences. Every hyperparameter is fixed a priori, none is tuned on a legal set.
+- OPENER cells are mean ± std over 3 embedder seeds (7, 42, 123). Latency and energy come from the released seed 42, since a seed changes the weights and not the FLOPs.
 
 </details>
 
